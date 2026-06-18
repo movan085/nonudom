@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <link rel="icon" type="image/png" href="logo.png">
+    <title>ระบบสร้างจดหมายข่าว - อบต.โนนอุดม</title>
+    <!-- โหลด Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- โหลด html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- โหลดฟอนต์ -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+       <style>
+        body { font-family: 'Kanit', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .text-shadow-md { text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .text-shadow-sm { text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        
+        .img-placeholder {
+            width: 100%; height: 100%; background-color: #e8f1f5; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .img-placeholder::before { content: ''; position: absolute; top: 35%; left: 30%; width: 40%; height: 20%; background: white; border-radius: 50%; opacity: 0.7; filter: blur(1px); }
+        .img-placeholder::after { content: ''; position: absolute; top: 25%; left: 45%; width: 35%; height: 30%; background: white; border-radius: 50%; opacity: 0.8; }
+        .mountain-1 { position: absolute; bottom: -20%; left: -10%; width: 80%; height: 60%; background: #b8d8a3; border-radius: 100%; z-index: 10; }
+        .mountain-2 { position: absolute; bottom: -30%; right: -10%; width: 70%; height: 70%; background: #9bc57f; border-radius: 100%; z-index: 20; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-purple-100 via-pink-50 to-yellow-100 min-h-screen">
+    <div class="min-h-screen flex flex-col xl:flex-row gap-6 p-4 md:p-8 max-w-[1400px] mx-auto">
+        
+        <!-- --- แผงควบคุม (ซ้าย) --- -->
+        <div class="w-full xl:w-1/3 bg-white/90 backdrop-blur-md p-0 rounded-3xl shadow-2xl border border-white overflow-hidden h-fit flex flex-col shrink-0">
+            <div class="bg-gradient-to-r from-[#5E278E] to-[#8a42c4] p-6 text-white shadow-md z-10 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
+                <h2 class="text-2xl font-bold flex items-center gap-2 relative z-10">
+                    <span class="text-yellow-300 drop-shadow-md">✨</span> สตูดิโอสร้างจดหมายข่าว
+                </h2>
+                <p class="text-sm opacity-90 mt-1 font-light relative z-10">กรอกข้อมูลและอัพโหลดรูปภาพด้านล่าง</p>
+            </div>
+            
+            <div class="p-4 md:p-6 space-y-5 md:space-y-6">
+                <!-- หัวข้อเรื่อง -->
+                <div class="bg-purple-50/50 p-4 rounded-2xl border border-purple-100 shadow-sm hover:shadow-md transition-shadow">
+                    <label class="block text-sm font-bold text-purple-900 mb-2 flex items-center gap-2">
+                        <span class="text-lg">📝</span> หัวข้อเรื่อง (Topic)
+                    </label>
+                    <textarea id="input-topic" placeholder="กรอกหัวเรื่องตรงนี้" class="w-full p-3 bg-white border border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 focus:outline-none transition-all shadow-inner" rows="2"></textarea>
+                </div>
+                
+                <!-- วันที่ -->
+                <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
+                    <label class="block text-sm font-bold text-blue-900 mb-2 flex items-center gap-2">
+                        <span class="text-lg">📅</span> วันที่ (Date)
+                    </label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <select id="select-day" class="w-full p-2.5 bg-white border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all text-sm shadow-inner"></select>
+                        <select id="select-month" class="w-full p-2.5 bg-white border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all text-sm shadow-inner">
+                            <option value="มกราคม">มกราคม</option>
+                            <option value="กุมภาพันธ์">กุมภาพันธ์</option>
+                            <option value="มีนาคม">มีนาคม</option>
+                            <option value="เมษายน">เมษายน</option>
+                            <option value="พฤษภาคม">พฤษภาคม</option>
+                            <option value="มิถุนายน">มิถุนายน</option>
+                            <option value="กรกฎาคม">กรกฎาคม</option>
+                            <option value="สิงหาคม">สิงหาคม</option>
+                            <option value="กันยายน">กันยายน</option>
+                            <option value="ตุลาคม">ตุลาคม</option>
+                            <option value="พฤศจิกายน">พฤศจิกายน</option>
+                            <option value="ธันวาคม">ธันวาคม</option>
+                        </select>
+                        <select id="select-year" class="w-full p-2.5 bg-white border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all text-sm shadow-inner"></select>
+                    </div>
+                </div>
+
+                <!-- คำบรรยาย -->
+                <div class="bg-green-50/50 p-4 rounded-2xl border border-green-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-sm font-bold text-green-900 flex items-center gap-2">
+                            <span class="text-lg">💬</span> คำบรรยาย
+                        </label>
+                        <div class="flex items-center gap-1.5 bg-white px-2 py-1.5 rounded-lg border border-green-200 shadow-sm">
+                            <span class="text-xs text-green-700 font-semibold hidden md:inline">ขนาดอักษร:</span>
+                            <input type="number" id="fontSize-desc" min="10" max="50" value="15" class="w-16 p-1 text-center text-sm font-medium text-green-800 border border-green-200 rounded-md focus:ring-2 focus:ring-green-500 outline-none">
+                            <span class="text-xs text-green-700 font-semibold">px</span>
+                        </div>
+                    </div>
+                    <textarea id="input-description" placeholder="กรอกคำบรรยายตรงนี้" class="w-full p-3 bg-white border border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:outline-none transition-all shadow-inner" rows="4"></textarea>
+                </div>
+
+                <!-- รูปกิจกรรม (อัพโหลด) -->
+                <div class="bg-yellow-50/70 p-4 rounded-2xl border border-yellow-200 shadow-sm hover:shadow-md transition-shadow">
+                    <label class="block text-sm font-bold text-yellow-900 mb-3 flex items-center gap-2">
+                        <span class="text-lg">🖼️</span> รูปกิจกรรม <span class="text-[10px] md:text-xs font-normal text-yellow-800 bg-yellow-200/80 px-2.5 py-0.5 rounded-full border border-yellow-300">ใส่ได้ 6 รูป</span>
+                    </label>
+                    <div class="grid grid-cols-3 gap-2 md:gap-3">
+                        <!-- รูป 0 -->
+                        <div class="relative group">
+                            <input type="file" accept="image/*" class="hidden" id="upload-img-0"/>
+                            <label for="upload-img-0" id="label-img-0" class="flex flex-col items-center justify-center w-full h-20 md:h-24 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm hover:shadow-md">
+                                <div id="icon-img-0" class="flex flex-col items-center justify-center w-full h-full p-1 text-center pointer-events-none transition-transform group-hover:scale-110">
+                                    <span class="text-xl md:text-2xl text-yellow-500 mb-1 leading-none drop-shadow-sm">+</span>
+                                    <span class="text-[9px] md:text-[11px] font-medium border px-1.5 py-0.5 rounded-md text-purple-700 bg-purple-100 border-purple-300 shadow-sm whitespace-nowrap">รูปใหญ่(บน)</span>
+                                </div>
+                                <img id="thumb-img-0" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
+                            </label>
+                        </div>
+                        <!-- รูป 1 -->
+                        <div class="relative group">
+                            <input type="file" accept="image/*" class="hidden" id="upload-img-1"/>
+                            <label for="upload-img-1" id="label-img-1" class="flex flex-col items-center justify-center w-full h-20 md:h-24 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm hover:shadow-md">
+                                <div id="icon-img-1" class="flex flex-col items-center justify-center w-full h-full p-1 text-center pointer-events-none transition-transform group-hover:scale-110">
+                                    <span class="text-xl md:text-2xl text-yellow-500 mb-1 leading-none drop-shadow-sm">+</span>
+                                    <span class="text-[9px] md:text-[11px] font-medium border px-1.5 py-0.5 rounded-md text-purple-700 bg-purple-100 border-purple-300 shadow-sm whitespace-nowrap">รูปใหญ่(บน)</span>
+                                </div>
+                                <img id="thumb-img-1" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
+                            </label>
+                        </div>
+                        <!-- รูป 2 -->
+                        <div class="relative group">
+                            <input type="file" accept="image/*" class="hidden" id="upload-img-2"/>
+                            <label for="upload-img-2" id="label-img-2" class="flex flex-col items-center justify-center w-full h-20 md:h-24 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm hover:shadow-md">
+                                <div id="icon-img-2" class="flex flex-col items-center justify-center w-full h-full p-1 text-center pointer-events-none transition-transform group-hover:scale-110">
+                                    <span class="text-xl md:text-2xl text-yellow-500 mb-1 leading-none drop-shadow-sm">+</span>
+                                    <span class="text-[9px] md:text-[11px] font-medium border px-1.5 py-0.5 rounded-md text-orange-700 bg-orange-100 border-orange-300 shadow-sm whitespace-nowrap">รูปเล็ก(ล่าง)</span>
+                                </div>
+                                <img id="thumb-img-2" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
+                            </label>
+                        </div>
+                        <!-- รูป 3 -->
+                        <div class="relative group">
+                            <input type="file" accept="image/*" class="hidden" id="upload-img-3"/>
+                            <label for="upload-img-3" id="label-img-3" class="flex flex-col items-center justify-center w-full h-20 md:h-24 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm hover:shadow-md">
+                                <div id="icon-img-3" class="flex flex-col items-center justify-center w-full h-full p-1 text-center pointer-events-none transition-transform group-hover:scale-110">
+                                    <span class="text-xl md:text-2xl text-yellow-500 mb-1 leading-none drop-shadow-sm">+</span>
+                                    <span class="text-[9px] md:text-[11px] font-medium border px-1.5 py-0.5 rounded-md text-orange-700 bg-orange-100 border-orange-300 shadow-sm whitespace-nowrap">รูปเล็ก(ล่าง)</span>
+                                </div>
+                                <img id="thumb-img-3" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
+                            </label>
+                        </div>
+                        <!-- รูป 4 -->
+                        <div class="relative group">
+                            <input type="file" accept="image/*" class="hidden" id="upload-img-4"/>
+                            <label for="upload-img-4" id="label-img-4" class="flex flex-col items-center justify-center w-full h-20 md:h-24 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm hover:shadow-md">
+                                <div id="icon-img-4" class="flex flex-col items-center justify-center w-full h-full p-1 text-center pointer-events-none transition-transform group-hover:scale-110">
+                                    <span class="text-xl md:text-2xl text-yellow-500 mb-1 leading-none drop-shadow-sm">+</span>
+                                    <span class="text-[9px] md:text-[11px] font-medium border px-1.5 py-0.5 rounded-md text-orange-700 bg-orange-100 border-orange-300 shadow-sm whitespace-nowrap">รูปเล็ก(ล่าง)</span>
+                                </div>
+                                <img id="thumb-img-4" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
+                            </label>
+                        </div>
+                        <!-- รูป 5 -->
+                        <div class="relative group">
+                            <input type="file" accept="image/*" class="hidden" id="upload-img-5"/>
+                            <label for="upload-img-5" id="label-img-5" class="flex flex-col items-center justify-center w-full h-20 md:h-24 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm hover:shadow-md">
+                                <div id="icon-img-5" class="flex flex-col items-center justify-center w-full h-full p-1 text-center pointer-events-none transition-transform group-hover:scale-110">
+                                    <span class="text-xl md:text-2xl text-yellow-500 mb-1 leading-none drop-shadow-sm">+</span>
+                                    <span class="text-[9px] md:text-[11px] font-medium border px-1.5 py-0.5 rounded-md text-orange-700 bg-orange-100 border-orange-300 shadow-sm whitespace-nowrap">รูปเล็ก(ล่าง)</span>
+                                </div>
+                                <img id="thumb-img-5" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ปุ่มบันทึก -->
+                <button id="btn-export" class="w-full mt-4 text-white font-bold py-3.5 px-4 rounded-2xl shadow-[0_10px_20px_rgba(94,39,142,0.3)] transition duration-300 flex justify-center items-center gap-2 bg-gradient-to-r from-[#5E278E] to-[#8a42c4] hover:from-[#491e6e] hover:to-[#6b2c91] hover:-translate-y-1 text-lg border border-purple-400/50 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                    <span id="btn-text" class="relative z-10">💾 บันทึกเป็นรูปภาพ</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- --- พื้นที่แสดงผลพรีวิว (ขวา) แบบ Responsive --- -->
+        <div id="preview-container" class="w-full xl:w-2/3 flex justify-center bg-white/40 backdrop-blur-sm p-4 md:p-8 rounded-3xl shadow-xl border border-white/60 relative overflow-hidden transition-all duration-300">
+            
+            <div id="newsletter-template" class="w-[800px] h-[1131px] bg-[#f8f9fa] relative shadow-2xl shrink-0 overflow-hidden transform-origin-top">
+                
+                <!-- HEADER -->
+                <div class="relative w-full h-[280px]">
+                    <svg width="800" height="280" class="absolute top-0 left-0 z-0 opacity-40">
+                        <defs>
+                            <pattern id="dots" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.5" fill="#FDBE15"/></pattern>
+                        </defs>
+                        <rect x="0" y="100" width="800" height="180" fill="url(#dots)" />
+                    </svg>
+                    <svg width="800" height="280" viewBox="0 0 800 280" class="absolute top-0 left-0 z-10">
+                        <polygon points="0,0 800,0 800,260 480,260 360,185 0,185" fill="#5E278E" />
+                        <polygon points="560,260 800,260 800,280 540,280" fill="#FDBE15" opacity="0.8" />
+                    </svg>
+                    <svg width="800" height="280" viewBox="0 0 800 280" class="absolute top-0 left-0 z-20">
+                        <polygon points="0,180 410,180 440,220 0,220" fill="#FDBE15" />
+                    </svg>
+                    
+                    <div class="absolute top-0 left-0 w-full h-full z-30 flex">
+                        <!-- ปรับระยะขอบบน pt-8 ให้ภาพรวมขยับลงมา -->
+                        <div class="flex items-start gap-4 pt-8 pl-8">
+                            <!-- เพิ่ม mt-3 ตรงโลโก้ เพื่อดันให้ขนานกับข้อความ -->
+                            <div class="w-[90px] h-[90px] mt-3 bg-white rounded-full flex items-center justify-center p-0.5 border-[3px] border-[#FDBE15] shadow-lg shrink-0 overflow-hidden">
+                                <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/5E278E/FFF?text=Logo'"/>
+                            </div>
+                            <div class="pt-2">
+                                <h1 class="text-[44px] leading-none font-bold text-white tracking-wide text-shadow-md">จดหมายข่าว</h1>
+                                <h2 class="text-[28px] font-bold text-white mt-1 text-shadow-md">ข่าวประชาสัมพันธ์</h2>
+                                <p class="text-[15px] text-white mt-1 opacity-90">องค์การบริหารส่วนตำบลโนนอุดม</p>
+                            </div>
+                        </div>
+                        
+                        <!-- ปรับระยะขอบบนของรูปนายกฯ จาก top-6 เป็น top-10 ให้ลงมาอีก -->
+                        <div class="absolute top-10 right-8 flex flex-col items-center">
+                            <div class="w-[105px] h-[135px] bg-[#e5e7eb] border-[3px] border-[#FDBE15] rounded-md overflow-hidden shadow-lg flex items-center justify-center relative">
+                                <img src="./sysbanners_file_6.png" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x250/5E278E/FFF?text=Profile'"/>
+                            </div>
+                            <div class="mt-2 text-center w-[160px]">
+                                <p class="text-white text-[13px] font-bold leading-tight text-shadow-sm">นายสุพจน์ สมน้อย</p>
+                                <p class="text-white text-[11px] leading-tight opacity-90 mt-0.5 text-shadow-sm">นายกองค์การบริหารส่วนตำบลโนนอุดม</p>
+                            </div>
+                        </div>
+                        
+                        <!-- ดันวันที่ขึ้นไปด้านบนนิดนึง (จาก 180px เป็น 174px) เพื่อไม่ให้ตกขอบตอนเซฟ -->
+                        <div class="absolute top-[174px] left-[35px] h-[40px] flex items-center">
+                            <span id="display-date" class="text-[#5E278E] font-bold text-[19px] tracking-wide">ประจำวันที่ 25 เดือน พฤษภาคม พ.ศ. 2569</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BODY (เนื้อหาและรูปกิจกรรม) -->
+                <div class="px-10 pt-6 pb-32">
+                    <h3 id="display-topic" class="text-[26px] font-bold text-gray-900 mb-6 text-center px-4 leading-normal whitespace-pre-wrap break-words">หัวเรื่อง</h3>
+
+                    <div class="grid grid-cols-12 gap-x-4 gap-y-4 px-2 mb-6">
+                        <div class="col-span-6 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] aspect-[4/3] flex">
+                            <div id="ph-gallery-0" class="img-placeholder"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                            <img id="show-gallery-0" class="hidden w-full h-full object-cover"/>
+                        </div>
+                        <div class="col-span-6 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] aspect-[4/3] flex">
+                            <div id="ph-gallery-1" class="img-placeholder"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                            <img id="show-gallery-1" class="hidden w-full h-full object-cover"/>
+                        </div>
+                        
+                        <div class="col-span-3 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] aspect-[4/3] flex">
+                            <div id="ph-gallery-2" class="img-placeholder"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                            <img id="show-gallery-2" class="hidden w-full h-full object-cover"/>
+                        </div>
+                        <div class="col-span-3 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] aspect-[4/3] flex">
+                            <div id="ph-gallery-3" class="img-placeholder"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                            <img id="show-gallery-3" class="hidden w-full h-full object-cover"/>
+                        </div>
+                        <div class="col-span-3 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] aspect-[4/3] flex">
+                            <div id="ph-gallery-4" class="img-placeholder"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                            <img id="show-gallery-4" class="hidden w-full h-full object-cover"/>
+                        </div>
+                        <div class="col-span-3 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] aspect-[4/3] flex">
+                            <div id="ph-gallery-5" class="img-placeholder"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                            <img id="show-gallery-5" class="hidden w-full h-full object-cover"/>
+                        </div>
+                    </div>
+
+                    <p id="display-description" class="text-[15px] text-gray-700 px-4 text-center leading-relaxed whitespace-pre-wrap break-words">คำบรรยาย</p>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="absolute bottom-0 left-0 w-full h-[150px]">
+                    <svg width="800" height="150" class="absolute bottom-0 left-0 z-0 opacity-40">
+                        <rect x="0" y="0" width="800" height="150" fill="url(#dots)" />
+                    </svg>
+                    <svg width="800" height="150" viewBox="0 0 800 150" class="absolute bottom-0 left-0 z-10">
+                        <polygon points="0,60 480,60 560,20 800,20 800,150 0,150" fill="#5E278E" />
+                        <polygon points="450,60 530,20 560,20 480,60" fill="#FDBE15" />
+                        <polygon points="630,150 730,90 800,90 800,150" fill="#FDBE15" />
+                    </svg>
+                    <!-- ดันข้อความที่อยู่ขึ้นมาด้านบนนิดนึง (จาก top-[75px] เป็น top-[60px]) เพื่อไม่ให้ตกขอบล่าง -->
+                    <div class="absolute top-[60px] left-[45px] text-white z-20 w-[600px]">
+                        <p class="font-bold text-[16px] mb-1">องค์การบริหารส่วนตําบลโนนอุดม</p>
+                        <p class="text-[13px] opacity-90 leading-tight">โทรศัพท์ / โทรสาร (แฟกซ์) : 044-077070</p>
+                        <p class="text-[13px] opacity-90 leading-tight mt-0.5">เลขที่ 234 หมู่ที่ 1 ตำบลโนนอุดม อำเภอเมืองบยาง จังหวัดนครราชสีมา 30270</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const previewContainer = document.getElementById('preview-container');
+            const newsletterTemplate = document.getElementById('newsletter-template');
+
+            const scalePreview = () => {
+                const padding = window.innerWidth < 768 ? 32 : 64; 
+                const availableWidth = previewContainer.clientWidth - padding;
+
+                if (availableWidth < 800) {
+                    const scaleRatio = availableWidth / 800;
+                    newsletterTemplate.style.transform = `scale(${scaleRatio})`;
+                    newsletterTemplate.style.transformOrigin = 'top center';
+                    previewContainer.style.height = `${(1131 * scaleRatio) + padding}px`;
+                } else {
+                    newsletterTemplate.style.transform = 'none';
+                    previewContainer.style.height = 'auto';
+                }
+            };
+
+            window.addEventListener('resize', scalePreview);
+            setTimeout(scalePreview, 100);
+
+            const linkText = (inputId, displayId, defaultText) => {
+                const input = document.getElementById(inputId);
+                const display = document.getElementById(displayId);
+                input.addEventListener('input', (e) => {
+                    display.textContent = e.target.value || defaultText;
+                });
+            };
+
+            linkText('input-topic', 'display-topic', 'หัวเรื่อง');
+            linkText('input-description', 'display-description', 'คำบรรยาย');
+
+            const fontSizeDesc = document.getElementById('fontSize-desc');
+            const displayDescription = document.getElementById('display-description');
+            fontSizeDesc.addEventListener('input', (e) => {
+                displayDescription.style.fontSize = `${e.target.value}px`;
+                displayDescription.style.lineHeight = '1.6'; 
+            });
+
+            const selectDay = document.getElementById('select-day');
+            const selectMonth = document.getElementById('select-month');
+            const selectYear = document.getElementById('select-year');
+            const displayDate = document.getElementById('display-date');
+
+            const today = new Date();
+            const currentDay = today.getDate();
+            const currentMonthIndex = today.getMonth();
+            const currentThaiYear = today.getFullYear() + 543;
+            
+            const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+            for (let i = 1; i <= 31; i++) {
+                let option = document.createElement('option');
+                option.value = i;
+                option.text = i;
+                if (i === currentDay) option.selected = true;
+                selectDay.appendChild(option);
+            }
+
+            selectMonth.value = thaiMonths[currentMonthIndex];
+
+            for (let i = currentThaiYear - 5; i <= currentThaiYear + 5; i++) {
+                let option = document.createElement('option');
+                option.value = i;
+                option.text = i;
+                if (i === currentThaiYear) option.selected = true;
+                selectYear.appendChild(option);
+            }
+
+            const updateDisplayDate = () => {
+                displayDate.textContent = `ประจำวันที่ ${selectDay.value} เดือน ${selectMonth.value} พ.ศ. ${selectYear.value}`;
+            };
+
+            selectDay.addEventListener('change', updateDisplayDate);
+            selectMonth.addEventListener('change', updateDisplayDate);
+            selectYear.addEventListener('change', updateDisplayDate);
+            updateDisplayDate();
+
+            for (let i = 0; i < 6; i++) {
+                document.getElementById(`upload-img-${i}`).addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const url = URL.createObjectURL(file);
+                        
+                        document.getElementById(`icon-img-${i}`).classList.add('hidden');
+                        const thumb = document.getElementById(`thumb-img-${i}`);
+                        thumb.src = url;
+                        thumb.classList.remove('hidden');
+                        document.getElementById(`label-img-${i}`).classList.replace('border-yellow-400', 'border-purple-500');
+
+                        const showImg = document.getElementById(`show-gallery-${i}`);
+                        showImg.src = url;
+                        showImg.classList.remove('hidden');
+                        document.getElementById(`ph-gallery-${i}`).classList.add('hidden');
+                    }
+                });
+            }
+
+            const btnExport = document.getElementById('btn-export');
+            const btnText = document.getElementById('btn-text');
+            const template = document.getElementById('newsletter-template');
+
+            btnExport.addEventListener('click', async () => {
+                btnExport.disabled = true;
+                btnExport.classList.add('opacity-70', 'cursor-not-allowed');
+                btnText.textContent = 'กำลังแปลงรูปภาพ...';
+
+                // เลื่อนหน้าจอขึ้นบนสุด ป้องกันปัญหาเซฟแล้วรูปเลื่อน/แหว่ง
+                window.scrollTo(0, 0);
+
+                const currentTransform = template.style.transform;
+                template.style.transform = 'none';
+
+                try {
+                    const canvas = await html2canvas(template, {
+                        scale: 2.5, 
+                        useCORS: true,
+                        backgroundColor: '#f8f9fa'
+                    });
+                    
+                    const image = canvas.toDataURL("image/jpeg", 1.0);
+                    const link = document.createElement('a');
+                    link.href = image;
+                    
+                    const topic = document.getElementById('input-topic').value || 'Newsletter';
+                    link.download = `จดหมายข่าว_${topic.substring(0, 30)}.jpg`;
+                    link.click();
+                } catch (error) {
+                    console.error("Error generating image:", error);
+                    alert("เกิดข้อผิดพลาดในการสร้างรูปภาพ ลองตรวจสอบรูปที่อัพโหลดดูอีกครั้งครับ");
+                } finally {
+                    template.style.transform = currentTransform;
+                    btnExport.disabled = false;
+                    btnExport.classList.remove('opacity-70', 'cursor-not-allowed');
+                    btnText.textContent = '💾 บันทึกเป็นรูปภาพ';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
