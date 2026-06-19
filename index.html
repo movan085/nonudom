@@ -208,15 +208,24 @@
                             <polygon points="0,180 410,180 440,220 0,220" fill="#FDBE15" />
                         </svg>
                         
-                        <!-- จุดที่แก้ไขรอบสุดท้าย: ใช้การระบุพิกัดตายตัว (Absolute) แยกชิ้นกันไปเลย ไม่พึ่งพา Table หรือ Flex แล้ว -->
-                        <div class="absolute top-[35px] left-[35px] z-30 w-[90px] h-[90px] bg-white rounded-full p-0.5 border-[3px] border-[#FDBE15] shadow-lg overflow-hidden">
-                            <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/5E278E/FFF?text=Logo'"/>
-                        </div>
-                        
-                        <div class="absolute top-[37px] left-[145px] z-30">
-                            <h1 class="text-[44px] leading-[1.0] font-bold text-white tracking-wide text-shadow-md m-0 pb-1">จดหมายข่าว</h1>
-                            <h2 class="text-[28px] leading-[1.0] font-bold text-white text-shadow-md m-0 pb-1.5">ข่าวประชาสัมพันธ์</h2>
-                            <p class="text-[15px] leading-none text-white opacity-90 m-0">องค์การบริหารส่วนตำบลโนนอุดม</p>
+                        <!-- จุดที่แก้ไข: ใช้ Table ในการจัดตำแหน่งหัวจดหมาย ป้องกัน html2canvas เรนเดอร์เบี้ยว -->
+                        <div class="absolute top-[35px] left-[35px] z-30">
+                            <table class="border-collapse border-none">
+                                <tbody>
+                                    <tr>
+                                        <td class="align-middle pr-5">
+                                            <div class="w-[90px] h-[90px] bg-white rounded-full p-0.5 border-[3px] border-[#FDBE15] shadow-lg overflow-hidden">
+                                                <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/5E278E/FFF?text=Logo'"/>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">
+                                            <h1 class="text-[44px] leading-[1.1] font-bold text-white tracking-wide text-shadow-md m-0 pb-1">จดหมายข่าว</h1>
+                                            <h2 class="text-[28px] leading-[1.1] font-bold text-white text-shadow-md m-0 pb-1">ข่าวประชาสัมพันธ์</h2>
+                                            <p class="text-[15px] leading-tight text-white opacity-90 m-0">องค์การบริหารส่วนตำบลโนนอุดม</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                         
                         <!-- จุดที่แก้ไข: รูปนายกฯ เอา Flex ออก ใช้เป็น Block + mx-auto แทน -->
