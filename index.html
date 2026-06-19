@@ -13,7 +13,7 @@
     <!-- โหลดฟอนต์ -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-   <style>
+    <style>
         body { font-family: 'Kanit', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -200,7 +200,6 @@
                             <polygon points="0,180 410,180 440,220 0,220" fill="#FDBE15" />
                         </svg>
                         
-                        <!-- โครงสร้างกลับมาใช้ Flex + Gap ได้อย่างสบายใจแล้ว! -->
                         <div class="absolute top-0 left-0 w-full h-full z-30 flex">
                             <!-- จัดกึ่งกลางโลโก้กับตัวหนังสือด้วย items-center และ gap-5 -->
                             <div class="flex items-center gap-5 pt-8 pl-8">
@@ -225,8 +224,8 @@
                                 </div>
                             </div>
                             
-                            <!-- แถบวันที่ -->
-                            <div class="absolute top-[174px] left-[35px] h-[40px] flex items-center">
+                            <!-- จุดที่แก้ไข: ล็อคพิกัดวันที่ตายตัว (top-[188px]) และลบ flex items-center ทิ้ง ป้องกันการคำนวณพลาดของ html2canvas -->
+                            <div class="absolute top-[188px] left-[35px] z-30">
                                 <span id="display-date" class="text-[#5E278E] font-bold text-[19px] tracking-wide leading-none">ประจำวันที่ 25 เดือน พฤษภาคม พ.ศ. 2569</span>
                             </div>
                         </div>
@@ -414,14 +413,14 @@
                 template.style.transform = 'none';
 
                 try {
-                    // เปิดใช้โหมด foreignObjectRendering ตามที่คุณแนะนำ!
+                    // เปิดใช้โหมด foreignObjectRendering
                     const canvas = await html2canvas(template, {
                         scale: 2.5, 
                         useCORS: true,
                         backgroundColor: '#f8f9fa',
                         scrollY: 0,
                         scrollX: 0,
-                        foreignObjectRendering: true // <--- ตัวแปรวิเศษอยู่ตรงนี้ครับ!
+                        foreignObjectRendering: true 
                     });
                     
                     const image = canvas.toDataURL("image/jpeg", 1.0);
