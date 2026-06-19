@@ -13,7 +13,7 @@
     <!-- โหลดฟอนต์ -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-           <style>
+    <style>
         body { font-family: 'Kanit', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -197,23 +197,26 @@
                             <polygon points="560,260 800,260 800,280 540,280" fill="#FDBE15" opacity="0.8" />
                         </svg>
                         <svg width="800" height="280" viewBox="0 0 800 280" class="absolute top-0 left-0 z-20">
-                            <polygon points="0,180 410,180 440,220 0,220" fill="#FDBE15" />
-                        </svg>
-                        
-                        <div class="absolute top-0 left-0 w-full h-full z-30 flex">
-                            <div class="flex items-start gap-4 pt-8 pl-8">
-                                <div class="w-[90px] h-[90px] mt-3 bg-white rounded-full flex items-center justify-center p-0.5 border-[3px] border-[#FDBE15] shadow-lg shrink-0 overflow-hidden">
-                                    <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/5E278E/FFF?text=Logo'"/>
-                                </div>
-                                <div class="pt-2">
-                                    <h1 class="text-[44px] leading-none font-bold text-white tracking-wide text-shadow-md">จดหมายข่าว</h1>
-                                    <h2 class="text-[28px] font-bold text-white mt-1 text-shadow-md">ข่าวประชาสัมพันธ์</h2>
-                                    <p class="text-[15px] text-white mt-1 opacity-90">องค์การบริหารส่วนตำบลโนนอุดม</p>
-                                </div>
+                        <polygon points="0,180 410,180 440,220 0,220" fill="#FDBE15" />
+                    </svg>
+                    
+                    <div class="absolute top-0 left-0 w-full h-full z-30 flex">
+                        <!-- เปลี่ยนเป็น items-center เพื่อให้โลโก้และข้อความขนานกันตรงกลางเป๊ะๆ -->
+                        <div class="flex items-center gap-5 pt-8 pl-8">
+                            <!-- เอา mt-3 ออก ให้ระบบจัดตำแหน่งให้เอง -->
+                            <div class="w-[90px] h-[90px] bg-white rounded-full flex items-center justify-center p-0.5 border-[3px] border-[#FDBE15] shadow-lg shrink-0 overflow-hidden">
+                                <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/5E278E/FFF?text=Logo'"/>
                             </div>
-                            
-                            <div class="absolute top-10 right-8 flex flex-col items-center">
-                                <div class="w-[105px] h-[135px] bg-[#e5e7eb] border-[3px] border-[#FDBE15] rounded-md overflow-hidden shadow-lg flex items-center justify-center relative">
+                            <!-- เอา pt-2 ออก เพื่อให้ข้อความอยู่ระดับเดียวกับโลโก้ -->
+                            <div>
+                                <h1 class="text-[44px] leading-none font-bold text-white tracking-wide text-shadow-md">จดหมายข่าว</h1>
+                                <h2 class="text-[28px] font-bold text-white mt-1 text-shadow-md">ข่าวประชาสัมพันธ์</h2>
+                                <p class="text-[15px] text-white mt-1 opacity-90">องค์การบริหารส่วนตำบลโนนอุดม</p>
+                            </div>
+                        </div>
+                        
+                        <div class="absolute top-10 right-8 flex flex-col items-center">
+                            <div class="w-[105px] h-[135px] bg-[#e5e7eb] border-[3px] border-[#FDBE15] rounded-md overflow-hidden shadow-lg flex items-center justify-center relative">
                                     <img src="./sysbanners_file_6.png" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x250/5E278E/FFF?text=Profile'"/>
                                 </div>
                                 <div class="mt-2 text-center w-[160px]">
