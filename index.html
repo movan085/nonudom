@@ -13,7 +13,7 @@
     <!-- โหลดฟอนต์ -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <style>
+  <style>
         body { font-family: 'Kanit', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -197,26 +197,27 @@
                             <polygon points="560,260 800,260 800,280 540,280" fill="#FDBE15" opacity="0.8" />
                         </svg>
                         <svg width="800" height="280" viewBox="0 0 800 280" class="absolute top-0 left-0 z-20">
-                        <polygon points="0,180 410,180 440,220 0,220" fill="#FDBE15" />
-                    </svg>
-                    
-                    <div class="absolute top-0 left-0 w-full h-full z-30 flex">
-                        <!-- เปลี่ยนเป็น items-center เพื่อให้โลโก้และข้อความขนานกันตรงกลางเป๊ะๆ -->
-                        <div class="flex items-center gap-5 pt-8 pl-8">
-                            <!-- เอา mt-3 ออก ให้ระบบจัดตำแหน่งให้เอง -->
-                            <div class="w-[90px] h-[90px] bg-white rounded-full flex items-center justify-center p-0.5 border-[3px] border-[#FDBE15] shadow-lg shrink-0 overflow-hidden">
+                            <polygon points="0,180 410,180 440,220 0,220" fill="#FDBE15" />
+                        </svg>
+                        
+                        <div class="absolute top-0 left-0 w-full h-full z-30">
+                            <!-- แก้ไข: ใช้ Absolute Positioning ล็อคพิกัดแทน Flex เพื่อกัน html2canvas เลื่อน -->
+                            
+                            <!-- โลโก้ อบต. -->
+                            <div class="absolute top-[38px] left-[35px] w-[90px] h-[90px] bg-white rounded-full flex items-center justify-center p-0.5 border-[3px] border-[#FDBE15] shadow-lg shrink-0 overflow-hidden">
                                 <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/5E278E/FFF?text=Logo'"/>
                             </div>
-                            <!-- เอา pt-2 ออก เพื่อให้ข้อความอยู่ระดับเดียวกับโลโก้ -->
-                            <div>
+                            
+                            <!-- ข้อความจดหมายข่าว -->
+                            <div class="absolute top-[36px] left-[140px]">
                                 <h1 class="text-[44px] leading-none font-bold text-white tracking-wide text-shadow-md">จดหมายข่าว</h1>
                                 <h2 class="text-[28px] font-bold text-white mt-1 text-shadow-md">ข่าวประชาสัมพันธ์</h2>
                                 <p class="text-[15px] text-white mt-1 opacity-90">องค์การบริหารส่วนตำบลโนนอุดม</p>
                             </div>
-                        </div>
-                        
-                        <div class="absolute top-10 right-8 flex flex-col items-center">
-                            <div class="w-[105px] h-[135px] bg-[#e5e7eb] border-[3px] border-[#FDBE15] rounded-md overflow-hidden shadow-lg flex items-center justify-center relative">
+                            
+                            <!-- รูปนายกฯ -->
+                            <div class="absolute top-10 right-8 flex flex-col items-center">
+                                <div class="w-[105px] h-[135px] bg-[#e5e7eb] border-[3px] border-[#FDBE15] rounded-md overflow-hidden shadow-lg flex items-center justify-center relative">
                                     <img src="./sysbanners_file_6.png" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x250/5E278E/FFF?text=Profile'"/>
                                 </div>
                                 <div class="mt-2 text-center w-[160px]">
@@ -225,6 +226,7 @@
                                 </div>
                             </div>
                             
+                            <!-- แถบวันที่ -->
                             <div class="absolute top-[174px] left-[35px] h-[40px] flex items-center">
                                 <span id="display-date" class="text-[#5E278E] font-bold text-[19px] tracking-wide">ประจำวันที่ 25 เดือน พฤษภาคม พ.ศ. 2569</span>
                             </div>
@@ -235,32 +237,32 @@
                     <div class="px-10 pt-6 pb-32">
                         <h3 id="display-topic" class="text-[26px] font-bold text-gray-900 mb-6 text-center px-4 leading-normal whitespace-pre-wrap break-words">หัวเรื่อง</h3>
 
-                        <!-- จุดที่แก้ไข: เปลี่ยนจากแท็ก <img> เป็นแท็ก <div> รูปพื้นหลัง (แก้ปัญหาเซฟแล้วรูปยืด) -->
+                        <!-- จุดที่แก้ไข 2: ใช้ความสูงแบบ Fix (h-[258px] และ h-[123px]) แทน aspect-[4/3] เพราะ html2canvas คำนวณ aspect-ratio พลาด -->
                         <div class="grid grid-cols-12 gap-x-4 gap-y-4 px-2 mb-6">
-                            <div class="col-span-6 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] aspect-[4/3] flex flex-col">
-                                <div id="ph-gallery-0" class="img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                                <div id="show-gallery-0" class="hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                            <div class="col-span-6 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] h-[258px] flex flex-col relative overflow-hidden">
+                                <div id="ph-gallery-0" class="img-placeholder w-full h-full absolute top-1.5 left-1.5" style="width: calc(100% - 12px); height: calc(100% - 12px);"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                                <div id="show-gallery-0" class="hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1.5 left-1.5" style="width: calc(100% - 12px); height: calc(100% - 12px);"></div>
                             </div>
-                            <div class="col-span-6 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] aspect-[4/3] flex flex-col">
-                                <div id="ph-gallery-1" class="img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                                <div id="show-gallery-1" class="hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                            <div class="col-span-6 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] h-[258px] flex flex-col relative overflow-hidden">
+                                <div id="ph-gallery-1" class="img-placeholder w-full h-full absolute top-1.5 left-1.5" style="width: calc(100% - 12px); height: calc(100% - 12px);"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                                <div id="show-gallery-1" class="hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1.5 left-1.5" style="width: calc(100% - 12px); height: calc(100% - 12px);"></div>
                             </div>
                             
-                            <div class="col-span-3 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] aspect-[4/3] flex flex-col">
-                                <div id="ph-gallery-2" class="img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                                <div id="show-gallery-2" class="hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                            <div class="col-span-3 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] h-[123px] flex flex-col relative overflow-hidden">
+                                <div id="ph-gallery-2" class="img-placeholder w-full h-full absolute top-1.5 left-1.5" style="width: calc(100% - 12px); height: calc(100% - 12px);"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                                <div id="show-gallery-2" class="hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1.5 left-1.5" style="width: calc(100% - 12px); height: calc(100% - 12px);"></div>
                             </div>
-                            <div class="col-span-3 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] aspect-[4/3] flex flex-col">
-                                <div id="ph-gallery-3" class="img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                                <div id="show-gallery-3" class="hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                            <div class="col-span-3 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] h-[123px] flex flex-col relative overflow-hidden">
+                                <div id="ph-gallery-3" class="img-placeholder w-full h-full absolute top-1.5 left-1.5" style="width: calc(100% - 12px); height: calc(100% - 12px);"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                                <div id="show-gallery-3" class="hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1.5 left-1.5" style="width: calc(100% - 12px); height: calc(100% - 12px);"></div>
                             </div>
-                            <div class="col-span-3 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] aspect-[4/3] flex flex-col">
-                                <div id="ph-gallery-4" class="img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                                <div id="show-gallery-4" class="hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                            <div class="col-span-3 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] h-[123px] flex flex-col relative overflow-hidden">
+                                <div id="ph-gallery-4" class="img-placeholder w-full h-full absolute top-1.5 left-1.5" style="width: calc(100% - 12px); height: calc(100% - 12px);"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                                <div id="show-gallery-4" class="hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1.5 left-1.5" style="width: calc(100% - 12px); height: calc(100% - 12px);"></div>
                             </div>
-                            <div class="col-span-3 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] aspect-[4/3] flex flex-col">
-                                <div id="ph-gallery-5" class="img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                                <div id="show-gallery-5" class="hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                            <div class="col-span-3 bg-white p-1.5 shadow-md border-[2px] border-[#edba6b] h-[123px] flex flex-col relative overflow-hidden">
+                                <div id="ph-gallery-5" class="img-placeholder w-full h-full absolute top-1.5 left-1.5" style="width: calc(100% - 12px); height: calc(100% - 12px);"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                                <div id="show-gallery-5" class="hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1.5 left-1.5" style="width: calc(100% - 12px); height: calc(100% - 12px);"></div>
                             </div>
                         </div>
 
@@ -376,21 +378,18 @@
             selectYear.addEventListener('change', updateDisplayDate);
             updateDisplayDate();
 
-            // --- แก้ไขโค้ดอัปโหลดรูป ให้สอดคล้องกับการใช้ Background Image ---
             for (let i = 0; i < 6; i++) {
                 document.getElementById(`upload-img-${i}`).addEventListener('change', (e) => {
                     const file = e.target.files[0];
                     if (file) {
                         const url = URL.createObjectURL(file);
                         
-                        // อัปเดตปุ่มอัปโหลดฝั่งซ้าย (อันนี้ใช้แท็ก img ธรรมดาได้)
                         document.getElementById(`icon-img-${i}`).classList.add('hidden');
                         const thumb = document.getElementById(`thumb-img-${i}`);
                         thumb.src = url;
                         thumb.classList.remove('hidden');
                         document.getElementById(`label-img-${i}`).classList.replace('border-yellow-400', 'border-purple-500');
 
-                        // อัปเดตกระดาษพรีวิวฝั่งขวา (ใช้ Background Image แก้ปัญหารูปยืดตอนเซฟ)
                         const showImg = document.getElementById(`show-gallery-${i}`);
                         showImg.style.backgroundImage = `url('${url}')`;
                         showImg.classList.remove('hidden');
@@ -414,10 +413,13 @@
                 template.style.transform = 'none';
 
                 try {
+                    // เพิ่ม scrollY: 0 ให้ html2canvas เพื่อป้องกันหน้าจอเคลื่อนตอนวาดภาพ
                     const canvas = await html2canvas(template, {
                         scale: 2.5, 
                         useCORS: true,
-                        backgroundColor: '#f8f9fa'
+                        backgroundColor: '#f8f9fa',
+                        scrollY: 0,
+                        scrollX: 0
                     });
                     
                     const image = canvas.toDataURL("image/jpeg", 1.0);
