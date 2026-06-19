@@ -13,7 +13,7 @@
     <!-- โหลดฟอนต์ -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <style>
+   <style>
         body { font-family: 'Kanit', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -200,40 +200,35 @@
                             <polygon points="0,180 410,180 440,220 0,220" fill="#FDBE15" />
                         </svg>
                         
-                        <!-- จุดที่แก้ไข: ใช้ Table ในการจัดตำแหน่งหัวจดหมาย ป้องกัน html2canvas เรนเดอร์เบี้ยว -->
-                        <div class="absolute top-[35px] left-[35px] z-30">
-                            <table class="border-collapse border-none">
-                                <tbody>
-                                    <tr>
-                                        <td class="align-middle pr-5">
-                                            <div class="w-[90px] h-[90px] bg-white rounded-full p-0.5 border-[3px] border-[#FDBE15] shadow-lg overflow-hidden">
-                                                <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/5E278E/FFF?text=Logo'"/>
-                                            </div>
-                                        </td>
-                                        <td class="align-middle">
-                                            <h1 class="text-[44px] leading-[1.1] font-bold text-white tracking-wide text-shadow-md m-0 pb-1">จดหมายข่าว</h1>
-                                            <h2 class="text-[28px] leading-[1.1] font-bold text-white text-shadow-md m-0 pb-1">ข่าวประชาสัมพันธ์</h2>
-                                            <p class="text-[15px] leading-tight text-white opacity-90 m-0">องค์การบริหารส่วนตำบลโนนอุดม</p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <!-- จุดที่แก้ไข: รูปนายกฯ เอา Flex ออก ใช้เป็น Block + mx-auto แทน -->
-                        <div class="absolute top-[35px] right-[35px] z-30 text-center w-[160px]">
-                            <div class="w-[105px] h-[135px] mx-auto bg-[#e5e7eb] border-[3px] border-[#FDBE15] rounded-md shadow-lg overflow-hidden">
-                                <img src="./sysbanners_file_6.png" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x250/5E278E/FFF?text=Profile'"/>
+                        <!-- โครงสร้างกลับมาใช้ Flex + Gap ได้อย่างสบายใจแล้ว! -->
+                        <div class="absolute top-0 left-0 w-full h-full z-30 flex">
+                            <!-- จัดกึ่งกลางโลโก้กับตัวหนังสือด้วย items-center และ gap-5 -->
+                            <div class="flex items-center gap-5 pt-8 pl-8">
+                                <div class="w-[90px] h-[90px] bg-white rounded-full flex items-center justify-center p-0.5 border-[3px] border-[#FDBE15] shadow-lg shrink-0 overflow-hidden">
+                                    <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/5E278E/FFF?text=Logo'"/>
+                                </div>
+                                <div>
+                                    <h1 class="text-[44px] leading-none font-bold text-white tracking-wide text-shadow-md pb-1">จดหมายข่าว</h1>
+                                    <h2 class="text-[28px] leading-none font-bold text-white text-shadow-md pb-1.5">ข่าวประชาสัมพันธ์</h2>
+                                    <p class="text-[15px] leading-none text-white opacity-90">องค์การบริหารส่วนตำบลโนนอุดม</p>
+                                </div>
                             </div>
-                            <div class="mt-2">
-                                <p class="text-white text-[13px] font-bold leading-tight text-shadow-sm m-0 pb-0.5">นายสุพจน์ สมน้อย</p>
-                                <p class="text-white text-[11px] leading-tight opacity-90 text-shadow-sm m-0">นายกองค์การบริหารส่วนตำบลโนนอุดม</p>
+                            
+                            <!-- รูปนายกฯ -->
+                            <div class="absolute top-10 right-8 flex flex-col items-center">
+                                <div class="w-[105px] h-[135px] bg-[#e5e7eb] border-[3px] border-[#FDBE15] rounded-md overflow-hidden shadow-lg flex items-center justify-center relative">
+                                    <img src="./sysbanners_file_6.png" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x250/5E278E/FFF?text=Profile'"/>
+                                </div>
+                                <div class="mt-2 text-center w-[160px]">
+                                    <p class="text-white text-[13px] font-bold leading-tight text-shadow-sm pb-0.5">นายสุพจน์ สมน้อย</p>
+                                    <p class="text-white text-[11px] leading-tight opacity-90 text-shadow-sm">นายกองค์การบริหารส่วนตำบลโนนอุดม</p>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <!-- จุดที่แก้ไข: แถบวันที่ ใช้พิกัดตายตัวแทน Flexbox -->
-                        <div class="absolute top-[188px] left-[35px] z-30">
-                            <span id="display-date" class="text-[#5E278E] font-bold text-[19px] tracking-wide leading-none">ประจำวันที่ 25 เดือน พฤษภาคม พ.ศ. 2569</span>
+                            
+                            <!-- แถบวันที่ -->
+                            <div class="absolute top-[174px] left-[35px] h-[40px] flex items-center">
+                                <span id="display-date" class="text-[#5E278E] font-bold text-[19px] tracking-wide leading-none">ประจำวันที่ 25 เดือน พฤษภาคม พ.ศ. 2569</span>
+                            </div>
                         </div>
                     </div>
 
@@ -412,20 +407,21 @@
 
                 window.scrollTo(0, 0);
 
-                // --- จุดที่แก้ไข: บังคับให้ระบบรอโหลดฟอนต์เสร็จ 100% ก่อนจับภาพ ---
+                // บังคับให้ระบบรอโหลดฟอนต์เสร็จ 100% ก่อนจับภาพ
                 await document.fonts.ready;
-                // --------------------------------------------------------
 
                 const currentTransform = template.style.transform;
                 template.style.transform = 'none';
 
                 try {
+                    // เปิดใช้โหมด foreignObjectRendering ตามที่คุณแนะนำ!
                     const canvas = await html2canvas(template, {
                         scale: 2.5, 
                         useCORS: true,
                         backgroundColor: '#f8f9fa',
                         scrollY: 0,
-                        scrollX: 0
+                        scrollX: 0,
+                        foreignObjectRendering: true // <--- ตัวแปรวิเศษอยู่ตรงนี้ครับ!
                     });
                     
                     const image = canvas.toDataURL("image/jpeg", 1.0);
