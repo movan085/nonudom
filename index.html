@@ -25,282 +25,326 @@
         body { font-family: 'Kanit', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .text-shadow-md { text-shadow: 2px 2px 4px rgba(0,0,0,0.15); }
-        .text-shadow-sm { text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .text-shadow-md { text-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+        .text-shadow-sm { text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
         
-        .img-placeholder {
-            width: 100%; height: 100%; background-color: #f1f5f9; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
+        /* สไตล์สำหรับกล่องรูป Placeholder */
+        .img-placeholder { width: 100%; height: 100%; background-color: #f3f4f6; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .img-placeholder::before { content: ''; position: absolute; top: 35%; left: 30%; width: 40%; height: 20%; background: white; border-radius: 50%; opacity: 0.7; filter: blur(1px); }
         .img-placeholder::after { content: ''; position: absolute; top: 25%; left: 45%; width: 35%; height: 30%; background: white; border-radius: 50%; opacity: 0.8; }
-        .mountain-1 { position: absolute; bottom: -20%; left: -10%; width: 80%; height: 60%; background: #cbd5e1; border-radius: 100%; z-index: 10; }
-        .mountain-2 { position: absolute; bottom: -30%; right: -10%; width: 70%; height: 70%; background: #94a3b8; border-radius: 100%; z-index: 20; }
+        .mountain-1 { position: absolute; bottom: -20%; left: -10%; width: 80%; height: 60%; background: #d1d5db; border-radius: 100%; z-index: 10; }
+        .mountain-2 { position: absolute; bottom: -30%; right: -10%; width: 70%; height: 70%; background: #9ca3af; border-radius: 100%; z-index: 20; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-[#e0e7ff] via-[#f8fafc] to-[#fef08a] min-h-screen flex flex-col justify-between">
+<body class="bg-gradient-to-br from-blue-100 via-sky-50 to-yellow-100 min-h-screen flex flex-col justify-between">
     
     <div class="max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6">
-        
         <div class="flex flex-col xl:flex-row gap-6 w-full">
-            <!-- --- แผงควบคุม (ซ้าย) --- -->
+            
+            <!-- === แผงควบคุม (ซ้าย) === -->
             <div class="w-full xl:w-1/3 bg-white/90 backdrop-blur-md p-0 rounded-3xl shadow-2xl border border-white overflow-hidden h-fit flex flex-col shrink-0">
-                <div class="bg-gradient-to-r from-[#1b3664] to-[#2c5282] p-6 text-white shadow-md z-10 relative overflow-hidden">
+                <div class="bg-gradient-to-r from-[#0071BA] to-[#00AEEF] p-6 text-white shadow-md z-10 relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
                     <h2 class="text-2xl font-bold flex items-center gap-2 relative z-10">
                         <span class="text-yellow-300 drop-shadow-md">✨</span> สร้างจดหมายข่าว
                     </h2>
-                    <p class="text-sm opacity-90 mt-1 font-light relative z-10">กรอกข้อมูลและอัพโหลดรูปภาพด้านล่าง</p>
+                    <p class="text-sm opacity-90 mt-1 font-light relative z-10">กรอกข้อมูลและอัพโหลดรูปภาพ</p>
                 </div>
                 
-                <div class="p-4 md:p-6 space-y-5 md:space-y-6">
+                <div class="p-4 md:p-6 space-y-5">
+                    
+                    <!-- ส่วนเลือกรูปแบบ -->
+                    <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 shadow-sm hover:shadow-md transition-shadow">
+                        <label class="block text-sm font-bold text-indigo-900 mb-2 flex items-center gap-2">
+                            <span class="text-lg">🎨</span> รูปแบบจดหมายข่าว
+                        </label>
+                        <select id="select-template" class="w-full p-3 bg-white border border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-500 font-medium text-indigo-900 shadow-inner outline-none transition-all cursor-pointer">
+                            <option value="1">รูปแบบที่ 1 : ทางการ (หรูหรา กึ่งกลาง)</option>
+                            <option value="2">รูปแบบที่ 2 : ทันสมัย (แถบสีฟ้า)</option>
+                        </select>
+                    </div>
+
                     <!-- หัวข้อเรื่อง -->
                     <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
-                        <label class="block text-sm font-bold text-[#1b3664] mb-2 flex items-center gap-2">
+                        <label class="block text-sm font-bold text-blue-900 mb-2 flex items-center gap-2">
                             <span class="text-lg">📝</span> หัวข้อเรื่อง (Topic)
                         </label>
-                        <textarea id="input-topic" placeholder="กรอกหัวเรื่องตรงนี้" class="w-full p-3 bg-white border border-blue-200 rounded-xl focus:ring-2 focus:ring-[#1b3664] focus:border-[#1b3664] focus:outline-none transition-all shadow-inner" rows="2"></textarea>
+                        <textarea id="input-topic" placeholder="กรอกหัวเรื่องตรงนี้" class="w-full p-3 bg-white border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-inner transition-all" rows="2"></textarea>
                     </div>
                     
                     <!-- วันที่ -->
-                    <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 shadow-sm hover:shadow-md transition-shadow">
-                        <label class="block text-sm font-bold text-indigo-900 mb-2 flex items-center gap-2">
+                    <div class="bg-sky-50/50 p-4 rounded-2xl border border-sky-100 shadow-sm hover:shadow-md transition-shadow">
+                        <label class="block text-sm font-bold text-sky-900 mb-2 flex items-center gap-2">
                             <span class="text-lg">📅</span> วันที่ (Date)
                         </label>
                         <div class="grid grid-cols-3 gap-2">
-                            <select id="select-day" class="w-full p-2.5 bg-white border border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all text-sm shadow-inner"></select>
-                            <select id="select-month" class="w-full p-2.5 bg-white border border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all text-sm shadow-inner">
-                                <option value="มกราคม">มกราคม</option>
-                                <option value="กุมภาพันธ์">กุมภาพันธ์</option>
-                                <option value="มีนาคม">มีนาคม</option>
-                                <option value="เมษายน">เมษายน</option>
-                                <option value="พฤษภาคม">พฤษภาคม</option>
-                                <option value="มิถุนายน">มิถุนายน</option>
-                                <option value="กรกฎาคม">กรกฎาคม</option>
-                                <option value="สิงหาคม">สิงหาคม</option>
-                                <option value="กันยายน">กันยายน</option>
-                                <option value="ตุลาคม">ตุลาคม</option>
-                                <option value="พฤศจิกายน">พฤศจิกายน</option>
-                                <option value="ธันวาคม">ธันวาคม</option>
+                            <select id="select-day" class="w-full p-2.5 bg-white border border-sky-200 rounded-xl focus:ring-2 focus:ring-sky-500 text-sm shadow-inner outline-none cursor-pointer"></select>
+                            <select id="select-month" class="w-full p-2.5 bg-white border border-sky-200 rounded-xl focus:ring-2 focus:ring-sky-500 text-sm shadow-inner outline-none cursor-pointer">
+                                <option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option><option value="มีนาคม">มีนาคม</option>
+                                <option value="เมษายน">เมษายน</option><option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option>
+                                <option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option><option value="กันยายน">กันยายน</option>
+                                <option value="ตุลาคม">ตุลาคม</option><option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option>
                             </select>
-                            <select id="select-year" class="w-full p-2.5 bg-white border border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all text-sm shadow-inner"></select>
+                            <select id="select-year" class="w-full p-2.5 bg-white border border-sky-200 rounded-xl focus:ring-2 focus:ring-sky-500 text-sm shadow-inner outline-none cursor-pointer"></select>
                         </div>
                     </div>
 
                     <!-- คำบรรยาย -->
-                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="bg-green-50/50 p-4 rounded-2xl border border-green-100 shadow-sm hover:shadow-md transition-shadow">
                         <div class="flex justify-between items-center mb-2">
-                            <label class="block text-sm font-bold text-gray-800 flex items-center gap-2">
+                            <label class="block text-sm font-bold text-green-900 flex items-center gap-2">
                                 <span class="text-lg">💬</span> คำบรรยาย
                             </label>
-                            <div class="flex items-center gap-1.5 bg-white px-2 py-1.5 rounded-lg border border-gray-300 shadow-sm">
-                                <span class="text-xs text-gray-600 font-semibold hidden md:inline">ขนาดอักษร:</span>
-                                <input type="number" id="fontSize-desc" min="10" max="50" value="15" class="w-16 p-1 text-center text-sm font-medium text-gray-800 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#1b3664] outline-none">
-                                <span class="text-xs text-gray-600 font-semibold">px</span>
+                            <div class="flex items-center gap-1.5 bg-white px-2 py-1.5 rounded-lg border border-green-200 shadow-sm">
+                                <span class="text-xs text-green-700 font-semibold hidden md:inline">ขนาดอักษร:</span>
+                                <input type="number" id="fontSize-desc" min="10" max="40" value="15" class="w-14 p-1 text-center text-sm font-medium text-green-800 border border-green-200 rounded-md focus:ring-2 outline-none">
+                                <span class="text-xs text-green-700 font-semibold">px</span>
                             </div>
                         </div>
-                        <textarea id="input-description" placeholder="กรอกคำบรรยายตรงนี้" class="w-full p-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#1b3664] focus:outline-none transition-all shadow-inner" rows="4"></textarea>
+                        <textarea id="input-description" placeholder="กรอกคำบรรยายกิจกรรมตรงนี้..." class="w-full p-3 bg-white border border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 outline-none shadow-inner transition-all" rows="4"></textarea>
                     </div>
 
-                    <!-- รูปกิจกรรม (อัพโหลด) -->
+                    <!-- รูปกิจกรรม -->
                     <div class="bg-yellow-50/70 p-4 rounded-2xl border border-yellow-200 shadow-sm hover:shadow-md transition-shadow">
                         <label class="block text-sm font-bold text-yellow-900 mb-3 flex items-center gap-2">
-                            <span class="text-lg">🖼️</span> รูปกิจกรรม <span class="text-[10px] md:text-xs font-normal text-yellow-800 bg-yellow-200/80 px-2.5 py-0.5 rounded-full border border-yellow-300">ใส่ได้ 6 รูป (สัดส่วนเท่ากัน)</span>
+                            <span class="text-lg">🖼️</span> รูปกิจกรรม <span class="text-[10px] md:text-xs font-normal text-yellow-800 bg-yellow-200/80 px-2.5 py-0.5 rounded-full border border-yellow-300">ขนาดเท่ากัน 6 รูป</span>
                         </label>
-                        <div class="grid grid-cols-3 gap-2 md:gap-3">
-                            <!-- รูป 0-5 (โครงสร้างเหมือนกัน เปลี่ยนแค่เลข) -->
-                            <!-- รูป 0 -->
-                            <div class="relative group">
-                                <input type="file" accept="image/*" class="hidden" id="upload-img-0"/>
-                                <label for="upload-img-0" id="label-img-0" class="flex flex-col items-center justify-center w-full h-20 md:h-24 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm hover:shadow-md">
-                                    <div id="icon-img-0" class="flex flex-col items-center justify-center w-full h-full p-1 text-center pointer-events-none transition-transform group-hover:scale-110">
-                                        <span class="text-xl md:text-2xl text-yellow-500 mb-1 leading-none drop-shadow-sm">+</span>
-                                        <span class="text-[9px] md:text-[11px] font-medium border px-1.5 py-0.5 rounded-md text-blue-700 bg-blue-50 border-blue-200 shadow-sm whitespace-nowrap">รูปที่ 1</span>
-                                    </div>
-                                    <img id="thumb-img-0" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
-                                </label>
-                            </div>
-                            <!-- รูป 1 -->
-                            <div class="relative group">
-                                <input type="file" accept="image/*" class="hidden" id="upload-img-1"/>
-                                <label for="upload-img-1" id="label-img-1" class="flex flex-col items-center justify-center w-full h-20 md:h-24 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm hover:shadow-md">
-                                    <div id="icon-img-1" class="flex flex-col items-center justify-center w-full h-full p-1 text-center pointer-events-none transition-transform group-hover:scale-110">
-                                        <span class="text-xl md:text-2xl text-yellow-500 mb-1 leading-none drop-shadow-sm">+</span>
-                                        <span class="text-[9px] md:text-[11px] font-medium border px-1.5 py-0.5 rounded-md text-blue-700 bg-blue-50 border-blue-200 shadow-sm whitespace-nowrap">รูปที่ 2</span>
-                                    </div>
-                                    <img id="thumb-img-1" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
-                                </label>
-                            </div>
-                            <!-- รูป 2 -->
-                            <div class="relative group">
-                                <input type="file" accept="image/*" class="hidden" id="upload-img-2"/>
-                                <label for="upload-img-2" id="label-img-2" class="flex flex-col items-center justify-center w-full h-20 md:h-24 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm hover:shadow-md">
-                                    <div id="icon-img-2" class="flex flex-col items-center justify-center w-full h-full p-1 text-center pointer-events-none transition-transform group-hover:scale-110">
-                                        <span class="text-xl md:text-2xl text-yellow-500 mb-1 leading-none drop-shadow-sm">+</span>
-                                        <span class="text-[9px] md:text-[11px] font-medium border px-1.5 py-0.5 rounded-md text-blue-700 bg-blue-50 border-blue-200 shadow-sm whitespace-nowrap">รูปที่ 3</span>
-                                    </div>
-                                    <img id="thumb-img-2" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
-                                </label>
-                            </div>
-                            <!-- รูป 3 -->
-                            <div class="relative group">
-                                <input type="file" accept="image/*" class="hidden" id="upload-img-3"/>
-                                <label for="upload-img-3" id="label-img-3" class="flex flex-col items-center justify-center w-full h-20 md:h-24 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm hover:shadow-md">
-                                    <div id="icon-img-3" class="flex flex-col items-center justify-center w-full h-full p-1 text-center pointer-events-none transition-transform group-hover:scale-110">
-                                        <span class="text-xl md:text-2xl text-yellow-500 mb-1 leading-none drop-shadow-sm">+</span>
-                                        <span class="text-[9px] md:text-[11px] font-medium border px-1.5 py-0.5 rounded-md text-blue-700 bg-blue-50 border-blue-200 shadow-sm whitespace-nowrap">รูปที่ 4</span>
-                                    </div>
-                                    <img id="thumb-img-3" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
-                                </label>
-                            </div>
-                            <!-- รูป 4 -->
-                            <div class="relative group">
-                                <input type="file" accept="image/*" class="hidden" id="upload-img-4"/>
-                                <label for="upload-img-4" id="label-img-4" class="flex flex-col items-center justify-center w-full h-20 md:h-24 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm hover:shadow-md">
-                                    <div id="icon-img-4" class="flex flex-col items-center justify-center w-full h-full p-1 text-center pointer-events-none transition-transform group-hover:scale-110">
-                                        <span class="text-xl md:text-2xl text-yellow-500 mb-1 leading-none drop-shadow-sm">+</span>
-                                        <span class="text-[9px] md:text-[11px] font-medium border px-1.5 py-0.5 rounded-md text-blue-700 bg-blue-50 border-blue-200 shadow-sm whitespace-nowrap">รูปที่ 5</span>
-                                    </div>
-                                    <img id="thumb-img-4" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
-                                </label>
-                            </div>
-                            <!-- รูป 5 -->
-                            <div class="relative group">
-                                <input type="file" accept="image/*" class="hidden" id="upload-img-5"/>
-                                <label for="upload-img-5" id="label-img-5" class="flex flex-col items-center justify-center w-full h-20 md:h-24 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm hover:shadow-md">
-                                    <div id="icon-img-5" class="flex flex-col items-center justify-center w-full h-full p-1 text-center pointer-events-none transition-transform group-hover:scale-110">
-                                        <span class="text-xl md:text-2xl text-yellow-500 mb-1 leading-none drop-shadow-sm">+</span>
-                                        <span class="text-[9px] md:text-[11px] font-medium border px-1.5 py-0.5 rounded-md text-blue-700 bg-blue-50 border-blue-200 shadow-sm whitespace-nowrap">รูปที่ 6</span>
-                                    </div>
-                                    <img id="thumb-img-5" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
-                                </label>
-                            </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <!-- JS จะวนลูปสร้างปุ่มอัปโหลด -->
+                            <div id="upload-buttons-container" class="contents"></div>
                         </div>
                     </div>
 
                     <!-- ปุ่มบันทึก -->
-                    <button id="btn-export" class="w-full mt-4 text-white font-bold py-3.5 px-4 rounded-2xl shadow-[0_10px_20px_rgba(27,54,100,0.3)] transition duration-300 flex justify-center items-center gap-2 bg-gradient-to-r from-[#1b3664] to-[#2c5282] hover:from-[#112240] hover:to-[#1a365d] hover:-translate-y-1 text-lg border border-blue-400/50 relative overflow-hidden group">
-                        <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                        <span id="btn-text" class="relative z-10">💾 บันทึกเป็นรูปภาพ</span>
+                    <button id="btn-export" class="w-full text-white font-bold py-3.5 px-4 rounded-2xl shadow-[0_10px_20px_rgba(0,113,186,0.3)] transition duration-300 flex justify-center items-center gap-2 bg-gradient-to-r from-[#0071BA] to-[#00AEEF] hover:from-[#005A95] hover:to-[#008BBE] hover:-translate-y-1 text-lg border border-blue-400/50">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        <span id="btn-text">💾 บันทึกเป็นรูปภาพ</span>
                     </button>
                 </div>
             </div>
 
-            <!-- --- พื้นที่แสดงผลพรีวิว (ขวา) แบบ Responsive --- -->
-            <div id="preview-container" class="w-full xl:w-2/3 flex justify-center bg-white/40 backdrop-blur-sm p-4 md:p-8 rounded-3xl shadow-xl border border-white/60 relative overflow-hidden transition-all duration-300">
+            <!-- === พื้นที่พรีวิว (ขวา) === -->
+            <div id="preview-container" class="w-full xl:w-2/3 flex justify-center bg-white/40 backdrop-blur-sm p-4 md:p-8 rounded-3xl shadow-xl border border-white/60 overflow-hidden relative">
                 
-                <div id="newsletter-template" class="w-[800px] h-[1131px] bg-[#fdfdfc] relative shadow-2xl shrink-0 overflow-hidden transform-origin-top">
+                <!-- ========================================== -->
+                <!-- TEMPLATE 1 : แบบทางการ (หรูหรา กึ่งกลาง) -->
+                <!-- ========================================== -->
+                <div id="template-1" class="w-[800px] h-[1131px] bg-[#fdfcf8] relative shadow-2xl shrink-0 overflow-hidden transform-origin-top border border-gray-200">
                     
-                    <!-- กราฟิกตกแต่งฉากหลัง (ล้อเลียนความหรูหราของลายดอกไม้ด้วยรูปทรงซอฟต์ๆ) -->
-                    <div class="absolute -top-[100px] -left-[100px] w-[350px] h-[350px] bg-[#1b3664] rounded-full opacity-5 blur-3xl z-0"></div>
-                    <div class="absolute top-[50px] -left-[50px] w-[250px] h-[250px] bg-[#eab308] rounded-full opacity-10 blur-2xl z-0"></div>
-                    
-                    <div class="absolute -bottom-[100px] -right-[100px] w-[400px] h-[400px] bg-[#1b3664] rounded-full opacity-5 blur-3xl z-0"></div>
-                    <div class="absolute bottom-[50px] -right-[50px] w-[200px] h-[200px] bg-[#eab308] rounded-full opacity-10 blur-2xl z-0"></div>
+                    <!-- กราฟิกตกแต่งมุม -->
+                    <svg class="absolute top-0 left-0 z-0 opacity-80" width="250" height="250" viewBox="0 0 250 250">
+                        <polygon points="0,0 250,0 0,250" fill="#FDBE15" fill-opacity="0.2"/>
+                        <polygon points="0,0 180,0 0,180" fill="#0071BA" fill-opacity="0.9"/>
+                        <polygon points="0,195 195,0 190,0 0,190" fill="#FDBE15"/>
+                    </svg>
+                    <svg class="absolute bottom-0 right-0 z-0 opacity-80" width="300" height="300" viewBox="0 0 300 300">
+                        <polygon points="300,300 0,300 300,0" fill="#FDBE15" fill-opacity="0.2"/>
+                        <polygon points="300,300 120,300 300,120" fill="#0071BA" fill-opacity="0.9"/>
+                        <polygon points="95,300 300,95 300,100 100,300" fill="#FDBE15"/>
+                    </svg>
 
-                    <!-- HEADER (จัดกึ่งกลางและสมมาตร) -->
-                    <!-- โลโก้ -->
-                    <div class="absolute top-[35px] left-[355px] z-30 w-[90px] h-[90px] bg-white rounded-full p-1 border-[2px] border-[#eab308] shadow-md overflow-hidden">
-                        <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/1b3664/FFF?text=Logo'"/>
+                    <!-- HEADER (จัดกึ่งกลาง) -->
+                    <!-- โลโก้ อบต. (พิกัด X=350 คือกึ่งกลาง 800) -->
+                    <div class="absolute top-[40px] left-[345px] z-30 w-[110px] h-[110px] bg-white rounded-full p-1 border-[3px] border-[#FDBE15] shadow-lg overflow-hidden">
+                        <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
                     </div>
                     
-                    <!-- ข้อความหัวเรื่องหลัก (กึ่งกลาง) -->
-                    <div class="absolute top-[135px] left-[0px] w-[800px] z-30 text-center">
-                        <h1 class="text-[48px] leading-[1.0] font-bold text-[#1b3664] tracking-wide m-0 pb-2 text-shadow-md">จดหมายข่าว</h1>
-                        <h2 class="text-[32px] leading-[1.0] font-bold text-[#2c5282] m-0 pb-3 text-shadow-sm">ประชาสัมพันธ์</h2>
-                        <p class="text-[20px] leading-none text-gray-700 font-medium m-0">องค์การบริหารส่วนตำบลโนนอุดม</p>
-                    </div>
-                    
-                    <!-- รูปนายกฯ (ขวาบน) -->
-                    <div class="absolute top-[35px] right-[40px] z-30 text-center w-[150px]">
-                        <div class="w-[100px] h-[130px] mx-auto bg-gray-200 border-[2px] border-[#eab308] rounded-md shadow-md overflow-hidden mb-2">
-                            <img src="./sysbanners_file_6.png" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x250/1b3664/FFF?text=Profile'"/>
+                    <!-- รูปนายกฯ (ลอยขวาบน) -->
+                    <div class="absolute top-[45px] right-[40px] z-30 text-center w-[130px]">
+                        <div class="w-[95px] h-[125px] mx-auto bg-gray-200 border-[3px] border-[#FDBE15] rounded-md shadow-md overflow-hidden mb-2">
+                            <img src="./sysbanners_file_6.png" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x250/0071BA/FFF?text=Profile'"/>
                         </div>
-                        <p class="text-[#1b3664] text-[13px] font-bold leading-tight m-0 pb-0.5">นายสุพจน์ สมน้อย</p>
-                        <p class="text-gray-600 text-[10px] leading-tight m-0">นายกองค์การบริหารส่วนตำบลโนนอุดม</p>
+                        <p class="text-[#0071BA] text-[13px] font-bold leading-normal m-0 pb-0.5 whitespace-nowrap">นายสุพจน์ สมน้อย</p>
+                        <p class="text-gray-600 text-[10px] leading-normal m-0 whitespace-nowrap">นายกองค์การบริหารส่วนตำบล<br>โนนอุดม</p>
+                    </div>
+
+                    <!-- ข้อความจดหมายข่าว (มี whitespace-nowrap กันตกบรรทัด) -->
+                    <div class="absolute top-[165px] left-[0px] w-[800px] z-30 flex flex-col items-center">
+                        <h1 class="text-[54px] leading-none font-bold text-[#0071BA] tracking-tight m-0 pb-1 text-shadow-md whitespace-nowrap">จดหมายข่าว</h1>
+                        <h2 class="text-[36px] leading-none font-bold text-[#374151] m-0 pb-2 text-shadow-sm whitespace-nowrap">ประชาสัมพันธ์</h2>
+                        <p class="text-[20px] leading-none text-gray-600 font-medium m-0 whitespace-nowrap">องค์การบริหารส่วนตำบลโนนอุดม</p>
                     </div>
                     
-                    <!-- แคปซูลวันที่ (กึ่งกลาง) -->
-                    <div class="absolute top-[280px] left-[0px] w-[800px] z-30 text-center">
-                        <span class="inline-block bg-gradient-to-r from-[#1b3664] to-[#2c5282] text-white px-10 py-2.5 rounded-full text-[18px] font-normal shadow-lg border-[1.5px] border-[#eab308] tracking-wide">
-                            <span id="display-date">วันที่ 7 กรกฎาคม 2569</span>
-                        </span>
+                    <!-- แคปซูลวันที่ -->
+                    <div class="absolute top-[290px] left-[0px] w-[800px] z-30 text-center flex justify-center">
+                        <div class="bg-gradient-to-r from-[#005A95] to-[#002D56] text-white px-12 py-2.5 rounded-full shadow-lg border-[2px] border-[#FDBE15]">
+                            <span class="sync-date text-[18px] font-medium tracking-wide whitespace-nowrap">วันที่ 7 กรกฎาคม 2569</span>
+                        </div>
                     </div>
 
-                    <!-- BODY (เนื้อหาและรูปกิจกรรม) -->
-                    <!-- ล็อคพิกัดแกน Y ไว้ที่ 360px เพื่อให้ห่างจากวันที่กำลังสวย -->
-                    <div class="absolute top-[360px] left-[40px] w-[720px] z-30">
-                        <!-- หัวข้อกิจกรรม (ตรงกลาง) -->
-                        <h3 id="display-topic" class="text-[22px] font-bold text-[#1b3664] mb-6 text-center leading-snug whitespace-pre-wrap break-words px-8">หัวเรื่องกิจกรรม</h3>
+                    <!-- BODY -->
+                    <!-- หัวข้อ -->
+                    <div class="absolute top-[370px] left-[50px] w-[700px] z-30">
+                        <h3 class="sync-topic text-[24px] font-bold text-[#1f2937] text-center leading-snug whitespace-pre-wrap break-words px-4">หัวเรื่องกิจกรรม</h3>
+                    </div>
 
-                        <!-- กรอบรูป 3x2 (6 รูปขนาดเท่ากันเป๊ะ) -->
-                        <div class="grid grid-cols-3 gap-4 mb-6">
-                            <!-- รูป 0-5 -->
-                            <div class="h-[165px] bg-white p-1 border-[2px] border-[#eab308]/60 shadow-sm relative overflow-hidden">
-                                <div id="ph-gallery-0" class="img-placeholder w-full h-full absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                                <div id="show-gallery-0" class="hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div>
-                            </div>
-                            <div class="h-[165px] bg-white p-1 border-[2px] border-[#eab308]/60 shadow-sm relative overflow-hidden">
-                                <div id="ph-gallery-1" class="img-placeholder w-full h-full absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                                <div id="show-gallery-1" class="hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div>
-                            </div>
-                            <div class="h-[165px] bg-white p-1 border-[2px] border-[#eab308]/60 shadow-sm relative overflow-hidden">
-                                <div id="ph-gallery-2" class="img-placeholder w-full h-full absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                                <div id="show-gallery-2" class="hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div>
-                            </div>
-                            <div class="h-[165px] bg-white p-1 border-[2px] border-[#eab308]/60 shadow-sm relative overflow-hidden">
-                                <div id="ph-gallery-3" class="img-placeholder w-full h-full absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                                <div id="show-gallery-3" class="hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div>
-                            </div>
-                            <div class="h-[165px] bg-white p-1 border-[2px] border-[#eab308]/60 shadow-sm relative overflow-hidden">
-                                <div id="ph-gallery-4" class="img-placeholder w-full h-full absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                                <div id="show-gallery-4" class="hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div>
-                            </div>
-                            <div class="h-[165px] bg-white p-1 border-[2px] border-[#eab308]/60 shadow-sm relative overflow-hidden">
-                                <div id="ph-gallery-5" class="img-placeholder w-full h-full absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                                <div id="show-gallery-5" class="hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div>
-                            </div>
+                    <!-- รูปภาพ 3x2 Grid (พิกัดเป๊ะๆ ไม่เบี้ยว) -->
+                    <!-- แถวบน -->
+                    <div class="absolute top-[440px] left-[45px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15]">
+                        <div class="ph-gallery-0 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                        <div class="show-gallery-0 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                    </div>
+                    <div class="absolute top-[440px] left-[290px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15]">
+                        <div class="ph-gallery-1 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                        <div class="show-gallery-1 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                    </div>
+                    <div class="absolute top-[440px] left-[535px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15]">
+                        <div class="ph-gallery-2 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                        <div class="show-gallery-2 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                    </div>
+                    <!-- แถวล่าง -->
+                    <div class="absolute top-[630px] left-[45px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15]">
+                        <div class="ph-gallery-3 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                        <div class="show-gallery-3 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                    </div>
+                    <div class="absolute top-[630px] left-[290px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15]">
+                        <div class="ph-gallery-4 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                        <div class="show-gallery-4 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                    </div>
+                    <div class="absolute top-[630px] left-[535px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15]">
+                        <div class="ph-gallery-5 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                        <div class="show-gallery-5 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                    </div>
+
+                    <!-- คำบรรยาย -->
+                    <div class="absolute top-[825px] left-[50px] w-[700px] z-30">
+                        <p class="sync-description text-[15px] text-gray-800 text-center leading-[1.6] whitespace-pre-wrap break-words">คำบรรยายกิจกรรม</p>
+                    </div>
+
+                    <!-- FOOTER (ซ้ายล่าง) -->
+                    <div class="absolute bottom-[40px] left-[50px] z-30 w-[500px]">
+                        <p class="font-bold text-[18px] text-[#005A95] m-0 pb-1 whitespace-nowrap">ฝ่ายประชาสัมพันธ์</p>
+                        <p class="text-[14px] text-gray-700 leading-normal m-0 whitespace-nowrap">www.nonudom.go.th</p>
+                        <p class="text-[14px] text-gray-700 leading-normal m-0 whitespace-nowrap">โทร. 044-077070</p>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- TEMPLATE 2 : แบบทันสมัย (แถบสีฟ้า) -->
+                <!-- ========================================== -->
+                <div id="template-2" class="hidden w-[800px] h-[1131px] bg-[#f8f9fa] relative shadow-2xl shrink-0 overflow-hidden transform-origin-top border border-gray-200">
+                    
+                    <!-- HEADER (แถบสีฟ้า) -->
+                    <div class="absolute top-0 left-0 w-full h-[250px] bg-[#0071BA] border-b-[8px] border-[#FDBE15] z-10">
+                        <!-- โลโก้ และ Text ซ้าย -->
+                        <div class="absolute top-[45px] left-[40px] w-[90px] h-[90px] bg-white rounded-full p-0.5 border-[3px] border-[#FDBE15] shadow-lg overflow-hidden">
+                            <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
                         </div>
+                        <div class="absolute top-[48px] left-[150px]">
+                            <h1 class="text-[44px] leading-none font-bold text-white tracking-wide text-shadow-md m-0 pb-1 whitespace-nowrap">จดหมายข่าว</h1>
+                            <h2 class="text-[28px] leading-none font-bold text-white text-shadow-md m-0 pb-1.5 whitespace-nowrap">ข่าวประชาสัมพันธ์</h2>
+                            <p class="text-[15px] leading-none text-white opacity-90 m-0 whitespace-nowrap">องค์การบริหารส่วนตำบลโนนอุดม</p>
+                        </div>
+                        
+                        <!-- รูปนายกฯ ขวา -->
+                        <div class="absolute top-[45px] right-[40px] text-center w-[160px]">
+                            <div class="w-[100px] h-[130px] mx-auto bg-[#e5e7eb] border-[3px] border-[#FDBE15] rounded-md shadow-lg overflow-hidden mb-2">
+                                <img src="./sysbanners_file_6.png" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x250/0071BA/FFF?text=Profile'"/>
+                            </div>
+                            <p class="text-white text-[13px] font-bold leading-normal text-shadow-sm m-0 pb-0.5 whitespace-nowrap">นายสุพจน์ สมน้อย</p>
+                            <p class="text-white text-[11px] leading-normal opacity-90 text-shadow-sm m-0 whitespace-nowrap">นายกองค์การบริหารส่วนตำบล<br>โนนอุดม</p>
+                        </div>
+                    </div>
+                    
+                    <!-- วันที่ (แถบพาด) -->
+                    <div class="absolute top-[230px] left-[40px] z-20 bg-[#FDBE15] px-6 py-1.5 shadow-md">
+                        <span class="sync-date text-[#0071BA] font-bold text-[18px] tracking-wide leading-none whitespace-nowrap">วันที่ 7 กรกฎาคม 2569</span>
+                    </div>
 
-                        <!-- คำบรรยายใต้ภาพ -->
-                        <p id="display-description" class="text-[15px] text-gray-800 text-center leading-relaxed whitespace-pre-wrap break-words px-4">คำบรรยายกิจกรรม</p>
+                    <!-- BODY -->
+                    <div class="absolute top-[320px] left-[50px] w-[700px] z-30">
+                        <h3 class="sync-topic text-[24px] font-bold text-[#1f2937] text-center leading-snug whitespace-pre-wrap break-words px-4 border-l-[4px] border-[#0071BA] bg-white p-3 shadow-sm">หัวเรื่องกิจกรรม</h3>
+                    </div>
+
+                    <!-- รูปภาพ 3x2 Grid (พิกัดเดียวกันกับ Template 1) -->
+                    <!-- แถวบน -->
+                    <div class="absolute top-[410px] left-[45px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb]">
+                        <div class="ph-gallery-0 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                        <div class="show-gallery-0 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                    </div>
+                    <div class="absolute top-[410px] left-[290px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb]">
+                        <div class="ph-gallery-1 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                        <div class="show-gallery-1 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                    </div>
+                    <div class="absolute top-[410px] left-[535px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb]">
+                        <div class="ph-gallery-2 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                        <div class="show-gallery-2 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                    </div>
+                    <!-- แถวล่าง -->
+                    <div class="absolute top-[600px] left-[45px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb]">
+                        <div class="ph-gallery-3 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                        <div class="show-gallery-3 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                    </div>
+                    <div class="absolute top-[600px] left-[290px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb]">
+                        <div class="ph-gallery-4 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                        <div class="show-gallery-4 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                    </div>
+                    <div class="absolute top-[600px] left-[535px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb]">
+                        <div class="ph-gallery-5 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
+                        <div class="show-gallery-5 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
+                    </div>
+
+                    <!-- คำบรรยาย -->
+                    <div class="absolute top-[795px] left-[50px] w-[700px] z-30">
+                        <p class="sync-description text-[15px] text-gray-800 text-center leading-[1.6] whitespace-pre-wrap break-words bg-white/50 p-4 rounded-xl">คำบรรยายกิจกรรม</p>
                     </div>
 
                     <!-- FOOTER -->
-                    <div class="absolute bottom-[30px] left-[50px] z-30">
-                        <p class="font-bold text-[18px] text-[#1b3664] mb-0.5">ฝ่ายประชาสัมพันธ์</p>
-                        <p class="text-[14px] text-gray-700 leading-tight">www.nonudom.go.th</p>
-                        <p class="text-[14px] text-gray-700 leading-tight">044-077070</p>
+                    <div class="absolute bottom-0 left-0 w-full h-[120px] bg-[#0071BA] z-10">
+                        <div class="absolute top-[30px] left-[40px] text-white">
+                            <p class="font-bold text-[16px] mb-1 leading-tight text-[#FDBE15] whitespace-nowrap">องค์การบริหารส่วนตําบลโนนอุดม</p>
+                            <p class="text-[13px] opacity-90 leading-tight m-0 whitespace-nowrap">โทรศัพท์ / โทรสาร (แฟกซ์) : 044-077070</p>
+                            <p class="text-[13px] opacity-90 leading-tight m-0 mt-0.5 whitespace-nowrap">เลขที่ 234 หมู่ที่ 1 ตำบลโนนอุดม อำเภอเมืองบยาง จังหวัดนครราชสีมา 30270</p>
+                        </div>
                     </div>
-
                 </div>
+
             </div>
         </div>
-
     </div>
 
-    <!-- ลูกเล่นแถบข้อความด้านล่างสุดของเว็บ -->
-    <div class="w-full text-center pb-6 pt-2 text-[#1b3664] font-medium opacity-70 text-sm tracking-wider">
+    <!-- ลูกเล่นด้านล่างสุด -->
+    <div class="w-full text-center pb-6 pt-2 text-[#0071BA] font-medium opacity-70 text-sm tracking-wider">
         ✨ องค์การบริหารส่วนตำบลโนนอุดม ✨
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            const previewContainer = document.getElementById('preview-container');
-            const newsletterTemplate = document.getElementById('newsletter-template');
+            // --- ระบบจัดการรูปแบบ (Templates) ---
+            const selectTemplate = document.getElementById('select-template');
+            const template1 = document.getElementById('template-1');
+            const template2 = document.getElementById('template-2');
+            let activeTemplateId = 'template-1'; // เก็บค่าว่าตอนนี้เปิดแบบไหนอยู่
 
+            selectTemplate.addEventListener('change', (e) => {
+                if(e.target.value === '1') {
+                    template1.classList.remove('hidden');
+                    template2.classList.add('hidden');
+                    activeTemplateId = 'template-1';
+                } else {
+                    template2.classList.remove('hidden');
+                    template1.classList.add('hidden');
+                    activeTemplateId = 'template-2';
+                }
+                scalePreview(); // ปรับขนาดพรีวิวใหม่เมื่อสลับ
+            });
+
+            // --- ระบบ Responsive Preview ---
+            const previewContainer = document.getElementById('preview-container');
+            
             const scalePreview = () => {
                 const padding = window.innerWidth < 768 ? 32 : 64; 
                 const availableWidth = previewContainer.clientWidth - padding;
+                const activeTemp = document.getElementById(activeTemplateId);
 
                 if (availableWidth < 800) {
                     const scaleRatio = availableWidth / 800;
-                    newsletterTemplate.style.transform = `scale(${scaleRatio})`;
-                    newsletterTemplate.style.transformOrigin = 'top center';
+                    activeTemp.style.transform = `scale(${scaleRatio})`;
+                    activeTemp.style.transformOrigin = 'top center';
                     previewContainer.style.height = `${(1131 * scaleRatio) + padding}px`;
                 } else {
-                    newsletterTemplate.style.transform = 'none';
+                    activeTemp.style.transform = 'none';
                     previewContainer.style.height = 'auto';
                 }
             };
@@ -308,124 +352,141 @@
             window.addEventListener('resize', scalePreview);
             setTimeout(scalePreview, 100);
 
-            const linkText = (inputId, displayId, defaultText) => {
+            // --- ระบบผูกข้อมูลเข้า 2 เทมเพลตพร้อมกัน ---
+            const syncData = (inputId, displayClass, defaultText) => {
                 const input = document.getElementById(inputId);
-                const display = document.getElementById(displayId);
                 input.addEventListener('input', (e) => {
-                    display.textContent = e.target.value || defaultText;
+                    const value = e.target.value || defaultText;
+                    document.querySelectorAll('.' + displayClass).forEach(el => {
+                        el.textContent = value;
+                    });
                 });
             };
 
-            linkText('input-topic', 'display-topic', 'หัวเรื่องกิจกรรม');
-            linkText('input-description', 'display-description', 'คำบรรยายกิจกรรม');
+            syncData('input-topic', 'sync-topic', 'หัวเรื่องกิจกรรม');
+            syncData('input-description', 'sync-description', 'คำบรรยายกิจกรรม');
 
-            const fontSizeDesc = document.getElementById('fontSize-desc');
-            const displayDescription = document.getElementById('display-description');
-            fontSizeDesc.addEventListener('input', (e) => {
-                displayDescription.style.fontSize = `${e.target.value}px`;
-                displayDescription.style.lineHeight = '1.6'; 
+            // ปรับขนาดฟอนต์ (ส่งผลทั้ง 2 แบบ)
+            document.getElementById('fontSize-desc').addEventListener('input', (e) => {
+                document.querySelectorAll('.sync-description').forEach(el => {
+                    el.style.fontSize = `${e.target.value}px`;
+                });
             });
 
+            // --- ระบบวันที่ ---
             const selectDay = document.getElementById('select-day');
             const selectMonth = document.getElementById('select-month');
             const selectYear = document.getElementById('select-year');
-            const displayDate = document.getElementById('display-date');
 
             const today = new Date();
             const currentDay = today.getDate();
             const currentMonthIndex = today.getMonth();
             const currentThaiYear = today.getFullYear() + 543;
-            
             const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 
             for (let i = 1; i <= 31; i++) {
-                let option = document.createElement('option');
-                option.value = i;
-                option.text = i;
-                if (i === currentDay) option.selected = true;
-                selectDay.appendChild(option);
+                let option = document.createElement('option'); option.value = i; option.text = i;
+                if (i === currentDay) option.selected = true; selectDay.appendChild(option);
             }
-
             selectMonth.value = thaiMonths[currentMonthIndex];
-
             for (let i = currentThaiYear - 5; i <= currentThaiYear + 5; i++) {
-                let option = document.createElement('option');
-                option.value = i;
-                option.text = i;
-                if (i === currentThaiYear) option.selected = true;
-                selectYear.appendChild(option);
+                let option = document.createElement('option'); option.value = i; option.text = i;
+                if (i === currentThaiYear) option.selected = true; selectYear.appendChild(option);
             }
 
-            // เปลี่ยนฟอร์แมตวันที่ให้คลีนขึ้นตามต้นฉบับ "วันที่ 7 กรกฎาคม 2569"
             const updateDisplayDate = () => {
-                displayDate.textContent = `วันที่ ${selectDay.value} ${selectMonth.value} ${selectYear.value}`;
+                const dateText = `วันที่ ${selectDay.value} ${selectMonth.value} ${selectYear.value}`;
+                document.querySelectorAll('.sync-date').forEach(el => {
+                    el.textContent = dateText;
+                });
             };
-
             selectDay.addEventListener('change', updateDisplayDate);
             selectMonth.addEventListener('change', updateDisplayDate);
             selectYear.addEventListener('change', updateDisplayDate);
             updateDisplayDate();
 
+            // --- สร้างปุ่มอัปโหลดรูป 6 ปุ่ม ---
+            const uploadContainer = document.getElementById('upload-buttons-container');
+            let uploadHtml = '';
+            for (let i = 0; i < 6; i++) {
+                uploadHtml += `
+                    <div class="relative group">
+                        <input type="file" accept="image/*" class="hidden" id="upload-img-${i}"/>
+                        <label for="upload-img-${i}" id="label-img-${i}" class="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm">
+                            <div id="icon-img-${i}" class="flex flex-col items-center justify-center pointer-events-none">
+                                <span class="text-xl text-yellow-500 mb-0.5 leading-none">+</span>
+                                <span class="text-[10px] font-medium border px-1.5 py-0.5 rounded-md text-blue-700 bg-blue-50 border-blue-200">รูปที่ ${i+1}</span>
+                            </div>
+                            <img id="thumb-img-${i}" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
+                        </label>
+                    </div>`;
+            }
+            uploadContainer.innerHTML = uploadHtml;
+
+            // ผูก Event อัปโหลดรูปให้แสดงผลทั้ง 2 แบบ
             for (let i = 0; i < 6; i++) {
                 document.getElementById(`upload-img-${i}`).addEventListener('change', (e) => {
                     const file = e.target.files[0];
                     if (file) {
                         const url = URL.createObjectURL(file);
                         
+                        // ซ่อนปุ่มโชว์รูปจิ๋ว
                         document.getElementById(`icon-img-${i}`).classList.add('hidden');
                         const thumb = document.getElementById(`thumb-img-${i}`);
                         thumb.src = url;
                         thumb.classList.remove('hidden');
                         document.getElementById(`label-img-${i}`).classList.replace('border-yellow-400', 'border-blue-500');
 
-                        const showImg = document.getElementById(`show-gallery-${i}`);
-                        showImg.style.backgroundImage = `url('${url}')`;
-                        showImg.classList.remove('hidden');
-                        document.getElementById(`ph-gallery-${i}`).classList.add('hidden');
+                        // ใส่รูปลงกระดาษพรีวิว (หาคลาสที่ตรงกันในทั้ง 2 เทมเพลต)
+                        document.querySelectorAll(`.show-gallery-${i}`).forEach(el => {
+                            el.style.backgroundImage = `url('${url}')`;
+                            el.classList.remove('hidden');
+                        });
+                        document.querySelectorAll(`.ph-gallery-${i}`).forEach(el => {
+                            el.classList.add('hidden');
+                        });
                     }
                 });
             }
 
+            // --- ระบบ Export เซฟเป็นรูปภาพ ---
             const btnExport = document.getElementById('btn-export');
             const btnText = document.getElementById('btn-text');
-            const template = document.getElementById('newsletter-template');
 
             btnExport.addEventListener('click', async () => {
                 btnExport.disabled = true;
-                btnExport.classList.add('opacity-70', 'cursor-not-allowed');
+                btnExport.classList.add('opacity-70');
                 btnText.textContent = 'กำลังแปลงรูปภาพ...';
-
                 window.scrollTo(0, 0);
-                await document.fonts.ready; // รอโหลดฟอนต์ให้ชัวร์ที่สุด
 
-                const currentTransform = template.style.transform;
-                template.style.transform = 'none';
+                // เลือกเซฟเป้าหมายตามเทมเพลตที่เปิดอยู่เท่านั้น
+                const activeTemplateElement = document.getElementById(activeTemplateId);
+                const currentTransform = activeTemplateElement.style.transform;
+                activeTemplateElement.style.transform = 'none'; // ยกเลิกย่อส่วนชั่วคราว
 
                 try {
-                    // ใช้การตั้งค่าคลาสสิกที่เสถียรสุด ไม่มี foreignObject
-                    const canvas = await html2canvas(template, {
+                    // การตั้งค่าเพียวๆ เน้นความเสถียรที่สุด
+                    const canvas = await html2canvas(activeTemplateElement, {
                         scale: 2.5, 
                         useCORS: true,
-                        backgroundColor: '#fdfdfc',
+                        backgroundColor: activeTemplateId === 'template-1' ? '#fdfcf8' : '#f8f9fa',
                         scrollY: 0,
                         scrollX: 0
                     });
                     
                     const image = canvas.toDataURL("image/jpeg", 1.0);
-                    
                     const link = document.createElement('a');
                     link.href = image;
-                    
                     const topic = document.getElementById('input-topic').value || 'Newsletter';
-                    link.download = `จดหมายข่าว_${topic.substring(0, 30)}.jpg`;
+                    const templateName = activeTemplateId === 'template-1' ? 'ทางการ' : 'ทันสมัย';
+                    link.download = `จดหมายข่าว_${templateName}_${topic.substring(0, 20)}.jpg`;
                     link.click();
                 } catch (error) {
-                    console.error("Error generating image:", error);
-                    alert("เกิดข้อผิดพลาดในการสร้างรูปภาพ ลองตรวจสอบรูปที่อัพโหลดดูอีกครั้งครับ");
+                    alert("เกิดข้อผิดพลาดในการเซฟภาพ กรุณาลองใหม่อีกครั้ง");
                 } finally {
-                    template.style.transform = currentTransform;
+                    activeTemplateElement.style.transform = currentTransform;
                     btnExport.disabled = false;
-                    btnExport.classList.remove('opacity-70', 'cursor-not-allowed');
+                    btnExport.classList.remove('opacity-70');
                     btnText.textContent = '💾 บันทึกเป็นรูปภาพ';
                 }
             });
