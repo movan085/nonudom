@@ -15,10 +15,13 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- ฟอนต์ Kanit สำหรับ UI และ Sarabun สำหรับเอกสารราชการ -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         body { font-family: 'Kanit', sans-serif; }
+        .font-sarabun { font-family: 'Sarabun', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .text-shadow-md { text-shadow: 2px 2px 5px rgba(0,0,0,0.15); }
@@ -40,8 +43,8 @@
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Transition สำหรับ Auto Scale */
-        #template-1, #template-2 { transition: transform 0.3s ease-out, margin-bottom 0.3s ease-out; }
+        /* เส้นประสำหรับฟอร์มเอกสาร */
+        .dotted-line { border-bottom: 1px dotted #374151; display: inline-block; min-width: 50px; text-align: center; line-height: 1.2; padding: 0 8px; color: #1d4ed8; font-weight: bold; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-100 via-sky-50 to-yellow-100 min-h-screen flex flex-col justify-between relative overflow-x-hidden">
@@ -65,43 +68,244 @@
                         <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
                     </div>
                     <h1 class="text-3xl md:text-4xl font-bold text-white mb-2 text-shadow-md">ฝ่ายประชาสัมพันธ์ - อบต.โนนอุดม</h1>
-                    <p class="text-blue-100 text-lg">ระบบสารสนเทศเพื่อการสร้างสื่อประชาสัมพันธ์แบบครบวงจร</p>
+                    <p class="text-blue-100 text-lg">ระบบสารสนเทศเพื่อการสร้างสื่อและจัดการเอกสารภายใน</p>
                 </div>
             </div>
 
             <div class="p-8 md:p-12">
-                <h2 class="text-xl font-bold text-gray-800 mb-6 border-l-4 border-[#0071BA] pl-3">เลือกประเภทสื่อที่ต้องการสร้าง</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-6 border-l-4 border-[#0071BA] pl-3">เลือกประเภทงานที่ต้องการ</h2>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    
+                    <!-- เมนูจดหมายข่าว -->
                     <button onclick="window.switchView('view-newsletter')" class="group text-left bg-white border-2 border-blue-100 rounded-2xl p-6 hover:border-[#0071BA] hover:shadow-[0_10px_20px_rgba(0,113,186,0.15)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden">
                         <div class="absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">พร้อมใช้งาน</div>
                         <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:bg-[#0071BA] group-hover:text-white transition-colors">📰</div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">จดหมายข่าว</h3>
-                        <p class="text-sm text-gray-500 line-clamp-2">สร้างภาพข่าวประชาสัมพันธ์กิจกรรมต่างๆ พร้อมเทมเพลตมาตรฐานของหน่วยงาน</p>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">จดหมายข่าว</h3>
+                        <p class="text-xs text-gray-500 line-clamp-2">สร้างภาพข่าวประชาสัมพันธ์กิจกรรมต่างๆ</p>
                     </button>
 
+                    <!-- เมนูจองรถส่วนกลาง (ใหม่) -->
+                    <button onclick="window.switchView('view-vehicle')" class="group text-left bg-white border-2 border-yellow-200 rounded-2xl p-6 hover:border-[#FDBE15] hover:shadow-[0_10px_20px_rgba(253,190,21,0.2)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">เอกสารใหม่ ✨</div>
+                        <div class="w-14 h-14 bg-yellow-50 text-yellow-600 rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:bg-[#FDBE15] group-hover:text-white transition-colors">🚙</div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">ใบจองรถส่วนกลาง</h3>
+                        <p class="text-xs text-gray-500 line-clamp-2">สร้างใบขออนุญาตใช้รถยนต์แบบฟอร์ม ๓</p>
+                    </button>
+
+                    <!-- เมนูคลังสื่อ -->
                     <button onclick="window.switchView('view-calendar')" class="group text-left bg-white border-2 border-blue-100 rounded-2xl p-6 hover:border-[#0071BA] hover:shadow-[0_10px_20px_rgba(0,113,186,0.15)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">คลาวด์ซิงค์ ☁️</div>
+                        <div class="absolute top-0 right-0 bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">คลาวด์ ☁️</div>
                         <div class="w-14 h-14 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:bg-[#0071BA] group-hover:text-white transition-colors">📅</div>
-                        <h3 class="text-xl font-bold text-gray-800 mb-2">คลังอินโฟกราฟิก</h3>
-                        <p class="text-sm text-gray-500 line-clamp-2">ปฏิทินคลังสื่อภาพวันหยุดราชการและวันสำคัญ พร้อมระบบคลาวด์อัปเดตข้อมูล</p>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">คลังอินโฟกราฟิก</h3>
+                        <p class="text-xs text-gray-500 line-clamp-2">คลังสื่อภาพวันหยุดราชการและวันสำคัญ</p>
                     </button>
 
                     <div class="relative bg-gray-50 border-2 border-gray-100 rounded-2xl p-6 opacity-70 cursor-not-allowed">
                         <div class="absolute top-0 right-0 bg-gray-400 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl">เร็วๆ นี้</div>
                         <div class="w-14 h-14 bg-gray-200 text-gray-500 rounded-xl flex items-center justify-center text-3xl mb-4">📢</div>
-                        <h3 class="text-xl font-bold text-gray-600 mb-2">ประกาศ / ประชาสัมพันธ์</h3>
-                        <p class="text-sm text-gray-500 line-clamp-2">สร้างภาพประกาศแจ้งเตือน, แจ้งข่าวสารสั้นๆ, หรืออินโฟกราฟิกแบบหน้าเดียว</p>
+                        <h3 class="text-lg font-bold text-gray-600 mb-2">ประกาศแจ้งเตือน</h3>
+                        <p class="text-xs text-gray-500 line-clamp-2">สร้างภาพประกาศแจ้งข่าวสารแบบหน้าเดียว</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+
+    <!-- ========================================== -->
+    <!-- VIEW: VEHICLE BOOKING (ระบบจองรถส่วนกลาง) -->
+    <!-- ========================================== -->
+    <div id="view-vehicle" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in relative">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-white">
+            <button onclick="window.switchView('view-dashboard')" class="flex items-center gap-2 text-[#0071BA] font-bold hover:bg-blue-50 px-4 py-2 rounded-xl transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+                กลับหน้าหลัก
+            </button>
+            <h2 class="font-bold text-gray-700 md:text-lg">🚙 สร้างใบขออนุญาตใช้รถยนต์</h2>
+        </div>
+
+        <div class="flex flex-col xl:flex-row gap-6 w-full">
+            
+            <!-- แผงซ้าย: ฟอร์มกรอกข้อมูล -->
+            <div class="w-full xl:w-5/12 bg-white/90 backdrop-blur-md p-0 rounded-3xl shadow-xl border border-white overflow-hidden h-fit flex flex-col shrink-0 relative z-20">
+                <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 p-5 text-yellow-900 shadow-md">
+                    <h2 class="text-xl font-bold flex items-center gap-2"><span class="text-2xl">📝</span> ข้อมูลการเดินทาง</h2>
+                </div>
+                
+                <div class="p-5 md:p-6 space-y-4">
+                    <!-- เลือกรถ -->
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">เลือกรถที่ต้องการขออนุญาต *</label>
+                        <select id="v-select-car" class="w-full p-2.5 bg-yellow-50 border border-yellow-200 text-yellow-900 font-bold rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none cursor-pointer" onchange="window.updateVehicleType()">
+                            <option value="car1">รถยนต์บรรทุกน้ำอเนกประสงค์ (ผอ 6919)</option>
+                            <option value="car2">รถยนต์ส่วนกลาง (จก 8337)</option>
+                            <option value="car3">รถยนต์ส่วนกลาง (กพ 7743)</option>
+                            <option value="car4">รถยนต์กู้ภัย / รถกู้ภัย (2ฒห 6981)</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">ชื่อ-สกุล ผู้ขอ</label>
+                            <input type="text" id="v-req-name" placeholder="เช่น นายสมชาย ใจดี" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm" oninput="window.syncV('v-req-name', 's-req-name')">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">ตำแหน่ง</label>
+                            <input type="text" id="v-req-pos" placeholder="เช่น นักวิเคราะห์ฯ" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm" oninput="window.syncV('v-req-pos', 's-req-pos')">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">สำนัก / กอง</label>
+                        <input type="text" id="v-req-dept" placeholder="เช่น สำนักปลัด" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm" oninput="window.syncV('v-req-dept', 's-req-dept')">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">เพื่อไปราชการที่ (สถานที่)</label>
+                        <input type="text" id="v-dest" placeholder="เช่น ศาลากลางจังหวัดนครราชสีมา" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm" oninput="window.syncV('v-dest', 's-dest')">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">เพื่อปฏิบัติราชการเกี่ยวกับเรื่อง</label>
+                        <textarea id="v-purpose" rows="2" placeholder="ระบุเหตุผลการเดินทาง" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm custom-scroll" oninput="window.syncV('v-purpose', 's-purpose')"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">จำนวนผู้เดินทาง (คน)</label>
+                            <input type="number" id="v-pax" placeholder="เช่น 3" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm" oninput="window.syncV('v-pax', 's-pax')">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">พนักงานขับรถ</label>
+                            <input type="text" id="v-driver" placeholder="ชื่อคนขับ (ถ้ามี)" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm" oninput="window.syncV('v-driver', 's-driver')">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">งบประมาณจากแผนงาน/งาน</label>
+                        <input type="text" id="v-budget" placeholder="เช่น งานบริหารทั่วไป" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm" oninput="window.syncV('v-budget', 's-budget')">
+                    </div>
+
+                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-200">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">วันและเวลาที่ใช้รถ</label>
+                        <div class="grid grid-cols-2 gap-2 mb-2">
+                            <div><span class="text-xs text-gray-500">ตั้งแต่วันที่</span><input type="date" id="v-start-date" class="w-full p-2 border rounded-lg text-xs" onchange="window.updateVDate()"></div>
+                            <div><span class="text-xs text-gray-500">เวลา (น.)</span><input type="time" id="v-start-time" class="w-full p-2 border rounded-lg text-xs" onchange="window.syncV('v-start-time', 's-start-time')"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div><span class="text-xs text-gray-500">ถึงวันที่</span><input type="date" id="v-end-date" class="w-full p-2 border rounded-lg text-xs" onchange="window.updateVDate()"></div>
+                            <div><span class="text-xs text-gray-500">เวลา (น.)</span><input type="time" id="v-end-time" class="w-full p-2 border rounded-lg text-xs" onchange="window.syncV('v-end-time', 's-end-time')"></div>
+                        </div>
+                    </div>
+
+                    <button id="btn-export-vehicle" class="w-full text-white font-bold py-3.5 px-4 rounded-2xl shadow-[0_10px_20px_rgba(253,190,21,0.3)] transition duration-300 flex justify-center items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 hover:-translate-y-1 text-lg border border-yellow-300 mt-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        <span id="btn-text-v">บันทึกเป็นรูปเอกสาร</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- แผงขวา: พรีวิว A4 -->
+            <div id="v-preview-container" class="w-full xl:w-7/12 flex items-start justify-center bg-gray-200/50 p-4 rounded-3xl shadow-inner border border-gray-300 overflow-hidden relative z-10 min-h-[600px] xl:h-auto custom-scroll overflow-y-auto">
+                
+                <!-- กระดาษ A4 (794 x 1123 px) -->
+                <div id="doc-a4" class="w-[794px] h-[1123px] bg-white shadow-xl shrink-0 p-[60px] flex flex-col font-sarabun text-[20px] leading-relaxed text-black origin-top mx-auto relative">
+                    
+                    <!-- ส่วนหัวเอกสาร -->
+                    <div class="text-center font-bold text-[24px] mb-2">
+                        ใบขออนุญาตใช้<span id="s-car-title" class="px-1">รถยนต์บรรทุกน้ำอเนกประสงค์</span> ของสำนักงาน อบต.โนนอุดม
+                    </div>
+                    <div class="text-right mb-4">แบบ ๓</div>
+                    
+                    <div class="flex justify-end mb-4">
+                        <div class="w-1/2">
+                            วันที่ <span class="dotted-line s-today-d">...</span> 
+                            เดือน <span class="dotted-line s-today-m">............</span> 
+                            พ.ศ. <span class="dotted-line s-today-y">........</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        เรียน นายกองค์การบริหารส่วนตำบลโนนอุดม
+                    </div>
+
+                    <!-- ย่อหน้า 1: ข้อมูลผู้ขอ -->
+                    <div class="indent-[50px] mb-2 text-justify">
+                        ข้าพเจ้า <span class="dotted-line s-req-name">....................................................</span> 
+                        ตำแหน่ง <span class="dotted-line s-req-pos">....................................................</span> 
+                        สำนัก/กอง <span class="dotted-line s-req-dept">....................................................</span>
+                        ขออนุญาตใช้<span id="s-car-title-2">รถยนต์บรรทุกน้ำอเนกประสงค์</span>ของ อบต.โนนอุดม เพื่อไปราชการที่ 
+                        <span class="dotted-line s-dest w-[250px]">....................................................................................</span>
+                        เพื่อปฏิบัติราชการเกี่ยวกับเรื่อง <span class="dotted-line s-purpose w-[300px]">....................................................................................</span>
+                        มีผู้นั่งไปในครั้งนี้ จำนวน <span class="dotted-line s-pax w-[50px]">......</span> คน โดยใช้น้ำมันเชื้อเพลิงจากงบประมาณของแผนงาน/งาน 
+                        <span class="dotted-line s-budget w-[200px]">....................................................</span>
+                    </div>
+
+                    <!-- ย่อหน้า 2: วันเวลา -->
+                    <div class="mb-8">
+                        ทั้งนี้ ขอใช้รถยนต์ในวันที่ <span class="dotted-line s-start-d w-[40px]">......</span> 
+                        เดือน <span class="dotted-line s-start-m w-[100px]">..................</span> 
+                        พ.ศ. <span class="dotted-line s-start-y w-[60px]">........</span> 
+                        เวลา <span class="dotted-line s-start-time w-[60px]">........</span> น. 
+                        ถึงวันที่ <span class="dotted-line s-end-d w-[40px]">......</span> 
+                        เดือน <span class="dotted-line s-end-m w-[100px]">..................</span> 
+                        พ.ศ. <span class="dotted-line s-end-y w-[60px]">........</span> 
+                        เวลา <span class="dotted-line s-end-time w-[60px]">........</span> น.
+                    </div>
+
+                    <!-- ลายเซ็นผู้ขอ -->
+                    <div class="flex flex-col items-end mb-6 pr-10">
+                        <div class="flex items-center gap-2">ลงชื่อ<span class="dotted-line w-[200px]"></span>ผู้ขออนุญาตใช้รถยนต์</div>
+                        <div class="flex items-center gap-2 mt-1">(<span class="dotted-line s-req-name w-[190px]">....................................................</span>)</div>
+                        <div class="flex items-center gap-2 mt-1">ตำแหน่ง<span class="dotted-line s-req-pos w-[180px]">....................................................</span></div>
+                    </div>
+
+                    <!-- ย่อหน้า 3: การตรวจสอบ -->
+                    <div class="indent-[50px] mb-8 text-justify">
+                        ได้ตรวจสอบแล้ว มีรถยนต์ว่างอยู่ จึงเห็นสมควรอนุญาตใช้รถยนต์ หมายเลขทะเบียน 
+                        <span id="s-car-reg" class="font-bold underline px-2">ผอ ๖๙๑๙ นครราชสีมา</span> โดยมี 
+                        <span class="dotted-line s-driver w-[150px]">....................................</span> เป็นพนักงานขับรถยนต์ 
+                        เลขไมล์ก่อนไป .................................... เลขไมล์หลังไป ....................................
+                    </div>
+
+                    <!-- ลายเซ็นรองปลัด -->
+                    <div class="flex flex-col items-center pl-[250px] mb-6">
+                        <div class="flex items-center gap-2">ลงชื่อ<span class="dotted-line w-[200px]"></span></div>
+                        <div class="mt-1">(นางดนิตา มนไธสง)</div>
+                        <div class="text-center text-[18px] leading-tight mt-1">
+                            รองปลัดองค์การบริหารส่วนตำบล รักษาราชการแทน<br>ปลัดองค์การบริหารส่วนตำบลโนนอุดม
+                        </div>
+                    </div>
+
+                    <!-- ย่อหน้า 4: การอนุมัติ -->
+                    <div class="mb-6">
+                        ความเห็นของผู้มีอำนาจสั่งการให้ใช้รถยนต์<br>
+                        <div class="flex gap-10 mt-2 ml-10">
+                            <label class="flex items-center gap-2"><div class="w-5 h-5 border border-black"></div> อนุญาต</label>
+                            <label class="flex items-center gap-2"><div class="w-5 h-5 border border-black"></div> ไม่อนุญาต</label>
+                        </div>
+                    </div>
+
+                    <!-- ลายเซ็นนายก/ผู้อนุมัติ -->
+                    <div class="flex flex-col items-center pl-[250px]">
+                        <div class="flex items-center gap-2">ลงชื่อ<span class="dotted-line w-[200px]"></span></div>
+                        <div id="s-signer-name" class="mt-1">(นายสุพจน์ สมน้อย)</div>
+                        <div id="s-signer-pos" class="text-center text-[18px] leading-tight mt-1 whitespace-pre-wrap">นายกองค์การบริหารส่วนตำบลโนนอุดม</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- ========================================== -->
     <!-- VIEW: CALENDAR & ASSETS (ระบบคลังสื่อ) -->
     <!-- ========================================== -->
-    <div id="view-calendar" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in h-screen max-h-screen">
+    <div id="view-calendar" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in xl:h-screen xl:max-h-screen">
         
         <div class="flex flex-col md:flex-row md:items-center justify-between bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-white shrink-0 gap-4">
             <button onclick="window.switchView('view-dashboard')" class="flex items-center gap-2 text-[#0071BA] font-bold hover:bg-blue-50 px-4 py-2 rounded-xl transition-colors w-fit">
@@ -190,11 +394,13 @@
         </div>
     </div>
 
+
     <!-- ========================================== -->
     <!-- VIEW: ASSET MANAGER (ระบบจัดการเพิ่ม/แก้ไขคลังสื่อ) -->
     <!-- ========================================== -->
-    <div id="view-asset-manager" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in h-screen max-h-screen">
+    <div id="view-asset-manager" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in xl:h-screen xl:max-h-screen">
         
+        <!-- Header กลับหน้าคลังสื่อ -->
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-white shrink-0 gap-4">
             <button onclick="window.switchView('view-calendar')" class="flex items-center gap-2 text-gray-600 font-bold hover:bg-gray-100 px-4 py-2 rounded-xl transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
@@ -205,7 +411,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     จัดการข้อมูลคลังอินโฟกราฟิก
                 </h2>
-                <!-- ปุ่มวิเศษสำหรับโหลดวันหยุด 2569 -->
+                <!-- ปุ่มโหลดวันหยุด -->
                 <button onclick="window.importHolidays2026()" class="text-sm bg-indigo-50 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-lg hover:bg-indigo-100 transition shadow-sm font-bold flex items-center gap-1.5" title="นำเข้าวันหยุดราชการที่เหลือของปี 2569 อัตโนมัติ">
                     <span>⚡</span> โหลดวันหยุดปี 2569
                 </button>
@@ -251,14 +457,19 @@
                 </div>
             </div>
 
+            <!-- แผงขวา: รายการที่มีอยู่ -->
             <div class="w-full xl:w-7/12 bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border border-white flex flex-col h-auto xl:h-full overflow-hidden">
                 <div class="p-5 md:p-6 bg-gray-50 border-b flex justify-between items-center">
                     <h3 class="text-xl font-bold text-gray-800">📚 ข้อมูลในระบบปัจจุบัน</h3>
                     <span id="asset-count-badge" class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full"></span>
                 </div>
-                <div id="manager-list-container" class="flex-1 overflow-y-auto custom-scroll p-4 space-y-3 bg-white">
+                
+                <!-- พื้นที่แสดงรายการ -->
+                <div id="manager-list-container" class="flex-1 overflow-y-auto custom-scroll p-4 space-y-3 bg-white max-h-[400px] xl:max-h-none">
                     <!-- จะถูกสร้างด้วย JS -->
                 </div>
+
+                <!-- แสดงสถานะ Firebase -->
                 <div class="p-4 bg-blue-50/80 border-t border-blue-100 flex items-center justify-center gap-2 text-blue-700 text-sm font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
@@ -387,7 +598,7 @@
             </div>
 
             <!-- พื้นที่พรีวิว ขวา -->
-            <div id="preview-container" class="w-full xl:w-2/3 flex items-start justify-center bg-white/40 backdrop-blur-sm p-4 md:p-8 rounded-3xl shadow-xl border border-white/60 overflow-hidden relative z-10 min-h-[600px]">
+            <div id="preview-container" class="w-full xl:w-2/3 flex items-start justify-center bg-white/40 backdrop-blur-sm p-4 md:p-8 rounded-3xl shadow-xl border border-white/60 overflow-hidden relative z-10 min-h-[600px] xl:h-auto custom-scroll overflow-y-auto">
                 
                 <!-- TEMPLATE 1 : แบบทางการ -->
                 <div id="template-1" class="w-[800px] h-[1131px] bg-[#fdfcf8] relative shadow-2xl shrink-0 overflow-hidden origin-top mx-auto border border-gray-200 flex flex-col">
@@ -522,7 +733,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- ลูกเล่นด้านล่างสุด -->
@@ -544,7 +754,6 @@
         let isFirebaseReady = false;
         let db, auth, publicDataRef, historyRef;
 
-        // 👇👇👇 โค้ด Firebase Config ของคุณ (แก้ไขให้สมบูรณ์แล้ว) 👇👇👇
         const myFirebaseConfig = {
           apiKey: "AIzaSyBysqombxqHciw4hWmUo5zSaOgAiguR8Ig",
           authDomain: "pr-nonudom.firebaseapp.com",
@@ -554,7 +763,6 @@
           appId: "1:143493136278:web:b003ee0a235aa12f6ca7b7",
           measurementId: "G-071D8810WH"
         };
-        // 👆👆👆 ================================================ 👆👆👆
 
         const updateCloudStatus = (text, isError = false) => {
             const statusEl = document.getElementById('cloud-status-text');
@@ -587,7 +795,7 @@
                     historyRef = collection(db, 'artifacts', appId, 'public', 'data', 'pr_history');
                 } else {
                     publicDataRef = collection(db, 'pr_assets');
-                    historyRef = collection(db, 'pr_history'); // Collection ใหม่สำหรับเก็บประวัติ
+                    historyRef = collection(db, 'pr_history'); 
                 }
                 
                 isFirebaseReady = true;
@@ -609,7 +817,6 @@
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
                         updateCloudStatus("ซิงค์กับคลาวด์แล้ว ☁️");
-                        // ดึงข้อมูลคลังสื่อ
                         onSnapshot(publicDataRef, (snapshot) => {
                             assetData = [];
                             snapshot.forEach((doc) => assetData.push(doc.data()));
@@ -618,11 +825,10 @@
                             window.renderManagerList();
                         }, (error) => { console.error("Firestore error:", error); updateCloudStatus("เชื่อมต่อคลาวด์ล้มเหลว ❌", true); });
 
-                        // ดึงข้อมูลประวัติ
                         onSnapshot(historyRef, (snapshot) => {
                             historyData = [];
                             snapshot.forEach((doc) => historyData.push(doc.data()));
-                            historyData.sort((a, b) => b.timestamp - a.timestamp); // ใหม่สุดขึ้นก่อน
+                            historyData.sort((a, b) => b.timestamp - a.timestamp); 
                         });
                     }
                 });
@@ -660,13 +866,14 @@
             document.getElementById('view-newsletter').classList.add('hidden');
             document.getElementById('view-calendar').classList.add('hidden');
             document.getElementById('view-asset-manager').classList.add('hidden');
+            document.getElementById('view-vehicle').classList.add('hidden'); // ซ่อนหน้าจองรถ
 
             document.getElementById(viewId).classList.remove('hidden');
 
-            if(viewId === 'view-newsletter') {
-                setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+            if(viewId === 'view-newsletter' || viewId === 'view-vehicle') {
+                setTimeout(() => window.dispatchEvent(new Event('resize')), 50); // อัปเดตสเกล
             } else if (viewId === 'view-calendar') {
-                window.currentNavDate = new Date(); // รีเซ็ตกลับมาเดือนปัจจุบันเสมอเมื่อเปิดหน้า
+                window.currentNavDate = new Date(); 
                 window.renderCalendarList();
             } else if (viewId === 'view-asset-manager') {
                 window.renderManagerList();
@@ -675,6 +882,9 @@
             window.scrollTo(0, 0);
         }
 
+        // ==========================================
+        // โลจิกปฏิทินและคลังสื่อ
+        // ==========================================
         window.renderCalendarList = function() {
             const grid = document.getElementById('calendar-grid-container');
             const list = document.getElementById('event-list-container');
@@ -804,26 +1014,18 @@
         window.editAsset = function(id) {
             const event = assetData.find(e => e.id === id);
             if(!event) return;
-
             document.getElementById('manage-id').value = event.id;
             document.getElementById('manage-title').value = event.title;
-            if(event.isoDate) {
-                document.getElementById('manage-iso-date').value = event.isoDate;
-            } else {
-                document.getElementById('manage-iso-date').value = ''; // ป้องกันบั๊กกรณีข้อมูลเก่า ให้ผู้ใช้เลือกใหม่
-            }
+            if(event.isoDate) document.getElementById('manage-iso-date').value = event.isoDate; else document.getElementById('manage-iso-date').value = ''; 
             document.getElementById('manage-thumb').value = event.thumbUrl;
             document.getElementById('manage-download').value = event.downloadUrl;
             document.getElementById('manage-caption').value = event.caption;
-
             document.getElementById('form-mode-title').innerHTML = `<span class="text-blue-600">✏️ แก้ไข: ${event.title}</span> <button type="button" onclick="window.resetManagerForm()" class="text-sm font-normal text-blue-500 hover:underline bg-white px-3 py-1 rounded-lg border shadow-sm">ยกเลิกการแก้ไข</button>`;
         }
 
         window.saveAssetData = async function(e) {
             e.preventDefault();
             const idStr = document.getElementById('manage-id').value;
-            
-            // ประมวลผลวันที่จาก Input Date อัตโนมัติ (ไม่ต้องให้ผู้ใช้พิมพ์ชื่อเดือนเองแล้ว)
             const isoDateVal = document.getElementById('manage-iso-date').value;
             const [year, month, day] = isoDateVal.split('-');
             const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
@@ -843,11 +1045,8 @@
             };
 
             if (isFirebaseReady && auth.currentUser) {
-                try {
-                    await setDoc(doc(publicDataRef, newAsset.id.toString()), newAsset);
-                    window.showToast(idStr ? "อัปเดตขึ้นคลาวด์เรียบร้อย!" : "บันทึกขึ้นคลาวด์เรียบร้อย!");
-                    window.resetManagerForm();
-                } catch (error) { console.error("Save Error:", error); window.showToast("เกิดข้อผิดพลาดตอนเซฟลงคลาวด์"); }
+                try { await setDoc(doc(publicDataRef, newAsset.id.toString()), newAsset); window.showToast(idStr ? "อัปเดตขึ้นคลาวด์เรียบร้อย!" : "บันทึกขึ้นคลาวด์เรียบร้อย!"); window.resetManagerForm(); } 
+                catch (error) { console.error("Save Error:", error); window.showToast("เกิดข้อผิดพลาดตอนเซฟลงคลาวด์"); }
             } else {
                 const index = assetData.findIndex(e => e.id === newAsset.id);
                 if(index !== -1) assetData[index] = newAsset; else assetData.push(newAsset);
@@ -872,11 +1071,10 @@
         }
 
         // ==========================================
-        // ⚡ ฟังก์ชันพิเศษ: โหลดวันหยุดราชการ 2569
+        // ⚡ ฟังก์ชันโหลดวันหยุด
         // ==========================================
         window.importHolidays2026 = async function() {
             if(!confirm("ระบบจะทำการเพิ่มข้อมูลวันหยุดราชการ (ก.ค. - ธ.ค. 2569) ลงในระบบของคุณ\n\nต้องการดำเนินการต่อหรือไม่?")) return;
-
             const holidays2026 = [
                 { isoDate: "2026-07-28", title: "วันเฉลิมพระชนมพรรษา พระบาทสมเด็จพระเจ้าอยู่หัว รัชกาลที่ ๑๐", thumbUrl: "https://placehold.co/400x300/FDBE15/0071BA?text=28+July+2026", caption: "ทรงพระเจริญ\nด้วยเกล้าด้วยกระหม่อม ขอเดชะ\nข้าพระพุทธเจ้า คณะผู้บริหารและเจ้าหน้าที่ องค์การบริหารส่วนตำบลโนนอุดม" },
                 { isoDate: "2026-08-12", title: "วันเฉลิมพระชนมพรรษา สมเด็จพระนางเจ้าสิริกิติ์ฯ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง (วันแม่แห่งชาติ)", thumbUrl: "https://placehold.co/400x300/60A5FA/FFFFFF?text=12+August+2026", caption: "ทีฆายุกา โหตุ มหาราชินี\nด้วยเกล้าด้วยกระหม่อม ขอเดชะ\nข้าพระพุทธเจ้า คณะผู้บริหารและเจ้าหน้าที่ องค์การบริหารส่วนตำบลโนนอุดม" },
@@ -887,47 +1085,18 @@
                 { isoDate: "2026-12-31", title: "วันสิ้นปี", thumbUrl: "https://placehold.co/400x300/10B981/FFFFFF?text=31+December+2026", caption: "ส่งท้ายปีเก่า ต้อนรับปีใหม่\nขอให้ทุกท่านมีความสุข สุขภาพแข็งแรงตลอดปี\n\nองค์การบริหารส่วนตำบลโนนอุดม" }
             ];
 
-            let addedCount = 0;
-            const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+            let addedCount = 0; const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 
             for(const h of holidays2026) {
-                if(assetData.some(a => a.isoDate === h.isoDate)) continue; // ข้ามถ้ามีวันที่นี้อยู่แล้ว
-
-                const [year, month, day] = h.isoDate.split('-');
-                const thYear = parseInt(year) + 543;
+                if(assetData.some(a => a.isoDate === h.isoDate)) continue; 
+                const [year, month, day] = h.isoDate.split('-'); const thYear = parseInt(year) + 543;
                 const generatedDateStr = `${parseInt(day)} ${thaiMonths[parseInt(month)-1]} ${thYear}`;
                 const generatedMonthGrp = `${thaiMonths[parseInt(month)-1]} ${thYear}`;
-
-                const newAsset = {
-                    id: Date.now() + Math.floor(Math.random() * 10000), // สร้าง ID ไม่ซ้ำ
-                    title: h.title,
-                    isoDate: h.isoDate,
-                    dateStr: generatedDateStr,
-                    monthGrp: generatedMonthGrp,
-                    thumbUrl: h.thumbUrl,
-                    downloadUrl: h.thumbUrl, // ใช้รูปพรีวิวแก้ขัดไปก่อน
-                    caption: h.caption
-                };
-
-                if (isFirebaseReady && auth.currentUser) {
-                    try {
-                        await setDoc(doc(publicDataRef, newAsset.id.toString()), newAsset);
-                        addedCount++;
-                    } catch (error) { console.error("Auto Sync Error:", error); }
-                } else {
-                    assetData.push(newAsset);
-                    addedCount++;
-                }
+                const newAsset = { id: Date.now() + Math.floor(Math.random() * 10000), title: h.title, isoDate: h.isoDate, dateStr: generatedDateStr, monthGrp: generatedMonthGrp, thumbUrl: h.thumbUrl, downloadUrl: h.thumbUrl, caption: h.caption };
+                if (isFirebaseReady && auth.currentUser) { try { await setDoc(doc(publicDataRef, newAsset.id.toString()), newAsset); addedCount++; } catch (error) { console.error("Auto Sync Error:", error); } } else { assetData.push(newAsset); addedCount++; }
             }
-
-            if (!isFirebaseReady || !auth.currentUser) {
-                assetData.sort((a, b) => b.id - a.id);
-                localStorage.setItem('prStudioAssets', JSON.stringify(assetData));
-            }
-
-            window.renderCalendarList(); 
-            window.renderManagerList();
-            window.showToast(`เพิ่มข้อมูลวันหยุดสำเร็จ ${addedCount} รายการ!`);
+            if (!isFirebaseReady || !auth.currentUser) { assetData.sort((a, b) => b.id - a.id); localStorage.setItem('prStudioAssets', JSON.stringify(assetData)); }
+            window.renderCalendarList(); window.renderManagerList(); window.showToast(`เพิ่มข้อมูลวันหยุดสำเร็จ ${addedCount} รายการ!`);
         }
 
         window.showToast = function(text) {
@@ -935,14 +1104,11 @@
             document.getElementById("toast-text").innerText = text;
             toast.classList.remove("opacity-0", "pointer-events-none", "-translate-y-10");
             toast.classList.add("opacity-100", "translate-y-0");
-            setTimeout(() => {
-                toast.classList.remove("opacity-100", "translate-y-0");
-                toast.classList.add("opacity-0", "pointer-events-none", "-translate-y-10");
-            }, 3000);
+            setTimeout(() => { toast.classList.remove("opacity-100", "translate-y-0"); toast.classList.add("opacity-0", "pointer-events-none", "-translate-y-10"); }, 3000);
         }
 
         // ==========================================
-        // 🛠️ ฟังก์ชันเครื่องมือจัดหน้าข้อความ (Toolbar)
+        // 🛠️ เครื่องมือจัดหน้าข้อความ (Toolbar)
         // ==========================================
         window.toggleFormat = function(displayClass, formatStyle, btnElement) {
             document.querySelectorAll('.' + displayClass).forEach(el => { el.classList.toggle(formatStyle); });
@@ -953,9 +1119,7 @@
         };
 
         window.setAlignment = function(displayClass, alignStyle, btnElement) {
-            document.querySelectorAll('.' + displayClass).forEach(el => {
-                el.classList.remove('text-left', 'text-center', 'text-right', 'text-justify'); el.classList.add(alignStyle);
-            });
+            document.querySelectorAll('.' + displayClass).forEach(el => { el.classList.remove('text-left', 'text-center', 'text-right', 'text-justify'); el.classList.add(alignStyle); });
             if (btnElement) {
                 const group = btnElement.parentElement.querySelectorAll('.btn-align');
                 group.forEach(btn => { btn.classList.remove('bg-green-100', 'text-green-700', 'border-green-300'); btn.classList.add('border-transparent'); });
@@ -973,44 +1137,30 @@
         };
 
         // ==========================================
-        // ระบบจัดการประวัติ (History Modal)
+        // ประวัติจดหมายข่าว (History Modal)
         // ==========================================
         window.showHistoryModal = function() {
-            const modal = document.getElementById('history-modal');
-            const content = document.getElementById('history-modal-content');
-            modal.classList.remove('hidden');
-            setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
-            window.renderHistoryList();
+            const modal = document.getElementById('history-modal'); const content = document.getElementById('history-modal-content');
+            modal.classList.remove('hidden'); setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10); window.renderHistoryList();
         }
 
         window.closeHistoryModal = function() {
-            const modal = document.getElementById('history-modal');
-            const content = document.getElementById('history-modal-content');
-            modal.classList.add('opacity-0'); content.classList.add('scale-95');
-            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            const modal = document.getElementById('history-modal'); const content = document.getElementById('history-modal-content');
+            modal.classList.add('opacity-0'); content.classList.add('scale-95'); setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
 
         window.renderHistoryList = function() {
-            const container = document.getElementById('history-list-container');
-            container.innerHTML = '';
-            if (historyData.length === 0) {
-                container.innerHTML = '<div class="text-center py-8 text-gray-500">ยังไม่มีประวัติการสร้างจดหมายข่าว</div>'; return;
-            }
+            const container = document.getElementById('history-list-container'); container.innerHTML = '';
+            if (historyData.length === 0) { container.innerHTML = '<div class="text-center py-8 text-gray-500">ยังไม่มีประวัติการสร้างจดหมายข่าว</div>'; return; }
             historyData.slice(0, 20).forEach(hist => { 
                 const dateObj = new Date(hist.timestamp);
                 const displayTime = `${dateObj.getDate()}/${dateObj.getMonth()+1}/${dateObj.getFullYear()+543} เวลา ${String(dateObj.getHours()).padStart(2,'0')}:${String(dateObj.getMinutes()).padStart(2,'0')} น.`;
-                const item = document.createElement('div');
-                item.className = "p-4 border border-gray-200 rounded-xl hover:bg-indigo-50 hover:border-indigo-200 transition group relative";
+                const item = document.createElement('div'); item.className = "p-4 border border-gray-200 rounded-xl hover:bg-indigo-50 hover:border-indigo-200 transition group relative";
                 item.innerHTML = `
                     <div class="flex justify-between items-start gap-4 mb-2">
-                        <div>
-                            <span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-bold">${displayTime}</span>
-                            <h4 class="font-bold text-gray-800 text-sm mt-1 line-clamp-1">${hist.topic || 'ไม่มีหัวเรื่อง'}</h4>
-                        </div>
+                        <div><span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-bold">${displayTime}</span><h4 class="font-bold text-gray-800 text-sm mt-1 line-clamp-1">${hist.topic || 'ไม่มีหัวเรื่อง'}</h4></div>
                         <button onclick="window.useHistory(${hist.timestamp})" class="shrink-0 bg-indigo-100 text-indigo-700 hover:bg-indigo-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm border border-indigo-200">นำมาใช้ใหม่</button>
-                    </div>
-                    <p class="text-xs text-gray-500 line-clamp-2 leading-relaxed">${hist.description || 'ไม่มีคำบรรยาย'}</p>
-                `;
+                    </div><p class="text-xs text-gray-500 line-clamp-2 leading-relaxed">${hist.description || 'ไม่มีคำบรรยาย'}</p>`;
                 container.appendChild(item);
             });
         }
@@ -1018,43 +1168,153 @@
         window.useHistory = function(timestamp) {
             const hist = historyData.find(h => h.timestamp === timestamp);
             if(hist) {
-                document.getElementById('input-topic').value = hist.topic;
-                document.getElementById('input-description').value = hist.description;
-                document.getElementById('input-topic').dispatchEvent(new Event('input'));
-                document.getElementById('input-description').dispatchEvent(new Event('input'));
-                window.closeHistoryModal();
-                window.showToast("โหลดประวัติเรียบร้อยแล้ว!");
+                document.getElementById('input-topic').value = hist.topic; document.getElementById('input-description').value = hist.description;
+                document.getElementById('input-topic').dispatchEvent(new Event('input')); document.getElementById('input-description').dispatchEvent(new Event('input'));
+                window.closeHistoryModal(); window.showToast("โหลดประวัติเรียบร้อยแล้ว!");
             }
         }
 
         // ==========================================
-        // 🛠️ ฟังก์ชัน Auto Scale ป้องกันล้นจอในมือถือ
+        // 🛠️ Auto Scale ป้องกันล้นจอในมือถือ (ใช้ได้ทั้งจดหมายข่าวและเอกสารจองรถ)
         // ==========================================
         window.updatePreviewScale = function() {
+            // ส่วนจดหมายข่าว (800px)
             const previewContainer = document.getElementById('preview-container');
-            if (!previewContainer) return;
+            if (previewContainer) {
+                const padding = window.innerWidth >= 768 ? 64 : 32;
+                const availableWidth = previewContainer.clientWidth - padding;
+                let scale = availableWidth / 800; 
+                if (scale > 1) scale = 1;
 
-            const padding = window.innerWidth >= 768 ? 64 : 32;
-            const availableWidth = previewContainer.clientWidth - padding;
-            
-            let scale = availableWidth / 800; // 800 คือความกว้างของกระดาษจริง
-            if (scale > 1) scale = 1;
+                ['template-1', 'template-2'].forEach(id => {
+                    const temp = document.getElementById(id);
+                    if (temp) { temp.style.transform = `scale(${scale})`; const heightDiff = 1131 - (1131 * scale); temp.style.marginBottom = `-${heightDiff}px`; }
+                });
+            }
 
-            ['template-1', 'template-2'].forEach(id => {
-                const temp = document.getElementById(id);
-                if (temp) {
-                    temp.style.transform = `scale(${scale})`;
-                    const heightDiff = 1131 - (1131 * scale);
-                    temp.style.marginBottom = `-${heightDiff}px`;
-                }
-            });
+            // ส่วนเอกสารจองรถ A4 (794px)
+            const vPreviewContainer = document.getElementById('v-preview-container');
+            if (vPreviewContainer) {
+                const paddingV = window.innerWidth >= 768 ? 32 : 16;
+                const availableWidthV = vPreviewContainer.clientWidth - paddingV;
+                let scaleV = availableWidthV / 794; 
+                if (scaleV > 1) scaleV = 1;
+
+                const docA4 = document.getElementById('doc-a4');
+                if (docA4) { docA4.style.transform = `scale(${scaleV})`; const heightDiffV = 1123 - (1123 * scaleV); docA4.style.marginBottom = `-${heightDiffV}px`; }
+            }
         }
-        
         window.addEventListener('resize', window.updatePreviewScale);
         setTimeout(window.updatePreviewScale, 100);
 
         // ==========================================
-        // ระบบจดหมายข่าวเดิม 
+        // 🚙 ระบบจองรถส่วนกลาง
+        // ==========================================
+        
+        // ข้อมูลรถแต่ละคันอิงตามเอกสารที่ระบุ
+        const vehicleData = {
+            car1: { title: "รถยนต์บรรทุกน้ำอเนกประสงค์", reg: "ผอ ๖๙๑๙ นครราชสีมา", signerName: "(นายสุพจน์ สมน้อย)", signerPos: "นายกองค์การบริหารส่วนตำบลโนนอุดม" },
+            car2: { title: "รถยนต์ส่วนกลาง", reg: "จก ๘๓๓๗ นครราชสีมา", signerName: "(นางดนิตา มนไธสง)", signerPos: "รองปลัดองค์การบริหารส่วนตำบล รักษาราชการแทน\nปลัดองค์การบริหารส่วนตำบล ปฏิบัติหน้าที่\nนายกองค์การบริหารส่วนตำบลโนนอุดม" },
+            car3: { title: "รถยนต์ส่วนกลาง", reg: "กพ ๗๗๔๓ นครราชสีมา", signerName: "(นายสุพจน์ สมน้อย)", signerPos: "นายกองค์การบริหารส่วนตำบลโนนอุดม" },
+            car4: { title: "รถยนต์กู้ภัย", reg: "๒ฒห๖๙๘๑ กรุงเทพมหานคร", signerName: "(นายสุพจน์ สมน้อย)", signerPos: "นายกองค์การบริหารส่วนตำบลโนนอุดม" }
+        };
+
+        const thaiMonthsFull = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+        // แปลงเลขอารบิกเป็นเลขไทย
+        const toThaiNum = (str) => {
+            if(!str) return '';
+            const thaiNums = ['๐','๑','๒','๓','๔','๕','๖','๗','๘','๙'];
+            return str.toString().replace(/[0-9]/g, match => thaiNums[match]);
+        };
+
+        // เซ็ตวันที่ปัจจุบันบนหัวกระดาษ
+        const setupToday = () => {
+            const today = new Date();
+            document.querySelector('.s-today-d').textContent = toThaiNum(today.getDate());
+            document.querySelector('.s-today-m').textContent = thaiMonthsFull[today.getMonth()];
+            document.querySelector('.s-today-y').textContent = toThaiNum(today.getFullYear() + 543);
+        };
+        setupToday();
+
+        window.updateVehicleType = function() {
+            const selected = document.getElementById('v-select-car').value;
+            const data = vehicleData[selected];
+            document.getElementById('s-car-title').textContent = data.title;
+            document.getElementById('s-car-title-2').textContent = data.title;
+            document.getElementById('s-car-reg').textContent = data.reg;
+            document.getElementById('s-signer-name').textContent = data.signerName;
+            document.getElementById('s-signer-pos').textContent = data.signerPos;
+        };
+
+        window.syncV = function(inputId, syncClass) {
+            const val = document.getElementById(inputId).value;
+            const els = document.querySelectorAll('.' + syncClass);
+            
+            // กรณีเป็นตัวเลขจำนวนคน ให้แปลงเป็นเลขไทย
+            if (inputId === 'v-pax') {
+                els.forEach(el => el.textContent = val ? toThaiNum(val) : '......');
+            } else {
+                els.forEach(el => el.textContent = val || '....................................................');
+            }
+        };
+
+        window.updateVDate = function() {
+            const startDate = document.getElementById('v-start-date').value;
+            if(startDate) {
+                const [y, m, d] = startDate.split('-');
+                document.querySelector('.s-start-d').textContent = toThaiNum(parseInt(d));
+                document.querySelector('.s-start-m').textContent = thaiMonthsFull[parseInt(m)-1];
+                document.querySelector('.s-start-y').textContent = toThaiNum(parseInt(y) + 543);
+            } else {
+                document.querySelector('.s-start-d').textContent = '......';
+                document.querySelector('.s-start-m').textContent = '..................';
+                document.querySelector('.s-start-y').textContent = '........';
+            }
+
+            const endDate = document.getElementById('v-end-date').value;
+            if(endDate) {
+                const [y, m, d] = endDate.split('-');
+                document.querySelector('.s-end-d').textContent = toThaiNum(parseInt(d));
+                document.querySelector('.s-end-m').textContent = thaiMonthsFull[parseInt(m)-1];
+                document.querySelector('.s-end-y').textContent = toThaiNum(parseInt(y) + 543);
+            } else {
+                document.querySelector('.s-end-d').textContent = '......';
+                document.querySelector('.s-end-m').textContent = '..................';
+                document.querySelector('.s-end-y').textContent = '........';
+            }
+        };
+
+        // ปุ่มเซฟใบจองรถ
+        const btnExportV = document.getElementById('btn-export-vehicle');
+        if(btnExportV) {
+            btnExportV.addEventListener('click', async () => {
+                btnExportV.disabled = true; btnExportV.classList.add('opacity-70'); 
+                document.getElementById('btn-text-v').textContent = 'กำลังแปลงรูปภาพ...'; window.scrollTo(0, 0);
+                
+                const docA4 = document.getElementById('doc-a4'); 
+                const currentTransform = docA4.style.transform; 
+                const currentMargin = docA4.style.marginBottom;
+                // ปลดสเกลเพื่อแคปเจอร์เต็มความละเอียด
+                docA4.style.transform = 'none'; docA4.style.marginBottom = '0px';
+
+                try {
+                    const canvas = await html2canvas(docA4, { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollY: 0, scrollX: 0 });
+                    const link = document.createElement('a'); link.href = canvas.toDataURL("image/jpeg", 1.0);
+                    link.download = `ใบขออนุญาตใช้รถ_${document.getElementById('v-req-name').value || 'เจ้าหน้าที่'}.jpg`; link.click();
+                    window.showToast("บันทึกใบขออนุญาตเรียบร้อย นำส่ง LINE ได้เลย!");
+                } catch (error) { 
+                    alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"); 
+                } finally {
+                    docA4.style.transform = currentTransform; docA4.style.marginBottom = currentMargin;
+                    btnExportV.disabled = false; btnExportV.classList.remove('opacity-70'); document.getElementById('btn-text-v').textContent = 'บันทึกเป็นรูปเอกสาร';
+                }
+            });
+        }
+
+
+        // ==========================================
+        // จดหมายข่าวเดิม
         // ==========================================
         const selectTemplate = document.getElementById('select-template');
         const template1 = document.getElementById('template-1');
@@ -1062,28 +1322,22 @@
         let activeTemplateId = 'template-1';
 
         selectTemplate.addEventListener('change', (e) => {
-            if(e.target.value === '1') {
-                template1.classList.remove('hidden'); template2.classList.add('hidden'); activeTemplateId = 'template-1';
-            } else {
-                template2.classList.remove('hidden'); template1.classList.add('hidden'); activeTemplateId = 'template-2';
-            }
+            if(e.target.value === '1') { template1.classList.remove('hidden'); template2.classList.add('hidden'); activeTemplateId = 'template-1'; } 
+            else { template2.classList.remove('hidden'); template1.classList.add('hidden'); activeTemplateId = 'template-2'; }
             window.updatePreviewScale(); 
         });
 
         const syncData = (inputId, displayClass, defaultText) => {
             const input = document.getElementById(inputId);
-            input.addEventListener('input', (e) => {
-                const text = e.target.value || defaultText;
-                document.querySelectorAll('.' + displayClass).forEach(el => { el.textContent = text; });
-            });
+            input.addEventListener('input', (e) => { const text = e.target.value || defaultText; document.querySelectorAll('.' + displayClass).forEach(el => { el.textContent = text; }); });
         };
         syncData('input-topic', 'sync-topic', 'หัวเรื่องกิจกรรม');
         syncData('input-description', 'sync-description', 'คำบรรยายกิจกรรม');
 
         const selectDay = document.getElementById('select-day'), selectMonth = document.getElementById('select-month'), selectYear = document.getElementById('select-year');
-        const today = new Date(); const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+        const today = new Date(); 
         for (let i = 1; i <= 31; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = i; if (i === today.getDate()) opt.selected = true; selectDay.appendChild(opt); }
-        selectMonth.value = thaiMonths[today.getMonth()];
+        selectMonth.value = thaiMonthsFull[today.getMonth()];
         for (let i = today.getFullYear() + 543 - 5; i <= today.getFullYear() + 543 + 5; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = i; if (i === today.getFullYear() + 543) opt.selected = true; selectYear.appendChild(opt); }
         const updateDisplayDate = () => { document.querySelectorAll('.sync-date').forEach(el => el.textContent = `วันที่ ${selectDay.value} ${selectMonth.value} ${selectYear.value}`); };
         selectDay.addEventListener('change', updateDisplayDate); selectMonth.addEventListener('change', updateDisplayDate); selectYear.addEventListener('change', updateDisplayDate);
@@ -1119,7 +1373,6 @@
         btnExport.addEventListener('click', async () => {
             btnExport.disabled = true; btnExport.classList.add('opacity-70'); btnText.textContent = 'กำลังแปลงรูปภาพ...'; window.scrollTo(0, 0);
             
-            // 1. เก็บประวัติ (Save History)
             const topic = document.getElementById('input-topic').value;
             const desc = document.getElementById('input-description').value;
             if (topic || desc) {
@@ -1131,12 +1384,10 @@
                 }
             }
 
-            // 2. ยกเลิก Scale ชั่วคราวเพื่อเซฟรูปความละเอียดสูง
             const activeTemp = document.getElementById(activeTemplateId); 
             const currentTransform = activeTemp.style.transform; 
             const currentMargin = activeTemp.style.marginBottom;
-            activeTemp.style.transform = 'none';
-            activeTemp.style.marginBottom = '0px';
+            activeTemp.style.transform = 'none'; activeTemp.style.marginBottom = '0px';
 
             try {
                 const canvas = await html2canvas(activeTemp, { scale: 2.5, useCORS: true, backgroundColor: activeTemplateId === 'template-1' ? '#fdfcf8' : '#f8f9fa', scrollY: 0, scrollX: 0 });
@@ -1146,13 +1397,10 @@
             } catch (error) { 
                 alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"); 
             } finally {
-                // 3. คืนค่า Scale ให้พอดีจอเหมือนเดิม
-                activeTemp.style.transform = currentTransform; 
-                activeTemp.style.marginBottom = currentMargin;
+                activeTemp.style.transform = currentTransform; activeTemp.style.marginBottom = currentMargin;
                 btnExport.disabled = false; btnExport.classList.remove('opacity-70'); btnText.textContent = '💾 บันทึกเป็นรูปภาพ';
             }
         });
-
     </script>
 </body>
 </html>
