@@ -494,6 +494,7 @@
     </div>
 
     <!-- โหลดโมดูล Firebase -->
+     <!-- โหลดโมดูล Firebase -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
@@ -503,12 +504,12 @@
         // 1. DATA & STATE MANAGEMENT (ผสานกับ Firebase)
         // ==========================================
         let assetData = [];
-        let newsletterHistory = [];
         let isFirebaseReady = false;
-        let db, auth, publicDataRef, historyDataRef;
+        let db, auth, publicDataRef;
 
-        // 👇👇👇 อย่าลืมนำ Firebase Config ของคุณมาวางตรงนี้ด้วยนะครับ 👇👇👇
-        const myFirebaseConfig = null; 
+        // 👇👇👇 นำ Firebase Config ของคุณมาวางตรงนี้ 👇👇👇
+        const myFirebaseConfig = {
+          apiKey: "AIzaSyBysqombxqHciw4hWmUo5zSaOgAiguR8Ig",
           authDomain: "pr-nonudom.firebaseapp.com",
           projectId: "pr-nonudom",
           storageBucket: "pr-nonudom.firebasestorage.app",
@@ -546,10 +547,8 @@
                 if (isLocalCanvas) {
                     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
                     publicDataRef = collection(db, 'artifacts', appId, 'public', 'data', 'pr_assets');
-                    historyDataRef = collection(db, 'artifacts', appId, 'public', 'data', 'pr_newsletters');
                 } else {
                     publicDataRef = collection(db, 'pr_assets');
-                    historyDataRef = collection(db, 'pr_newsletters');
                 }
                 
                 isFirebaseReady = true;
@@ -583,17 +582,6 @@
                             console.error("Firestore error:", error);
                             updateCloudStatus("เชื่อมต่อคลาวด์ล้มเหลว ❌", true);
                         });
-
-                        onSnapshot(historyDataRef, (snapshot) => {
-                            newsletterHistory = [];
-                            snapshot.forEach((doc) => {
-                                newsletterHistory.push(doc.data());
-                            });
-                            newsletterHistory.sort((a, b) => b.id - a.id);
-                            if(!document.getElementById('history-modal').classList.contains('hidden')) {
-                                window.renderHistoryList();
-                            }
-                        });
                     }
                 });
             } else {
@@ -603,7 +591,6 @@
             console.warn("ไม่สามารถเชื่อมต่อ Firebase ได้ สลับไปใช้โหมดออฟไลน์", e);
             updateCloudStatus("โหมดออฟไลน์ (เซฟข้อมูลลงในเครื่องเท่านั้น) ⚠️", true);
             assetData = JSON.parse(localStorage.getItem('prStudioAssets')) || [];
-            newsletterHistory = JSON.parse(localStorage.getItem('prNewsletterHistory')) || [];
             window.renderCalendarList();
             window.renderManagerList();
         }
@@ -793,96 +780,6 @@
             }
         }
 
-        // ==========================================
-        // ระบบประวัติจดหมายข่าว
-        // ==========================================
-        window.toggleHistoryModal = function() {
-            const modal = document.getElementById('history-modal');
-            const content = document.getElementById('history-modal-content');
-            
-            if (modal.classList.contains('hidden')) {
-                modal.classList.remove('hidden');
-                setTimeout(() => {
-                    modal.classList.remove('opacity-0', 'pointer-events-none');
-                    content.classList.remove('scale-95');
-                }, 10);
-                window.renderHistoryList();
-            } else {
-                modal.classList.add('opacity-0', 'pointer-events-none');
-                content.classList.add('scale-95');
-                setTimeout(() => modal.classList.add('hidden'), 300);
-            }
-        }
-
-        window.renderHistoryList = function() {
-            const container = document.getElementById('history-list-container');
-            container.innerHTML = '';
-
-            if (newsletterHistory.length === 0) {
-                container.innerHTML = '<div class="text-center text-gray-500 py-10"><span class="text-4xl block mb-2">📭</span>ยังไม่มีประวัติการสร้างจดหมายข่าว</div>';
-                return;
-            }
-
-            newsletterHistory.forEach(item => {
-                const div = document.createElement('div');
-                div.className = "p-4 bg-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-md hover:border-blue-300 transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-4";
-                div.innerHTML = `
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">${item.dateStr}</span>
-                            <span class="bg-gray-100 text-gray-600 text-[10px] font-bold px-2 py-0.5 rounded-full">รูปแบบที่ ${item.template}</span>
-                        </div>
-                        <h4 class="font-bold text-gray-800 text-lg truncate">${item.topic}</h4>
-                        <p class="text-sm text-gray-500 line-clamp-1 mt-0.5">${item.description || 'ไม่มีคำบรรยาย'}</p>
-                    </div>
-                    <div class="flex items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
-                        <button onclick="window.restoreHistory(${item.id})" class="flex-1 md:flex-none bg-blue-50 hover:bg-[#0071BA] text-[#0071BA] hover:text-white font-bold py-2 px-4 rounded-xl transition-colors text-sm border border-blue-200 hover:border-[#0071BA]">นำมาใช้ใหม่</button>
-                        <button onclick="window.deleteHistory(${item.id})" class="p-2 text-red-400 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors border border-transparent hover:border-red-200" title="ลบประวัติ">🗑️</button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        window.restoreHistory = function(id) {
-            const item = newsletterHistory.find(h => h.id === id);
-            if(!item) return;
-
-            document.getElementById('input-topic').value = item.topic;
-            document.getElementById('input-description').value = item.description;
-            document.getElementById('select-day').value = item.day;
-            document.getElementById('select-month').value = item.month;
-            document.getElementById('select-year').value = item.year;
-            
-            const selectTemplate = document.getElementById('select-template');
-            selectTemplate.value = item.template;
-            selectTemplate.dispatchEvent(new Event('change'));
-
-            document.getElementById('input-topic').dispatchEvent(new Event('input'));
-            document.getElementById('input-description').dispatchEvent(new Event('input'));
-            document.getElementById('select-day').dispatchEvent(new Event('change'));
-
-            window.toggleHistoryModal();
-            window.showToast("โหลดประวัติเรียบร้อยแล้ว! (กรุณาเลือกรูปภาพใหม่)");
-        }
-
-        window.deleteHistory = async function(id) {
-            if(confirm("ลบประวัติจดหมายข่าวนี้?")) {
-                if (isFirebaseReady && auth.currentUser) {
-                    try {
-                        await deleteDoc(doc(historyDataRef, id.toString()));
-                        window.showToast("ลบประวัติเรียบร้อย");
-                    } catch (e) {
-                        console.error("Delete history error", e);
-                    }
-                } else {
-                    newsletterHistory = newsletterHistory.filter(h => h.id !== id);
-                    localStorage.setItem('prNewsletterHistory', JSON.stringify(newsletterHistory));
-                    window.renderHistoryList();
-                }
-            }
-        }
-
         window.showToast = function(text) {
             const toast = document.getElementById("toast-message");
             document.getElementById("toast-text").innerText = text;
@@ -966,36 +863,7 @@
             try {
                 const canvas = await html2canvas(activeTemp, { scale: 2.5, useCORS: true, backgroundColor: activeTemplateId === 'template-1' ? '#fdfcf8' : '#f8f9fa', scrollY: 0, scrollX: 0 });
                 const link = document.createElement('a'); link.href = canvas.toDataURL("image/jpeg", 1.0);
-                const topic = document.getElementById('input-topic').value || 'Newsletter';
-                const templateName = activeTemplateId === 'template-1' ? 'ทางการ' : 'ทันสมัย';
-                link.download = `จดหมายข่าว_${templateName}_${topic.substring(0, 20)}.jpg`; link.click();
-
-                // === บันทึกประวัติลงคลาวด์ ===
-                const newRecord = {
-                    id: Date.now(),
-                    topic: document.getElementById('input-topic').value || 'ไม่มีหัวข้อ',
-                    description: document.getElementById('input-description').value || '',
-                    day: document.getElementById('select-day').value,
-                    month: document.getElementById('select-month').value,
-                    year: document.getElementById('select-year').value,
-                    template: document.getElementById('select-template').value,
-                    dateStr: `วันที่ ${document.getElementById('select-day').value} ${document.getElementById('select-month').value} ${document.getElementById('select-year').value}`
-                };
-
-                if (isFirebaseReady && auth.currentUser) {
-                    try {
-                        await setDoc(doc(historyDataRef, newRecord.id.toString()), newRecord);
-                        window.showToast("บันทึกรูปและเก็บประวัติแล้ว!");
-                    } catch (e) {
-                        console.error("Save history error", e);
-                    }
-                } else {
-                    newsletterHistory.push(newRecord);
-                    newsletterHistory.sort((a, b) => b.id - a.id);
-                    localStorage.setItem('prNewsletterHistory', JSON.stringify(newsletterHistory));
-                    window.showToast("บันทึกรูปและเก็บประวัติแล้ว!");
-                }
-
+                link.download = `จดหมายข่าว_${document.getElementById('input-topic').value || 'Newsletter'}.jpg`; link.click();
             } catch (error) { alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"); } finally {
                 activeTemp.style.transform = currentTransform; btnExport.disabled = false; btnExport.classList.remove('opacity-70'); btnText.textContent = '💾 บันทึกเป็นรูปภาพ';
             }
