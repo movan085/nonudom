@@ -3,30 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบสร้างจดหมายข่าว - อบต.โนนอุดม</title>
+    <title>ระบบสารสนเทศเพื่อการประชาสัมพันธ์ - อบต.โนนอุดม</title>
     
-    <!-- === ตั้งค่าไอคอนและสีสันสำหรับ PWA (มือถือ) === -->
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-    <meta name="theme-color" content="#5E278E">
+    <!-- === ตั้งค่าไอคอนและสีสันสำหรับ PWA === -->
+    <link rel="icon" type="image/jpeg" href="./IMG_0350.JPG">
+    <link rel="apple-touch-icon" href="./IMG_0350.JPG">
+    <meta name="theme-color" content="#0071BA">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="จดหมายข่าว อบต.">
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="PR Studio">
 
-     <!-- โหลด Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- โหลด html2canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <!-- โหลดฟอนต์ -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         body { font-family: 'Kanit', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .text-shadow-md { text-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
-        .text-shadow-sm { text-shadow: 1px 1px 3px rgba(0,0,0,0.3); }
+        .text-shadow-md { text-shadow: 2px 2px 5px rgba(0,0,0,0.15); }
         
         /* สไตล์สำหรับกล่องรูป Placeholder */
         .img-placeholder { width: 100%; height: 100%; background-color: #f3f4f6; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -34,26 +29,269 @@
         .img-placeholder::after { content: ''; position: absolute; top: 25%; left: 45%; width: 35%; height: 30%; background: white; border-radius: 50%; opacity: 0.8; }
         .mountain-1 { position: absolute; bottom: -20%; left: -10%; width: 80%; height: 60%; background: #d1d5db; border-radius: 100%; z-index: 10; }
         .mountain-2 { position: absolute; bottom: -30%; right: -10%; width: 70%; height: 70%; background: #9ca3af; border-radius: 100%; z-index: 20; }
+        
+        /* Animation สำหรับสลับหน้า */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-100 via-sky-50 to-yellow-100 min-h-screen flex flex-col justify-between">
+<body class="bg-gradient-to-br from-blue-100 via-sky-50 to-yellow-100 min-h-screen flex flex-col justify-between relative">
     
-    <div class="max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6">
-        <div class="flex flex-col xl:flex-row gap-6 w-full">
+    <!-- Toast Notification -->
+    <div id="toast-message" class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-2xl z-50 flex items-center gap-2 transition-all duration-300 opacity-0 pointer-events-none -translate-y-10">
+        <span>✅</span> <span id="toast-text">แจ้งเตือน!</span>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VIEW: DASHBOARD (หน้าแรก) -->
+    <!-- ========================================== -->
+    <div id="view-dashboard" class="flex flex-col items-center justify-center p-4 md:p-8 flex-1 fade-in">
+        <div class="max-w-[1200px] w-full bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl overflow-hidden border border-white">
+            <div class="bg-gradient-to-r from-[#0071BA] to-[#00AEEF] p-8 md:p-12 text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-64 h-64 bg-white opacity-10 rounded-full -ml-20 -mt-20 blur-3xl"></div>
+                <div class="absolute bottom-0 right-0 w-64 h-64 bg-yellow-300 opacity-20 rounded-full -mr-20 -mb-20 blur-3xl"></div>
+                
+                <div class="relative z-10 flex flex-col items-center">
+                    <div class="w-24 h-24 bg-white rounded-full p-1 border-4 border-[#FDBE15] shadow-xl mb-4">
+                        <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
+                    </div>
+                    <h1 class="text-3xl md:text-4xl font-bold text-white mb-2 text-shadow-md">PR Studio - อบต.โนนอุดม</h1>
+                    <p class="text-blue-100 text-lg">ระบบสารสนเทศเพื่อการสร้างสื่อประชาสัมพันธ์แบบครบวงจร</p>
+                </div>
+            </div>
+
+            <div class="p-8 md:p-12">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 border-l-4 border-[#0071BA] pl-3">เลือกประเภทสื่อที่ต้องการสร้าง</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <button onclick="window.switchView('view-newsletter')" class="group text-left bg-white border-2 border-blue-100 rounded-2xl p-6 hover:border-[#0071BA] hover:shadow-[0_10px_20px_rgba(0,113,186,0.15)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">พร้อมใช้งาน</div>
+                        <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:bg-[#0071BA] group-hover:text-white transition-colors">📰</div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">จดหมายข่าว</h3>
+                        <p class="text-sm text-gray-500 line-clamp-2">สร้างภาพข่าวประชาสัมพันธ์กิจกรรมต่างๆ พร้อมเทมเพลตมาตรฐานของหน่วยงาน</p>
+                    </button>
+
+                    <button onclick="window.switchView('view-calendar')" class="group text-left bg-white border-2 border-blue-100 rounded-2xl p-6 hover:border-[#0071BA] hover:shadow-[0_10px_20px_rgba(0,113,186,0.15)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">คลาวด์ซิงค์ ☁️</div>
+                        <div class="w-14 h-14 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:bg-[#0071BA] group-hover:text-white transition-colors">📅</div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">คลังอินโฟกราฟิก</h3>
+                        <p class="text-sm text-gray-500 line-clamp-2">คลังสื่อภาพวันหยุดราชการและวันสำคัญ พร้อมระบบคลาวด์แก้ไขอัปเดตข้อมูล</p>
+                    </button>
+
+                    <div class="relative bg-gray-50 border-2 border-gray-100 rounded-2xl p-6 opacity-70 cursor-not-allowed">
+                        <div class="absolute top-0 right-0 bg-gray-400 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl">เร็วๆ นี้</div>
+                        <div class="w-14 h-14 bg-gray-200 text-gray-500 rounded-xl flex items-center justify-center text-3xl mb-4">📢</div>
+                        <h3 class="text-xl font-bold text-gray-600 mb-2">ประกาศ / ประชาสัมพันธ์</h3>
+                        <p class="text-sm text-gray-500 line-clamp-2">สร้างภาพประกาศแจ้งเตือน, แจ้งข่าวสารสั้นๆ, หรืออินโฟกราฟิกแบบหน้าเดียว</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- VIEW: CALENDAR & ASSETS (ระบบคลังสื่อ) -->
+    <!-- ========================================== -->
+    <div id="view-calendar" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in h-screen max-h-screen">
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-white shrink-0 gap-4">
+            <button onclick="window.switchView('view-dashboard')" class="flex items-center gap-2 text-[#0071BA] font-bold hover:bg-blue-50 px-4 py-2 rounded-xl transition-colors w-fit">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+                กลับหน้าหลัก
+            </button>
+            <h2 class="font-bold text-gray-700 hidden lg:block text-xl">📅 คลังสื่อและปฏิทินวันสำคัญ</h2>
             
-            <!-- === แผงควบคุม (ซ้าย) === -->
+            <button onclick="window.switchView('view-asset-manager')" class="flex items-center justify-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold px-4 py-2 rounded-xl transition-colors shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" /></svg>
+                เพิ่ม/แก้ไขข้อมูลคลังสื่อ
+            </button>
+        </div>
+
+        <div class="flex flex-col xl:flex-row gap-6 w-full flex-1 min-h-0">
+            <div class="w-full xl:w-1/3 bg-white/90 backdrop-blur-md p-0 rounded-3xl shadow-xl border border-white overflow-hidden flex flex-col h-[350px] xl:h-full shrink-0">
+                <div class="bg-gradient-to-r from-[#0071BA] to-[#00AEEF] p-5 text-white shadow-md z-10 shrink-0">
+                    <h2 class="text-xl font-bold flex items-center gap-2">
+                        <span class="text-2xl">📋</span> รายการวันสำคัญ
+                    </h2>
+                    <p class="text-sm opacity-90 mt-1">เลือกรายการเพื่อดูสื่อและแคปชัน</p>
+                </div>
+                <div id="event-list-container" class="flex-1 overflow-y-auto custom-scroll p-4 space-y-3 bg-gray-50/50">
+                    <!-- รายการจะถูกแทรกที่นี่ -->
+                </div>
+            </div>
+
+            <div class="w-full xl:w-2/3 bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border border-white flex flex-col h-auto xl:h-full overflow-y-auto custom-scroll p-6 md:p-8">
+                
+                <div id="calendar-empty-state" class="flex-1 flex flex-col items-center justify-center text-gray-400 py-10">
+                    <span class="text-6xl mb-4">👆</span>
+                    <p class="text-xl font-medium">กรุณาเลือกวันสำคัญจากเมนูด้านซ้าย</p>
+                </div>
+
+                <div id="calendar-content-state" class="hidden flex-col gap-6 w-full max-w-2xl mx-auto pb-10 xl:pb-0">
+                    <div class="border-b-2 border-gray-100 pb-4">
+                        <p id="asset-date" class="text-[#0071BA] font-semibold text-sm mb-1 bg-blue-50 inline-block px-3 py-1 rounded-full border border-blue-100"></p>
+                        <h2 id="asset-title" class="text-2xl md:text-3xl font-bold text-gray-800 leading-snug"></h2>
+                    </div>
+
+                    <div class="w-full aspect-[4/3] md:aspect-[16/9] bg-gray-100 rounded-2xl border-4 border-white shadow-lg overflow-hidden relative group">
+                        <img id="asset-preview-img" src="" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" alt="พรีวิว">
+                        <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm">
+                            <a id="asset-download-btn-overlay" href="#" target="_blank" class="bg-white text-[#0071BA] font-bold py-3 px-6 rounded-full shadow-xl hover:bg-blue-50 transition-colors transform hover:scale-105 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                                ดาวน์โหลดภาพต้นฉบับ
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50/50 p-5 md:p-6 rounded-2xl border border-blue-100 relative">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-bold text-[#0071BA] flex items-center gap-2">
+                                <span>💬</span> แคปชันสำหรับโพสต์
+                            </h3>
+                            <button onclick="window.copyCaption()" class="text-sm bg-white border border-blue-200 text-[#0071BA] px-3 py-1.5 rounded-lg hover:bg-[#0071BA] hover:text-white transition-colors flex items-center gap-1.5 shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                                คัดลอก
+                            </button>
+                        </div>
+                        <textarea id="asset-caption-text" readonly class="w-full bg-white p-4 rounded-xl border border-gray-200 text-gray-700 leading-relaxed resize-none h-48 focus:outline-none focus:ring-2 focus:ring-blue-200 custom-scroll"></textarea>
+                    </div>
+
+                    <a id="asset-download-btn-bottom" href="#" target="_blank" class="w-full md:hidden bg-[#0071BA] text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg flex justify-center items-center gap-2 mt-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                        ดาวน์โหลดภาพความละเอียดสูง
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- VIEW: ASSET MANAGER (ระบบจัดการเพิ่ม/แก้ไขคลังสื่อ) -->
+    <!-- ========================================== -->
+    <div id="view-asset-manager" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in h-screen max-h-screen">
+        
+        <!-- Header กลับหน้าคลังสื่อ -->
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-white shrink-0 gap-4">
+            <button onclick="window.switchView('view-calendar')" class="flex items-center gap-2 text-gray-600 font-bold hover:bg-gray-100 px-4 py-2 rounded-xl transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+                กลับหน้าคลังสื่อ
+            </button>
+            <h2 class="font-bold text-yellow-600 text-xl flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                จัดการข้อมูลคลังอินโฟกราฟิก
+            </h2>
+        </div>
+
+        <div class="flex flex-col xl:flex-row gap-6 w-full flex-1 min-h-0">
+            
+            <!-- แผงซ้าย: ฟอร์มเพิ่ม/แก้ไข -->
+            <div class="w-full xl:w-5/12 bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border border-white flex flex-col h-fit overflow-hidden border-t-4 border-t-yellow-400">
+                <div class="p-6 md:p-8 bg-yellow-50/50">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center justify-between" id="form-mode-title">
+                        <span>➕ เพิ่มข้อมูลใหม่</span>
+                        <button onclick="window.resetManagerForm()" class="text-sm font-normal text-blue-500 hover:underline bg-white px-3 py-1 rounded-lg border shadow-sm">ล้างฟอร์ม</button>
+                    </h3>
+                    
+                    <form id="asset-manager-form" class="space-y-4" onsubmit="window.saveAssetData(event)">
+                        <input type="hidden" id="manage-id" value="">
+                        
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">หัวข้อ / ชื่อวันสำคัญ *</label>
+                            <input type="text" id="manage-title" required placeholder="เช่น วันเฉลิมพระชนมพรรษา..." class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">วันที่แสดงผล *</label>
+                                <input type="text" id="manage-date" required placeholder="เช่น 28 ก.ค. 69" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">กลุ่มเดือน (สำหรับจัดหมวด) *</label>
+                                <input type="text" id="manage-monthGrp" required placeholder="เช่น กรกฎาคม 2569" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">ลิงก์รูปภาพพรีวิว (URL) *</label>
+                            <input type="url" id="manage-thumb" required placeholder="https://..." class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none text-sm">
+                            <p class="text-[11px] text-gray-500 mt-1">แนะนำให้อัปโหลดรูปฝากไว้ที่เว็บฟรี เช่น Imgur หรือ Google Drive แล้วนำลิงก์รูปมาใส่</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">ลิงก์สำหรับดาวน์โหลด (URL) *</label>
+                            <input type="url" id="manage-download" required placeholder="https://drive.google.com/..." class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none text-sm">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">แคปชัน *</label>
+                            <textarea id="manage-caption" required rows="4" placeholder="พิมพ์ข้อความที่ต้องการให้คัดลอก..." class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none custom-scroll"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 text-yellow-900 font-bold py-3 rounded-xl shadow-md transition-all transform hover:-translate-y-0.5 mt-2">
+                            💾 บันทึกข้อมูล
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- แผงขวา: รายการที่มีอยู่ -->
+            <div class="w-full xl:w-7/12 bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border border-white flex flex-col h-auto xl:h-full overflow-hidden">
+                <div class="p-5 md:p-6 bg-gray-50 border-b flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-gray-800">📚 ข้อมูลในระบบปัจจุบัน</h3>
+                    <span id="asset-count-badge" class="bg-blue-100 text-blue-700 text-xs font-bold px-2.5 py-1 rounded-full"></span>
+                </div>
+                
+                <!-- พื้นที่แสดงรายการ -->
+                <div id="manager-list-container" class="flex-1 overflow-y-auto custom-scroll p-4 space-y-3 bg-white">
+                    <!-- จะถูกสร้างด้วย JS -->
+                </div>
+
+                <!-- แสดงสถานะ Firebase -->
+                <div class="p-4 bg-blue-50/80 border-t border-blue-100 flex items-center justify-center gap-2 text-blue-700 text-sm font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
+                    </svg>
+                    <span id="cloud-status-text">กำลังตรวจสอบสถานะการเชื่อมต่อ...</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- VIEW: NEWSLETTER EDITOR (ระบบจดหมายข่าวเดิม) -->
+    <!-- ========================================== -->
+    <div id="view-newsletter" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in">
+        
+        <div class="flex items-center justify-between bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-white">
+            <button onclick="window.switchView('view-dashboard')" class="flex items-center gap-2 text-[#0071BA] font-bold hover:bg-blue-50 px-4 py-2 rounded-xl transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+                กลับหน้าหลัก
+            </button>
+            <h2 class="font-bold text-gray-700 hidden md:block">📰 ระบบสร้างจดหมายข่าว</h2>
+        </div>
+
+        <div class="flex flex-col xl:flex-row gap-6 w-full">
+            <!-- แผงควบคุม ซ้าย -->
             <div class="w-full xl:w-1/3 bg-white/90 backdrop-blur-md p-0 rounded-3xl shadow-2xl border border-white overflow-hidden h-fit flex flex-col shrink-0">
                 <div class="bg-gradient-to-r from-[#0071BA] to-[#00AEEF] p-6 text-white shadow-md z-10 relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
                     <h2 class="text-2xl font-bold flex items-center gap-2 relative z-10">
-                        <span class="text-yellow-300 drop-shadow-md">✨</span> สร้างจดหมายข่าว
+                        <span class="text-yellow-300 drop-shadow-md">✨</span> เครื่องมือแก้ไข
                     </h2>
                     <p class="text-sm opacity-90 mt-1 font-light relative z-10">กรอกข้อมูลและอัพโหลดรูปภาพ</p>
                 </div>
                 
                 <div class="p-4 md:p-6 space-y-5">
-                    
-                    <!-- ส่วนเลือกรูปแบบ -->
                     <div class="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 shadow-sm hover:shadow-md transition-shadow">
                         <label class="block text-sm font-bold text-indigo-900 mb-2 flex items-center gap-2">
                             <span class="text-lg">🎨</span> รูปแบบจดหมายข่าว
@@ -64,7 +302,6 @@
                         </select>
                     </div>
 
-                    <!-- หัวข้อเรื่อง -->
                     <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
                         <label class="block text-sm font-bold text-blue-900 mb-2 flex items-center gap-2">
                             <span class="text-lg">📝</span> หัวข้อเรื่อง (Topic)
@@ -72,7 +309,6 @@
                         <textarea id="input-topic" placeholder="กรอกหัวเรื่องตรงนี้" class="w-full p-3 bg-white border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-inner transition-all" rows="2"></textarea>
                     </div>
                     
-                    <!-- วันที่ -->
                     <div class="bg-sky-50/50 p-4 rounded-2xl border border-sky-100 shadow-sm hover:shadow-md transition-shadow">
                         <label class="block text-sm font-bold text-sky-900 mb-2 flex items-center gap-2">
                             <span class="text-lg">📅</span> วันที่ (Date)
@@ -89,7 +325,6 @@
                         </div>
                     </div>
 
-                    <!-- คำบรรยาย -->
                     <div class="bg-green-50/50 p-4 rounded-2xl border border-green-100 shadow-sm hover:shadow-md transition-shadow">
                         <div class="flex justify-between items-center mb-2">
                             <label class="block text-sm font-bold text-green-900 flex items-center gap-2">
@@ -104,18 +339,15 @@
                         <textarea id="input-description" placeholder="กรอกคำบรรยายกิจกรรมตรงนี้..." class="w-full p-3 bg-white border border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 outline-none shadow-inner transition-all" rows="4"></textarea>
                     </div>
 
-                    <!-- รูปกิจกรรม -->
                     <div class="bg-yellow-50/70 p-4 rounded-2xl border border-yellow-200 shadow-sm hover:shadow-md transition-shadow">
                         <label class="block text-sm font-bold text-yellow-900 mb-3 flex items-center gap-2">
                             <span class="text-lg">🖼️</span> รูปกิจกรรม <span class="text-[10px] md:text-xs font-normal text-yellow-800 bg-yellow-200/80 px-2.5 py-0.5 rounded-full border border-yellow-300">ขนาดเท่ากัน 6 รูป</span>
                         </label>
                         <div class="grid grid-cols-3 gap-2">
-                            <!-- JS จะวนลูปสร้างปุ่มอัปโหลด -->
                             <div id="upload-buttons-container" class="contents"></div>
                         </div>
                     </div>
 
-                    <!-- ปุ่มบันทึก -->
                     <button id="btn-export" class="w-full text-white font-bold py-3.5 px-4 rounded-2xl shadow-[0_10px_20px_rgba(0,113,186,0.3)] transition duration-300 flex justify-center items-center gap-2 bg-gradient-to-r from-[#0071BA] to-[#00AEEF] hover:from-[#005A95] hover:to-[#008BBE] hover:-translate-y-1 text-lg border border-blue-400/50">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                         <span id="btn-text">💾 บันทึกเป็นรูปภาพ</span>
@@ -123,179 +355,113 @@
                 </div>
             </div>
 
-            <!-- === พื้นที่พรีวิว (ขวา) === -->
+            <!-- พื้นที่พรีวิว ขวา -->
             <div id="preview-container" class="w-full xl:w-2/3 flex justify-center bg-white/40 backdrop-blur-sm p-4 md:p-8 rounded-3xl shadow-xl border border-white/60 overflow-hidden relative">
                 
-                <!-- ========================================== -->
-                <!-- TEMPLATE 1 : แบบทางการ (หรูหรา กึ่งกลาง) -->
-                <!-- ========================================== -->
-                <div id="template-1" class="w-[800px] h-[1131px] bg-[#fdfcf8] relative shadow-2xl shrink-0 overflow-hidden transform-origin-top border border-gray-200">
-                    
-                    <!-- กราฟิกตกแต่งมุม -->
-                    <svg class="absolute top-0 left-0 z-0 opacity-80" width="250" height="250" viewBox="0 0 250 250">
-                        <polygon points="0,0 250,0 0,250" fill="#FDBE15" fill-opacity="0.2"/>
-                        <polygon points="0,0 180,0 0,180" fill="#0071BA" fill-opacity="0.9"/>
-                        <polygon points="0,195 195,0 190,0 0,190" fill="#FDBE15"/>
-                    </svg>
-                    <svg class="absolute bottom-0 right-0 z-0 opacity-80" width="300" height="300" viewBox="0 0 300 300">
-                        <polygon points="300,300 0,300 300,0" fill="#FDBE15" fill-opacity="0.2"/>
-                        <polygon points="300,300 120,300 300,120" fill="#0071BA" fill-opacity="0.9"/>
-                        <polygon points="95,300 300,95 300,100 100,300" fill="#FDBE15"/>
-                    </svg>
+                <!-- TEMPLATE 1 : แบบทางการ -->
+                <div id="template-1" class="w-[800px] h-[1131px] bg-[#fdfcf8] relative shadow-2xl shrink-0 overflow-hidden transform-origin-top border border-gray-200 flex flex-col">
+                    <svg class="absolute top-0 left-0 z-0 opacity-80" width="250" height="250" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 250,0 0,250" fill="#FDBE15" fill-opacity="0.2"/><polygon points="0,0 180,0 0,180" fill="#0071BA" fill-opacity="0.9"/><polygon points="0,195 195,0 190,0 0,190" fill="#FDBE15"/></svg>
+                    <svg class="absolute top-[831px] left-[500px] z-0 opacity-80" width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><polygon points="300,300 0,300 300,0" fill="#FDBE15" fill-opacity="0.2"/><polygon points="300,300 120,300 300,120" fill="#0071BA" fill-opacity="0.9"/><polygon points="95,300 300,95 300,100 100,300" fill="#FDBE15"/></svg>
 
-                    <!-- HEADER (จัดกึ่งกลาง) -->
-                    <!-- โลโก้ อบต. (พิกัด X=350 คือกึ่งกลาง 800) -->
-                    <div class="absolute top-[40px] left-[345px] z-30 w-[110px] h-[110px] bg-white rounded-full p-1 border-[3px] border-[#FDBE15] shadow-lg overflow-hidden">
-                        <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
-                    </div>
-                    
-                    <!-- รูปนายกฯ (ลอยขวาบน) -->
-                    <div class="absolute top-[45px] right-[40px] z-30 text-center w-[130px]">
-                        <div class="w-[95px] h-[125px] mx-auto bg-gray-200 border-[3px] border-[#FDBE15] rounded-md shadow-md overflow-hidden mb-2">
+                    <div class="absolute top-[40px] left-[640px] z-20 text-center w-[120px]">
+                        <div class="w-[90px] h-[120px] mx-auto bg-gray-200 border-[3px] border-[#FDBE15] rounded-md shadow-md overflow-hidden mb-2">
                             <img src="./sysbanners_file_6.png" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x250/0071BA/FFF?text=Profile'"/>
                         </div>
-                        <p class="text-[#0071BA] text-[13px] font-bold leading-normal m-0 pb-0.5 whitespace-nowrap">นายสุพจน์ สมน้อย</p>
-                        <p class="text-gray-600 text-[10px] leading-normal m-0 whitespace-nowrap">นายกองค์การบริหารส่วนตำบล<br>โนนอุดม</p>
+                        <p class="text-[#0071BA] text-[13px] font-bold leading-tight">นายสุพจน์ สมน้อย</p>
+                        <p class="text-gray-600 text-[10px] leading-tight mt-0.5">นายกองค์การบริหารส่วนตำบล<br>โนนอุดม</p>
                     </div>
 
-                    <!-- ข้อความจดหมายข่าว (มี whitespace-nowrap กันตกบรรทัด) -->
-                    <div class="absolute top-[165px] left-[0px] w-[800px] z-30 flex flex-col items-center">
-                        <h1 class="text-[54px] leading-none font-bold text-[#0071BA] tracking-tight m-0 pb-1 text-shadow-md whitespace-nowrap">จดหมายข่าว</h1>
-                        <h2 class="text-[36px] leading-none font-bold text-[#374151] m-0 pb-2 text-shadow-sm whitespace-nowrap">ประชาสัมพันธ์</h2>
-                        <p class="text-[20px] leading-none text-gray-600 font-medium m-0 whitespace-nowrap">องค์การบริหารส่วนตำบลโนนอุดม</p>
-                    </div>
-                    
-                    <!-- แคปซูลวันที่ -->
-                    <div class="absolute top-[290px] left-[0px] w-[800px] z-30 text-center flex justify-center">
-                        <div class="bg-gradient-to-r from-[#005A95] to-[#002D56] text-white px-12 py-2.5 rounded-full shadow-lg border-[2px] border-[#FDBE15]">
-                            <span class="sync-date text-[18px] font-medium tracking-wide whitespace-nowrap">วันที่ 7 กรกฎาคม 2569</span>
+                    <div class="relative z-10 w-full flex-1 flex flex-col pt-[35px] pb-[120px]">
+                        <div class="flex flex-col items-center w-full">
+                            <div class="w-[140px] h-[140px] bg-white rounded-full p-1 border-[3px] border-[#FDBE15] shadow-lg overflow-hidden">
+                                <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
+                            </div>
+                            <h1 class="text-[52px] font-bold text-[#0071BA] mt-2 leading-none text-shadow-md">จดหมายข่าว</h1>
+                            <h2 class="text-[32px] font-bold text-[#374151] mt-2 leading-none text-shadow-sm">ประชาสัมพันธ์</h2>
+                            <p class="text-[18px] text-gray-600 font-medium mt-3">องค์การบริหารส่วนตำบลโนนอุดม</p>
+                            <div class="mt-5 inline-block bg-gradient-to-r from-[#005A95] to-[#002D56] text-white px-10 pt-2 pb-3 rounded-full shadow-md border-[2px] border-[#FDBE15]">
+                                <span class="sync-date text-[20px] font-medium tracking-wide leading-none">วันที่ 7 กรกฎาคม 2569</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 px-10 w-full">
+                            <h3 class="sync-topic text-[24px] font-bold text-[#1f2937] text-center leading-snug break-words">หัวเรื่องกิจกรรม</h3>
+                        </div>
+
+                        <div class="mt-6 px-12 w-full grid grid-cols-3 gap-4">
+                            <!-- แถวบน -->
+                            <div class="w-full h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15] relative"><div class="ph-gallery-0 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div><div class="show-gallery-0 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div></div>
+                            <div class="w-full h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15] relative"><div class="ph-gallery-1 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div><div class="show-gallery-1 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div></div>
+                            <div class="w-full h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15] relative"><div class="ph-gallery-2 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div><div class="show-gallery-2 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div></div>
+                            <!-- แถวล่าง -->
+                            <div class="w-full h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15] relative"><div class="ph-gallery-3 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div><div class="show-gallery-3 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div></div>
+                            <div class="w-full h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15] relative"><div class="ph-gallery-4 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div><div class="show-gallery-4 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div></div>
+                            <div class="w-full h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15] relative"><div class="ph-gallery-5 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div><div class="show-gallery-5 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div></div>
+                        </div>
+
+                        <div class="mt-6 px-12 w-full flex-1">
+                            <p class="sync-description text-[15px] text-gray-800 text-center leading-relaxed break-words">คำบรรยายกิจกรรม</p>
                         </div>
                     </div>
 
-                    <!-- BODY -->
-                    <!-- หัวข้อ -->
-                    <div class="absolute top-[370px] left-[50px] w-[700px] z-30">
-                        <h3 class="sync-topic text-[24px] font-bold text-[#1f2937] text-center leading-snug whitespace-pre-wrap break-words px-4">หัวเรื่องกิจกรรม</h3>
-                    </div>
-
-                    <!-- รูปภาพ 3x2 Grid (พิกัดเป๊ะๆ ไม่เบี้ยว) -->
-                    <!-- แถวบน -->
-                    <div class="absolute top-[440px] left-[45px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15]">
-                        <div class="ph-gallery-0 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                        <div class="show-gallery-0 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
-                    </div>
-                    <div class="absolute top-[440px] left-[290px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15]">
-                        <div class="ph-gallery-1 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                        <div class="show-gallery-1 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
-                    </div>
-                    <div class="absolute top-[440px] left-[535px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15]">
-                        <div class="ph-gallery-2 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                        <div class="show-gallery-2 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
-                    </div>
-                    <!-- แถวล่าง -->
-                    <div class="absolute top-[630px] left-[45px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15]">
-                        <div class="ph-gallery-3 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                        <div class="show-gallery-3 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
-                    </div>
-                    <div class="absolute top-[630px] left-[290px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15]">
-                        <div class="ph-gallery-4 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                        <div class="show-gallery-4 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
-                    </div>
-                    <div class="absolute top-[630px] left-[535px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#FDBE15]">
-                        <div class="ph-gallery-5 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                        <div class="show-gallery-5 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
-                    </div>
-
-                    <!-- คำบรรยาย -->
-                    <div class="absolute top-[825px] left-[50px] w-[700px] z-30">
-                        <p class="sync-description text-[15px] text-gray-800 text-center leading-[1.6] whitespace-pre-wrap break-words">คำบรรยายกิจกรรม</p>
-                    </div>
-
-                    <!-- FOOTER (ซ้ายล่าง) -->
-                    <div class="absolute bottom-[40px] left-[50px] z-30 w-[500px]">
-                        <p class="font-bold text-[18px] text-[#005A95] m-0 pb-1 whitespace-nowrap">ฝ่ายประชาสัมพันธ์</p>
-                        <p class="text-[14px] text-gray-700 leading-normal m-0 whitespace-nowrap">www.nonudom.go.th</p>
-                        <p class="text-[14px] text-gray-700 leading-normal m-0 whitespace-nowrap">โทร. 044-077070</p>
+                    <div class="absolute top-[1030px] left-[50px] z-30">
+                        <p class="font-bold text-[18px] text-[#005A95] leading-none mb-2">ฝ่ายประชาสัมพันธ์</p>
+                        <p class="text-[14px] text-gray-700 leading-tight">www.nonudom.go.th</p>
+                        <p class="text-[14px] text-gray-700 leading-tight mt-1">โทร. 044-077070</p>
                     </div>
                 </div>
 
-                <!-- ========================================== -->
-                <!-- TEMPLATE 2 : แบบทันสมัย (แถบสีฟ้า) -->
-                <!-- ========================================== -->
-                <div id="template-2" class="hidden w-[800px] h-[1131px] bg-[#f8f9fa] relative shadow-2xl shrink-0 overflow-hidden transform-origin-top border border-gray-200">
-                    
-                    <!-- HEADER (แถบสีฟ้า) -->
-                    <div class="absolute top-0 left-0 w-full h-[250px] bg-[#0071BA] border-b-[8px] border-[#FDBE15] z-10">
-                        <!-- โลโก้ และ Text ซ้าย -->
-                        <div class="absolute top-[45px] left-[40px] w-[90px] h-[90px] bg-white rounded-full p-0.5 border-[3px] border-[#FDBE15] shadow-lg overflow-hidden">
-                            <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
+                <!-- TEMPLATE 2 : แบบทันสมัย -->
+                <div id="template-2" class="hidden w-[800px] h-[1131px] bg-[#f8f9fa] relative shadow-2xl shrink-0 overflow-hidden transform-origin-top border border-gray-200 flex flex-col">
+                    <div class="w-full bg-[#0071BA] border-b-[8px] border-[#FDBE15] pt-10 pb-12 px-10 flex justify-between items-start relative z-10">
+                        <div class="flex items-center gap-5">
+                            <div class="w-[120px] h-[120px] bg-white rounded-full p-0.5 border-[3px] border-[#FDBE15] shadow-lg overflow-hidden shrink-0">
+                                <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover bg-white" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
+                            </div>
+                            <div>
+                                <h1 class="text-[46px] font-bold text-white tracking-wide text-shadow-md leading-none">จดหมายข่าว</h1>
+                                <h2 class="text-[28px] font-bold text-white text-shadow-md leading-none mt-2">ข่าวประชาสัมพันธ์</h2>
+                                <p class="text-[16px] text-white opacity-90 leading-none mt-3">องค์การบริหารส่วนตำบลโนนอุดม</p>
+                            </div>
                         </div>
-                        <div class="absolute top-[48px] left-[150px]">
-                            <h1 class="text-[44px] leading-none font-bold text-white tracking-wide text-shadow-md m-0 pb-1 whitespace-nowrap">จดหมายข่าว</h1>
-                            <h2 class="text-[28px] leading-none font-bold text-white text-shadow-md m-0 pb-1.5 whitespace-nowrap">ข่าวประชาสัมพันธ์</h2>
-                            <p class="text-[15px] leading-none text-white opacity-90 m-0 whitespace-nowrap">องค์การบริหารส่วนตำบลโนนอุดม</p>
-                        </div>
-                        
-                        <!-- รูปนายกฯ ขวา -->
-                        <div class="absolute top-[45px] right-[40px] text-center w-[160px]">
-                            <div class="w-[100px] h-[130px] mx-auto bg-[#e5e7eb] border-[3px] border-[#FDBE15] rounded-md shadow-lg overflow-hidden mb-2">
+                        <div class="text-center w-[140px]">
+                            <div class="w-[95px] h-[125px] mx-auto bg-[#e5e7eb] border-[3px] border-[#FDBE15] rounded-md shadow-lg overflow-hidden mb-2">
                                 <img src="./sysbanners_file_6.png" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x250/0071BA/FFF?text=Profile'"/>
                             </div>
-                            <p class="text-white text-[13px] font-bold leading-normal text-shadow-sm m-0 pb-0.5 whitespace-nowrap">นายสุพจน์ สมน้อย</p>
-                            <p class="text-white text-[11px] leading-normal opacity-90 text-shadow-sm m-0 whitespace-nowrap">นายกองค์การบริหารส่วนตำบล<br>โนนอุดม</p>
+                            <p class="text-white text-[13px] font-bold leading-tight text-shadow-sm">นายสุพจน์ สมน้อย</p>
+                            <p class="text-white text-[11px] opacity-90 leading-tight text-shadow-sm mt-0.5">นายกอบต. โนนอุดม</p>
                         </div>
                     </div>
                     
-                    <!-- วันที่ (แถบพาด) -->
-                    <div class="absolute top-[230px] left-[40px] z-20 bg-[#FDBE15] px-6 py-1.5 shadow-md">
-                        <span class="sync-date text-[#0071BA] font-bold text-[18px] tracking-wide leading-none whitespace-nowrap">วันที่ 7 กรกฎาคม 2569</span>
+                    <div class="absolute top-[195px] left-[50px] z-20 bg-[#FDBE15] px-6 pt-2 pb-2.5 shadow-md">
+                        <span class="sync-date text-[#0071BA] font-bold text-[18px] tracking-wide leading-none">วันที่ 7 กรกฎาคม 2569</span>
                     </div>
 
-                    <!-- BODY -->
-                    <div class="absolute top-[320px] left-[50px] w-[700px] z-30">
-                        <h3 class="sync-topic text-[24px] font-bold text-[#1f2937] text-center leading-snug whitespace-pre-wrap break-words px-4 border-l-[4px] border-[#0071BA] bg-white p-3 shadow-sm">หัวเรื่องกิจกรรม</h3>
-                    </div>
-
-                    <!-- รูปภาพ 3x2 Grid (พิกัดเดียวกันกับ Template 1) -->
-                    <!-- แถวบน -->
-                    <div class="absolute top-[410px] left-[45px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb]">
-                        <div class="ph-gallery-0 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                        <div class="show-gallery-0 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
-                    </div>
-                    <div class="absolute top-[410px] left-[290px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb]">
-                        <div class="ph-gallery-1 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                        <div class="show-gallery-1 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
-                    </div>
-                    <div class="absolute top-[410px] left-[535px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb]">
-                        <div class="ph-gallery-2 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                        <div class="show-gallery-2 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
-                    </div>
-                    <!-- แถวล่าง -->
-                    <div class="absolute top-[600px] left-[45px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb]">
-                        <div class="ph-gallery-3 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                        <div class="show-gallery-3 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
-                    </div>
-                    <div class="absolute top-[600px] left-[290px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb]">
-                        <div class="ph-gallery-4 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                        <div class="show-gallery-4 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
-                    </div>
-                    <div class="absolute top-[600px] left-[535px] w-[220px] h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb]">
-                        <div class="ph-gallery-5 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div>
-                        <div class="show-gallery-5 hidden w-full h-full bg-cover bg-center bg-no-repeat"></div>
-                    </div>
-
-                    <!-- คำบรรยาย -->
-                    <div class="absolute top-[795px] left-[50px] w-[700px] z-30">
-                        <p class="sync-description text-[15px] text-gray-800 text-center leading-[1.6] whitespace-pre-wrap break-words bg-white/50 p-4 rounded-xl">คำบรรยายกิจกรรม</p>
-                    </div>
-
-                    <!-- FOOTER -->
-                    <div class="absolute bottom-0 left-0 w-full h-[120px] bg-[#0071BA] z-10">
-                        <div class="absolute top-[30px] left-[40px] text-white">
-                            <p class="font-bold text-[16px] mb-1 leading-tight text-[#FDBE15] whitespace-nowrap">องค์การบริหารส่วนตําบลโนนอุดม</p>
-                            <p class="text-[13px] opacity-90 leading-tight m-0 whitespace-nowrap">โทรศัพท์ / โทรสาร (แฟกซ์) : 044-077070</p>
-                            <p class="text-[13px] opacity-90 leading-tight m-0 mt-0.5 whitespace-nowrap">เลขที่ 234 หมู่ที่ 1 ตำบลโนนอุดม อำเภอเมืองบยาง จังหวัดนครราชสีมา 30270</p>
+                    <div class="w-full flex-1 flex flex-col pt-[50px] pb-[150px] px-[50px] relative z-0">
+                        <div class="w-full mt-2">
+                            <h3 class="sync-topic text-[24px] font-bold text-[#1f2937] break-words border-l-[5px] border-[#0071BA] bg-white p-4 shadow-sm leading-snug">หัวเรื่องกิจกรรม</h3>
                         </div>
+
+                        <div class="mt-6 w-full grid grid-cols-3 gap-4">
+                            <!-- แถวบน -->
+                            <div class="w-full h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb] relative"><div class="ph-gallery-0 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div><div class="show-gallery-0 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div></div>
+                            <div class="w-full h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb] relative"><div class="ph-gallery-1 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div><div class="show-gallery-1 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div></div>
+                            <div class="w-full h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb] relative"><div class="ph-gallery-2 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div><div class="show-gallery-2 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div></div>
+                            <!-- แถวล่าง -->
+                            <div class="w-full h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb] relative"><div class="ph-gallery-3 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div><div class="show-gallery-3 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div></div>
+                            <div class="w-full h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb] relative"><div class="ph-gallery-4 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div><div class="show-gallery-4 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div></div>
+                            <div class="w-full h-[165px] bg-white p-1 shadow-md border-[2px] border-[#e5e7eb] relative"><div class="ph-gallery-5 img-placeholder w-full h-full"><div class="mountain-1"></div><div class="mountain-2"></div></div><div class="show-gallery-5 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-1 left-1" style="width: calc(100% - 8px); height: calc(100% - 8px);"></div></div>
+                        </div>
+
+                        <div class="mt-6 w-full flex-1">
+                            <p class="sync-description text-[15px] text-gray-800 text-center leading-relaxed break-words bg-white/50 p-4 rounded-xl">คำบรรยายกิจกรรม</p>
+                        </div>
+                    </div>
+
+                    <div class="absolute top-[1011px] left-0 w-[800px] h-[120px] bg-[#0071BA] px-10 py-6 z-10">
+                        <p class="font-bold text-[16px] text-[#FDBE15] leading-none mb-1.5">องค์การบริหารส่วนตําบลโนนอุดม</p>
+                        <p class="text-[13px] text-white opacity-90 leading-tight">โทรศัพท์ / โทรสาร (แฟกซ์) : 044-077070</p>
+                        <p class="text-[13px] text-white opacity-90 leading-tight mt-0.5">เลขที่ 234 หมู่ที่ 1 ตำบลโนนอุดม อำเภอเมืองบยาง จังหวัดนครราชสีมา 30270</p>
                     </div>
                 </div>
 
@@ -308,189 +474,381 @@
         ✨ องค์การบริหารส่วนตำบลโนนอุดม ✨
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- ระบบจัดการรูปแบบ (Templates) ---
-            const selectTemplate = document.getElementById('select-template');
-            const template1 = document.getElementById('template-1');
-            const template2 = document.getElementById('template-2');
-            let activeTemplateId = 'template-1'; // เก็บค่าว่าตอนนี้เปิดแบบไหนอยู่
+    <!-- โหลดโมดูล Firebase -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-            selectTemplate.addEventListener('change', (e) => {
-                if(e.target.value === '1') {
-                    template1.classList.remove('hidden');
-                    template2.classList.add('hidden');
-                    activeTemplateId = 'template-1';
+        // ==========================================
+        // 1. DATA & STATE MANAGEMENT (ผสานกับ Firebase)
+        // ==========================================
+        let assetData = [];
+        let isFirebaseReady = false;
+        let db, auth, publicDataRef;
+
+        // 👇👇👇 นำ Firebase Config ของคุณมาวางตรงนี้ 👇👇👇
+        const myFirebaseConfig = {
+          apiKey: "AIzaSyBysqombxqHciw4hWmUo5zSaOgAiguR8Ig",
+          authDomain: "pr-nonudom.firebaseapp.com",
+          projectId: "pr-nonudom",
+          storageBucket: "pr-nonudom.firebasestorage.app",
+          messagingSenderId: "143493136278",
+          appId: "1:143493136278:web:b003ee0a235aa12f6ca7b7",
+          measurementId: "G-071D8810WH"
+        };
+        // 👆👆👆 ============================== 👆👆👆
+
+        const updateCloudStatus = (text, isError = false) => {
+            const statusEl = document.getElementById('cloud-status-text');
+            if(statusEl) {
+                statusEl.innerText = text;
+                statusEl.parentElement.className = `p-4 border-t flex items-center justify-center gap-2 text-sm font-medium ${isError ? 'bg-red-50 border-red-100 text-red-600' : 'bg-green-50 border-green-100 text-green-700'}`;
+            }
+        }
+
+        try {
+            let firebaseConfigToUse = null;
+            let isLocalCanvas = false;
+
+            if (myFirebaseConfig && myFirebaseConfig.apiKey) {
+                firebaseConfigToUse = myFirebaseConfig;
+            } 
+            else if (typeof __firebase_config !== 'undefined') {
+                firebaseConfigToUse = JSON.parse(__firebase_config);
+                isLocalCanvas = true;
+            }
+
+            if (firebaseConfigToUse) {
+                const app = initializeApp(firebaseConfigToUse);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                
+                if (isLocalCanvas) {
+                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                    publicDataRef = collection(db, 'artifacts', appId, 'public', 'data', 'pr_assets');
                 } else {
-                    template2.classList.remove('hidden');
-                    template1.classList.add('hidden');
-                    activeTemplateId = 'template-2';
+                    publicDataRef = collection(db, 'pr_assets');
                 }
-                scalePreview(); // ปรับขนาดพรีวิวใหม่เมื่อสลับ
-            });
+                
+                isFirebaseReady = true;
 
-            // --- ระบบ Responsive Preview ---
-            const previewContainer = document.getElementById('preview-container');
-            
-            const scalePreview = () => {
-                const padding = window.innerWidth < 768 ? 32 : 64; 
-                const availableWidth = previewContainer.clientWidth - padding;
-                const activeTemp = document.getElementById(activeTemplateId);
+                const initAuth = async () => {
+                    try {
+                        if (isLocalCanvas && typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            await signInWithCustomToken(auth, __initial_auth_token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (err) {
+                        console.error("Auth Error:", err);
+                        updateCloudStatus("การยืนยันตัวตนล้มเหลว (ต้องเปิด Anonymous Auth ใน Firebase)", true);
+                    }
+                };
+                initAuth();
 
-                if (availableWidth < 800) {
-                    const scaleRatio = availableWidth / 800;
-                    activeTemp.style.transform = `scale(${scaleRatio})`;
-                    activeTemp.style.transformOrigin = 'top center';
-                    previewContainer.style.height = `${(1131 * scaleRatio) + padding}px`;
-                } else {
-                    activeTemp.style.transform = 'none';
-                    previewContainer.style.height = 'auto';
-                }
-            };
-
-            window.addEventListener('resize', scalePreview);
-            setTimeout(scalePreview, 100);
-
-            // --- ระบบผูกข้อมูลเข้า 2 เทมเพลตพร้อมกัน ---
-            const syncData = (inputId, displayClass, defaultText) => {
-                const input = document.getElementById(inputId);
-                input.addEventListener('input', (e) => {
-                    const value = e.target.value || defaultText;
-                    document.querySelectorAll('.' + displayClass).forEach(el => {
-                        el.textContent = value;
-                    });
-                });
-            };
-
-            syncData('input-topic', 'sync-topic', 'หัวเรื่องกิจกรรม');
-            syncData('input-description', 'sync-description', 'คำบรรยายกิจกรรม');
-
-            // ปรับขนาดฟอนต์ (ส่งผลทั้ง 2 แบบ)
-            document.getElementById('fontSize-desc').addEventListener('input', (e) => {
-                document.querySelectorAll('.sync-description').forEach(el => {
-                    el.style.fontSize = `${e.target.value}px`;
-                });
-            });
-
-            // --- ระบบวันที่ ---
-            const selectDay = document.getElementById('select-day');
-            const selectMonth = document.getElementById('select-month');
-            const selectYear = document.getElementById('select-year');
-
-            const today = new Date();
-            const currentDay = today.getDate();
-            const currentMonthIndex = today.getMonth();
-            const currentThaiYear = today.getFullYear() + 543;
-            const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
-
-            for (let i = 1; i <= 31; i++) {
-                let option = document.createElement('option'); option.value = i; option.text = i;
-                if (i === currentDay) option.selected = true; selectDay.appendChild(option);
-            }
-            selectMonth.value = thaiMonths[currentMonthIndex];
-            for (let i = currentThaiYear - 5; i <= currentThaiYear + 5; i++) {
-                let option = document.createElement('option'); option.value = i; option.text = i;
-                if (i === currentThaiYear) option.selected = true; selectYear.appendChild(option);
-            }
-
-            const updateDisplayDate = () => {
-                const dateText = `วันที่ ${selectDay.value} ${selectMonth.value} ${selectYear.value}`;
-                document.querySelectorAll('.sync-date').forEach(el => {
-                    el.textContent = dateText;
-                });
-            };
-            selectDay.addEventListener('change', updateDisplayDate);
-            selectMonth.addEventListener('change', updateDisplayDate);
-            selectYear.addEventListener('change', updateDisplayDate);
-            updateDisplayDate();
-
-            // --- สร้างปุ่มอัปโหลดรูป 6 ปุ่ม ---
-            const uploadContainer = document.getElementById('upload-buttons-container');
-            let uploadHtml = '';
-            for (let i = 0; i < 6; i++) {
-                uploadHtml += `
-                    <div class="relative group">
-                        <input type="file" accept="image/*" class="hidden" id="upload-img-${i}"/>
-                        <label for="upload-img-${i}" id="label-img-${i}" class="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm">
-                            <div id="icon-img-${i}" class="flex flex-col items-center justify-center pointer-events-none">
-                                <span class="text-xl text-yellow-500 mb-0.5 leading-none">+</span>
-                                <span class="text-[10px] font-medium border px-1.5 py-0.5 rounded-md text-blue-700 bg-blue-50 border-blue-200">รูปที่ ${i+1}</span>
-                            </div>
-                            <img id="thumb-img-${i}" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
-                        </label>
-                    </div>`;
-            }
-            uploadContainer.innerHTML = uploadHtml;
-
-            // ผูก Event อัปโหลดรูปให้แสดงผลทั้ง 2 แบบ
-            for (let i = 0; i < 6; i++) {
-                document.getElementById(`upload-img-${i}`).addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const url = URL.createObjectURL(file);
-                        
-                        // ซ่อนปุ่มโชว์รูปจิ๋ว
-                        document.getElementById(`icon-img-${i}`).classList.add('hidden');
-                        const thumb = document.getElementById(`thumb-img-${i}`);
-                        thumb.src = url;
-                        thumb.classList.remove('hidden');
-                        document.getElementById(`label-img-${i}`).classList.replace('border-yellow-400', 'border-blue-500');
-
-                        // ใส่รูปลงกระดาษพรีวิว (หาคลาสที่ตรงกันในทั้ง 2 เทมเพลต)
-                        document.querySelectorAll(`.show-gallery-${i}`).forEach(el => {
-                            el.style.backgroundImage = `url('${url}')`;
-                            el.classList.remove('hidden');
-                        });
-                        document.querySelectorAll(`.ph-gallery-${i}`).forEach(el => {
-                            el.classList.add('hidden');
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        updateCloudStatus("ซิงค์กับคลาวด์แล้ว ☁️");
+                        onSnapshot(publicDataRef, (snapshot) => {
+                            assetData = [];
+                            snapshot.forEach((doc) => {
+                                assetData.push(doc.data());
+                            });
+                            assetData.sort((a, b) => b.id - a.id);
+                            window.renderCalendarList();
+                            window.renderManagerList();
+                        }, (error) => {
+                            console.error("Firestore error:", error);
+                            updateCloudStatus("เชื่อมต่อคลาวด์ล้มเหลว ❌", true);
                         });
                     }
                 });
+            } else {
+                throw new Error("No Firebase config found");
+            }
+        } catch(e) {
+            console.warn("ไม่สามารถเชื่อมต่อ Firebase ได้ สลับไปใช้โหมดออฟไลน์", e);
+            updateCloudStatus("โหมดออฟไลน์ (เซฟข้อมูลลงในเครื่องเท่านั้น) ⚠️", true);
+            assetData = JSON.parse(localStorage.getItem('prStudioAssets')) || [];
+            window.renderCalendarList();
+            window.renderManagerList();
+        }
+
+        // ==========================================
+        // ส่งต่อฟังก์ชันให้ใช้งานแบบ Global
+        // ==========================================
+        window.switchView = function(viewId) {
+            document.getElementById('view-dashboard').classList.add('hidden');
+            document.getElementById('view-newsletter').classList.add('hidden');
+            document.getElementById('view-calendar').classList.add('hidden');
+            document.getElementById('view-asset-manager').classList.add('hidden');
+
+            document.getElementById(viewId).classList.remove('hidden');
+
+            if(viewId === 'view-newsletter') {
+                setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+            } else if (viewId === 'view-calendar') {
+                window.renderCalendarList();
+            } else if (viewId === 'view-asset-manager') {
+                window.renderManagerList();
+                window.resetManagerForm();
+            }
+            window.scrollTo(0, 0);
+        }
+
+        window.renderCalendarList = function() {
+            const container = document.getElementById('event-list-container');
+            container.innerHTML = ''; 
+            
+            if(assetData.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center text-sm py-4">ยังไม่มีข้อมูลวันสำคัญ</p>';
+                return;
             }
 
-            // --- ระบบ Export เซฟเป็นรูปภาพ ---
-            const btnExport = document.getElementById('btn-export');
-            const btnText = document.getElementById('btn-text');
+            let currentMonth = "";
+            assetData.forEach(event => {
+                if(event.monthGrp !== currentMonth) {
+                    currentMonth = event.monthGrp;
+                    const monthHeader = document.createElement('h3');
+                    monthHeader.className = "text-[#0071BA] font-bold text-sm pt-3 pb-1 border-b border-gray-200 mt-2";
+                    monthHeader.innerText = currentMonth;
+                    container.appendChild(monthHeader);
+                }
 
-            btnExport.addEventListener('click', async () => {
-                btnExport.disabled = true;
-                btnExport.classList.add('opacity-70');
-                btnText.textContent = 'กำลังแปลงรูปภาพ...';
-                window.scrollTo(0, 0);
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:border-blue-400 hover:shadow-md hover:bg-blue-50 transition-all flex flex-col gap-1 focus:ring-2 focus:ring-blue-300 outline-none";
+                btn.onclick = () => window.selectAsset(event.id);
+                btn.innerHTML = `
+                    <span class="text-xs font-semibold text-blue-500 bg-blue-100 px-2 py-0.5 rounded w-fit">${event.dateStr}</span>
+                    <span class="font-bold text-gray-800 leading-tight text-sm line-clamp-2">${event.title}</span>
+                `;
+                container.appendChild(btn);
+            });
+        }
 
-                // เลือกเซฟเป้าหมายตามเทมเพลตที่เปิดอยู่เท่านั้น
-                const activeTemplateElement = document.getElementById(activeTemplateId);
-                const currentTransform = activeTemplateElement.style.transform;
-                activeTemplateElement.style.transform = 'none'; // ยกเลิกย่อส่วนชั่วคราว
+        window.selectAsset = function(id) {
+            const event = assetData.find(e => e.id === id);
+            if(!event) return;
 
+            document.getElementById('calendar-empty-state').classList.add('hidden');
+            document.getElementById('calendar-content-state').classList.remove('hidden');
+            document.getElementById('calendar-content-state').classList.add('flex');
+
+            document.getElementById('asset-date').innerText = event.dateStr;
+            document.getElementById('asset-title').innerText = event.title;
+            document.getElementById('asset-preview-img').src = event.thumbUrl;
+            document.getElementById('asset-caption-text').value = event.caption;
+            
+            document.getElementById('asset-download-btn-overlay').href = event.downloadUrl;
+            document.getElementById('asset-download-btn-bottom').href = event.downloadUrl;
+        }
+
+        window.copyCaption = function() {
+            const copyText = document.getElementById("asset-caption-text");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            document.execCommand("copy");
+            window.showToast("คัดลอกแคปชันเรียบร้อยแล้ว!");
+            window.getSelection().removeAllRanges();
+        }
+
+        window.renderManagerList = function() {
+            const container = document.getElementById('manager-list-container');
+            container.innerHTML = '';
+            document.getElementById('asset-count-badge').innerText = `ทั้งหมด ${assetData.length} รายการ`;
+
+            if(assetData.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-6">ไม่มีข้อมูล กรุณาเพิ่มข้อมูลใหม่</p>';
+                return;
+            }
+
+            assetData.forEach(event => {
+                const item = document.createElement('div');
+                item.className = "flex items-center justify-between p-3 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md transition-shadow";
+                item.innerHTML = `
+                    <div class="flex items-center gap-3 overflow-hidden">
+                        <img src="${event.thumbUrl}" onerror="this.src='https://placehold.co/100x100/EEE/999?text=Error'" class="w-12 h-12 rounded-lg object-cover bg-gray-100 shrink-0 border">
+                        <div class="overflow-hidden">
+                            <p class="text-xs text-blue-600 font-bold mb-0.5">${event.dateStr}</p>
+                            <p class="text-sm font-bold text-gray-800 truncate">${event.title}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0 ml-2">
+                        <button onclick="window.editAsset(${event.id})" class="p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors" title="แก้ไข">✏️</button>
+                        <button onclick="window.deleteAsset(${event.id})" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="ลบ">🗑️</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        window.resetManagerForm = function() {
+            document.getElementById('asset-manager-form').reset();
+            document.getElementById('manage-id').value = '';
+            document.getElementById('form-mode-title').innerHTML = `<span>➕ เพิ่มข้อมูลใหม่</span> <button type="button" onclick="window.resetManagerForm()" class="text-sm font-normal text-blue-500 hover:underline bg-white px-3 py-1 rounded-lg border shadow-sm">ล้างฟอร์ม</button>`;
+        }
+
+        window.editAsset = function(id) {
+            const event = assetData.find(e => e.id === id);
+            if(!event) return;
+
+            document.getElementById('manage-id').value = event.id;
+            document.getElementById('manage-title').value = event.title;
+            document.getElementById('manage-date').value = event.dateStr;
+            document.getElementById('manage-monthGrp').value = event.monthGrp;
+            document.getElementById('manage-thumb').value = event.thumbUrl;
+            document.getElementById('manage-download').value = event.downloadUrl;
+            document.getElementById('manage-caption').value = event.caption;
+
+            document.getElementById('form-mode-title').innerHTML = `<span class="text-blue-600">✏️ แก้ไข: ${event.title}</span> <button type="button" onclick="window.resetManagerForm()" class="text-sm font-normal text-blue-500 hover:underline bg-white px-3 py-1 rounded-lg border shadow-sm">ยกเลิกการแก้ไข</button>`;
+        }
+
+        window.saveAssetData = async function(e) {
+            e.preventDefault();
+            const idStr = document.getElementById('manage-id').value;
+            const newAsset = {
+                id: idStr ? parseInt(idStr) : Date.now(),
+                title: document.getElementById('manage-title').value.trim(),
+                dateStr: document.getElementById('manage-date').value.trim(),
+                monthGrp: document.getElementById('manage-monthGrp').value.trim(),
+                thumbUrl: document.getElementById('manage-thumb').value.trim(),
+                downloadUrl: document.getElementById('manage-download').value.trim(),
+                caption: document.getElementById('manage-caption').value.trim()
+            };
+
+            if (isFirebaseReady && auth.currentUser) {
                 try {
-                    // การตั้งค่าเพียวๆ เน้นความเสถียรที่สุด
-                    const canvas = await html2canvas(activeTemplateElement, {
-                        scale: 2.5, 
-                        useCORS: true,
-                        backgroundColor: activeTemplateId === 'template-1' ? '#fdfcf8' : '#f8f9fa',
-                        scrollY: 0,
-                        scrollX: 0
-                    });
-                    
-                    const image = canvas.toDataURL("image/jpeg", 1.0);
-                    const link = document.createElement('a');
-                    link.href = image;
-                    const topic = document.getElementById('input-topic').value || 'Newsletter';
-                    const templateName = activeTemplateId === 'template-1' ? 'ทางการ' : 'ทันสมัย';
-                    link.download = `จดหมายข่าว_${templateName}_${topic.substring(0, 20)}.jpg`;
-                    link.click();
+                    await setDoc(doc(publicDataRef, newAsset.id.toString()), newAsset);
+                    window.showToast(idStr ? "อัปเดตขึ้นคลาวด์เรียบร้อย!" : "บันทึกขึ้นคลาวด์เรียบร้อย!");
+                    window.resetManagerForm();
                 } catch (error) {
-                    alert("เกิดข้อผิดพลาดในการเซฟภาพ กรุณาลองใหม่อีกครั้ง");
-                } finally {
-                    activeTemplateElement.style.transform = currentTransform;
-                    btnExport.disabled = false;
-                    btnExport.classList.remove('opacity-70');
-                    btnText.textContent = '💾 บันทึกเป็นรูปภาพ';
+                    console.error("Save Error:", error);
+                    window.showToast("เกิดข้อผิดพลาดตอนเซฟลงคลาวด์");
+                }
+            } else {
+                const index = assetData.findIndex(e => e.id === newAsset.id);
+                if(index !== -1) assetData[index] = newAsset;
+                else assetData.push(newAsset);
+                
+                assetData.sort((a, b) => b.id - a.id);
+                localStorage.setItem('prStudioAssets', JSON.stringify(assetData));
+                
+                window.renderCalendarList();
+                window.renderManagerList();
+                window.resetManagerForm();
+                window.showToast(idStr ? "อัปเดตข้อมูลในเครื่องเรียบร้อย!" : "เพิ่มข้อมูลในเครื่องเรียบร้อย!");
+            }
+        }
+
+        window.deleteAsset = async function(id) {
+            if(confirm("แน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?")) {
+                if (isFirebaseReady && auth.currentUser) {
+                    try {
+                        await deleteDoc(doc(publicDataRef, id.toString()));
+                        window.showToast("ลบข้อมูลจากคลาวด์สำเร็จ!");
+                    } catch (error) {
+                        console.error("Delete Error:", error);
+                        window.showToast("เกิดข้อผิดพลาดในการลบข้อมูล");
+                    }
+                } else {
+                    assetData = assetData.filter(e => e.id !== id);
+                    localStorage.setItem('prStudioAssets', JSON.stringify(assetData));
+                    window.renderManagerList();
+                    window.showToast("ลบข้อมูลสำเร็จ!");
+                }
+            }
+        }
+
+        window.showToast = function(text) {
+            const toast = document.getElementById("toast-message");
+            document.getElementById("toast-text").innerText = text;
+            toast.classList.remove("opacity-0", "pointer-events-none", "-translate-y-10");
+            toast.classList.add("opacity-100", "translate-y-0");
+            setTimeout(() => {
+                toast.classList.remove("opacity-100", "translate-y-0");
+                toast.classList.add("opacity-0", "pointer-events-none", "-translate-y-10");
+            }, 3000);
+        }
+
+        // ==========================================
+        // ระบบจดหมายข่าวเดิม 
+        // ==========================================
+        const selectTemplate = document.getElementById('select-template');
+        const template1 = document.getElementById('template-1');
+        const template2 = document.getElementById('template-2');
+        let activeTemplateId = 'template-1';
+
+        selectTemplate.addEventListener('change', (e) => {
+            if(e.target.value === '1') {
+                template1.classList.remove('hidden'); template2.classList.add('hidden'); activeTemplateId = 'template-1';
+            } else {
+                template2.classList.remove('hidden'); template1.classList.add('hidden'); activeTemplateId = 'template-2';
+            }
+            window.dispatchEvent(new Event('resize')); 
+        });
+
+        const syncData = (inputId, displayClass, defaultText) => {
+            const input = document.getElementById(inputId);
+            input.addEventListener('input', (e) => {
+                document.querySelectorAll('.' + displayClass).forEach(el => el.textContent = e.target.value || defaultText);
+            });
+        };
+        syncData('input-topic', 'sync-topic', 'หัวเรื่องกิจกรรม');
+        syncData('input-description', 'sync-description', 'คำบรรยายกิจกรรม');
+
+        document.getElementById('fontSize-desc').addEventListener('input', (e) => {
+            document.querySelectorAll('.sync-description').forEach(el => el.style.fontSize = `${e.target.value}px`);
+        });
+
+        const selectDay = document.getElementById('select-day'), selectMonth = document.getElementById('select-month'), selectYear = document.getElementById('select-year');
+        const today = new Date(); const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+        for (let i = 1; i <= 31; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = i; if (i === today.getDate()) opt.selected = true; selectDay.appendChild(opt); }
+        selectMonth.value = thaiMonths[today.getMonth()];
+        for (let i = today.getFullYear() + 543 - 5; i <= today.getFullYear() + 543 + 5; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = i; if (i === today.getFullYear() + 543) opt.selected = true; selectYear.appendChild(opt); }
+        const updateDisplayDate = () => { document.querySelectorAll('.sync-date').forEach(el => el.textContent = `วันที่ ${selectDay.value} ${selectMonth.value} ${selectYear.value}`); };
+        selectDay.addEventListener('change', updateDisplayDate); selectMonth.addEventListener('change', updateDisplayDate); selectYear.addEventListener('change', updateDisplayDate);
+        updateDisplayDate();
+
+        let uploadHtml = '';
+        for (let i = 0; i < 6; i++) {
+            uploadHtml += `
+                <div class="relative group">
+                    <input type="file" accept="image/*" class="hidden" id="upload-img-${i}"/>
+                    <label for="upload-img-${i}" id="label-img-${i}" class="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm">
+                        <div id="icon-img-${i}" class="flex flex-col items-center justify-center pointer-events-none"><span class="text-xl text-yellow-500 mb-0.5 leading-none">+</span><span class="text-[10px] font-medium border px-1.5 py-0.5 rounded-md text-blue-700 bg-blue-50 border-blue-200">รูปที่ ${i+1}</span></div>
+                        <img id="thumb-img-${i}" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
+                    </label>
+                </div>`;
+        }
+        document.getElementById('upload-buttons-container').innerHTML = uploadHtml;
+        for (let i = 0; i < 6; i++) {
+            document.getElementById(`upload-img-${i}`).addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const url = URL.createObjectURL(file);
+                    document.getElementById(`icon-img-${i}`).classList.add('hidden');
+                    document.getElementById(`thumb-img-${i}`).src = url; document.getElementById(`thumb-img-${i}`).classList.remove('hidden');
+                    document.getElementById(`label-img-${i}`).classList.replace('border-yellow-400', 'border-blue-500');
+                    document.querySelectorAll(`.show-gallery-${i}`).forEach(el => { el.style.backgroundImage = `url('${url}')`; el.classList.remove('hidden'); });
+                    document.querySelectorAll(`.ph-gallery-${i}`).forEach(el => el.classList.add('hidden'));
                 }
             });
+        }
+
+        const btnExport = document.getElementById('btn-export'), btnText = document.getElementById('btn-text');
+        btnExport.addEventListener('click', async () => {
+            btnExport.disabled = true; btnExport.classList.add('opacity-70'); btnText.textContent = 'กำลังแปลงรูปภาพ...'; window.scrollTo(0, 0);
+            const activeTemp = document.getElementById(activeTemplateId); const currentTransform = activeTemp.style.transform; activeTemp.style.transform = 'none';
+            try {
+                const canvas = await html2canvas(activeTemp, { scale: 2.5, useCORS: true, backgroundColor: activeTemplateId === 'template-1' ? '#fdfcf8' : '#f8f9fa', scrollY: 0, scrollX: 0 });
+                const link = document.createElement('a'); link.href = canvas.toDataURL("image/jpeg", 1.0);
+                link.download = `จดหมายข่าว_${document.getElementById('input-topic').value || 'Newsletter'}.jpg`; link.click();
+            } catch (error) { alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"); } finally {
+                activeTemp.style.transform = currentTransform; btnExport.disabled = false; btnExport.classList.remove('opacity-70'); btnText.textContent = '💾 บันทึกเป็นรูปภาพ';
+            }
         });
+
     </script>
 </body>
 </html>
