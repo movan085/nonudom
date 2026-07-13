@@ -84,7 +84,7 @@
                         <div class="absolute top-0 right-0 bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">คลาวด์ซิงค์ ☁️</div>
                         <div class="w-14 h-14 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:bg-[#0071BA] group-hover:text-white transition-colors">📅</div>
                         <h3 class="text-xl font-bold text-gray-800 mb-2">คลังอินโฟกราฟิก</h3>
-                        <p class="text-sm text-gray-500 line-clamp-2">คลังสื่อภาพวันหยุดราชการและวันสำคัญ พร้อมระบบคลาวด์แก้ไขอัปเดตข้อมูล</p>
+                        <p class="text-sm text-gray-500 line-clamp-2">ปฏิทินคลังสื่อภาพวันหยุดราชการและวันสำคัญ พร้อมระบบคลาวด์อัปเดตข้อมูล</p>
                     </button>
 
                     <div class="relative bg-gray-50 border-2 border-gray-100 rounded-2xl p-6 opacity-70 cursor-not-allowed">
@@ -138,7 +138,7 @@
                     <!-- วันที่จะถูกแทรกที่นี่ -->
                 </div>
                 
-                <div class="bg-gray-50 px-4 py-2 border-t border-b shrink-0">
+                <div class="bg-gray-50 px-4 py-2 border-t border-b shrink-0 flex justify-between items-center">
                     <h4 class="text-xs font-bold text-gray-500">รายการในเดือนนี้</h4>
                 </div>
                 <div id="event-list-container" class="flex-1 overflow-y-auto custom-scroll p-3 space-y-2 bg-gray-50/50 max-h-[250px] xl:max-h-none">
@@ -149,7 +149,7 @@
             <div class="w-full xl:w-2/3 bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border border-white flex flex-col h-auto xl:h-full overflow-y-auto custom-scroll p-6 md:p-8">
                 <div id="calendar-empty-state" class="flex-1 flex flex-col items-center justify-center text-gray-400 py-10">
                     <span class="text-6xl mb-4">👆</span>
-                    <p class="text-xl font-medium">กรุณาเลือกวันสำคัญจากเมนูด้านซ้าย</p>
+                    <p class="text-xl font-medium">กรุณาเลือกวันสำคัญจากปฏิทิน</p>
                 </div>
 
                 <div id="calendar-content-state" class="hidden flex-col gap-6 w-full max-w-2xl mx-auto pb-10 xl:pb-0">
@@ -200,10 +200,16 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
                 กลับหน้าคลังสื่อ
             </button>
-            <h2 class="font-bold text-yellow-600 text-xl flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                จัดการข้อมูลคลังอินโฟกราฟิก
-            </h2>
+            <div class="flex items-center gap-4">
+                <h2 class="font-bold text-yellow-600 text-xl flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    จัดการข้อมูลคลังอินโฟกราฟิก
+                </h2>
+                <!-- ปุ่มวิเศษสำหรับโหลดวันหยุด 2569 -->
+                <button onclick="window.importHolidays2026()" class="text-sm bg-indigo-50 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-lg hover:bg-indigo-100 transition shadow-sm font-bold flex items-center gap-1.5" title="นำเข้าวันหยุดราชการที่เหลือของปี 2569 อัตโนมัติ">
+                    <span>⚡</span> โหลดวันหยุดปี 2569
+                </button>
+            </div>
         </div>
 
         <div class="flex flex-col xl:flex-row gap-6 w-full flex-1 min-h-0">
@@ -865,6 +871,65 @@
             }
         }
 
+        // ==========================================
+        // ⚡ ฟังก์ชันพิเศษ: โหลดวันหยุดราชการ 2569
+        // ==========================================
+        window.importHolidays2026 = async function() {
+            if(!confirm("ระบบจะทำการเพิ่มข้อมูลวันหยุดราชการ (ก.ค. - ธ.ค. 2569) ลงในระบบของคุณ\n\nต้องการดำเนินการต่อหรือไม่?")) return;
+
+            const holidays2026 = [
+                { isoDate: "2026-07-28", title: "วันเฉลิมพระชนมพรรษา พระบาทสมเด็จพระเจ้าอยู่หัว รัชกาลที่ ๑๐", thumbUrl: "https://placehold.co/400x300/FDBE15/0071BA?text=28+July+2026", caption: "ทรงพระเจริญ\nด้วยเกล้าด้วยกระหม่อม ขอเดชะ\nข้าพระพุทธเจ้า คณะผู้บริหารและเจ้าหน้าที่ องค์การบริหารส่วนตำบลโนนอุดม" },
+                { isoDate: "2026-08-12", title: "วันเฉลิมพระชนมพรรษา สมเด็จพระนางเจ้าสิริกิติ์ฯ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง (วันแม่แห่งชาติ)", thumbUrl: "https://placehold.co/400x300/60A5FA/FFFFFF?text=12+August+2026", caption: "ทีฆายุกา โหตุ มหาราชินี\nด้วยเกล้าด้วยกระหม่อม ขอเดชะ\nข้าพระพุทธเจ้า คณะผู้บริหารและเจ้าหน้าที่ องค์การบริหารส่วนตำบลโนนอุดม" },
+                { isoDate: "2026-10-13", title: "วันนวมินทรมหาราช (วันคล้ายวันสวรรคต รัชกาลที่ ๙)", thumbUrl: "https://placehold.co/400x300/FDBE15/0071BA?text=13+October+2026", caption: "ธ สถิตในดวงใจตราบนิรันดร์\nน้อมรำลึกในพระมหากรุณาธิคุณอันหาที่สุดมิได้\nข้าพระพุทธเจ้า คณะผู้บริหารและเจ้าหน้าที่ องค์การบริหารส่วนตำบลโนนอุดม" },
+                { isoDate: "2026-10-23", title: "วันปิยมหาราช (วันคล้ายวันสวรรคต รัชกาลที่ ๕)", thumbUrl: "https://placehold.co/400x300/F472B6/FFFFFF?text=23+October+2026", caption: "น้อมรำลึกในพระมหากรุณาธิคุณอันหาที่สุดมิได้\nข้าพระพุทธเจ้า คณะผู้บริหารและเจ้าหน้าที่ องค์การบริหารส่วนตำบลโนนอุดม" },
+                { isoDate: "2026-12-05", title: "วันคล้ายวันพระบรมราชสมภพ รัชกาลที่ ๙ / วันชาติ / วันพ่อแห่งชาติ", thumbUrl: "https://placehold.co/400x300/FDBE15/0071BA?text=5+December+2026", caption: "น้อมรำลึกในพระมหากรุณาธิคุณอันหาที่สุดมิได้\nข้าพระพุทธเจ้า คณะผู้บริหารและเจ้าหน้าที่ องค์การบริหารส่วนตำบลโนนอุดม" },
+                { isoDate: "2026-12-10", title: "วันพระราชทานรัฐธรรมนูญ", thumbUrl: "https://placehold.co/400x300/ef4444/FFFFFF?text=10+December+2026", caption: "๑๐ ธันวาคม วันพระราชทานรัฐธรรมนูญ\n\nองค์การบริหารส่วนตำบลโนนอุดม" },
+                { isoDate: "2026-12-31", title: "วันสิ้นปี", thumbUrl: "https://placehold.co/400x300/10B981/FFFFFF?text=31+December+2026", caption: "ส่งท้ายปีเก่า ต้อนรับปีใหม่\nขอให้ทุกท่านมีความสุข สุขภาพแข็งแรงตลอดปี\n\nองค์การบริหารส่วนตำบลโนนอุดม" }
+            ];
+
+            let addedCount = 0;
+            const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+
+            for(const h of holidays2026) {
+                if(assetData.some(a => a.isoDate === h.isoDate)) continue; // ข้ามถ้ามีวันที่นี้อยู่แล้ว
+
+                const [year, month, day] = h.isoDate.split('-');
+                const thYear = parseInt(year) + 543;
+                const generatedDateStr = `${parseInt(day)} ${thaiMonths[parseInt(month)-1]} ${thYear}`;
+                const generatedMonthGrp = `${thaiMonths[parseInt(month)-1]} ${thYear}`;
+
+                const newAsset = {
+                    id: Date.now() + Math.floor(Math.random() * 10000), // สร้าง ID ไม่ซ้ำ
+                    title: h.title,
+                    isoDate: h.isoDate,
+                    dateStr: generatedDateStr,
+                    monthGrp: generatedMonthGrp,
+                    thumbUrl: h.thumbUrl,
+                    downloadUrl: h.thumbUrl, // ใช้รูปพรีวิวแก้ขัดไปก่อน
+                    caption: h.caption
+                };
+
+                if (isFirebaseReady && auth.currentUser) {
+                    try {
+                        await setDoc(doc(publicDataRef, newAsset.id.toString()), newAsset);
+                        addedCount++;
+                    } catch (error) { console.error("Auto Sync Error:", error); }
+                } else {
+                    assetData.push(newAsset);
+                    addedCount++;
+                }
+            }
+
+            if (!isFirebaseReady || !auth.currentUser) {
+                assetData.sort((a, b) => b.id - a.id);
+                localStorage.setItem('prStudioAssets', JSON.stringify(assetData));
+            }
+
+            window.renderCalendarList(); 
+            window.renderManagerList();
+            window.showToast(`เพิ่มข้อมูลวันหยุดสำเร็จ ${addedCount} รายการ!`);
+        }
+
         window.showToast = function(text) {
             const toast = document.getElementById("toast-message");
             document.getElementById("toast-text").innerText = text;
@@ -914,7 +979,6 @@
             const modal = document.getElementById('history-modal');
             const content = document.getElementById('history-modal-content');
             modal.classList.remove('hidden');
-            // Animate in
             setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10);
             window.renderHistoryList();
         }
@@ -932,7 +996,7 @@
             if (historyData.length === 0) {
                 container.innerHTML = '<div class="text-center py-8 text-gray-500">ยังไม่มีประวัติการสร้างจดหมายข่าว</div>'; return;
             }
-            historyData.slice(0, 20).forEach(hist => { // แสดงแค่ 20 รายการล่าสุด
+            historyData.slice(0, 20).forEach(hist => { 
                 const dateObj = new Date(hist.timestamp);
                 const displayTime = `${dateObj.getDate()}/${dateObj.getMonth()+1}/${dateObj.getFullYear()+543} เวลา ${String(dateObj.getHours()).padStart(2,'0')}:${String(dateObj.getMinutes()).padStart(2,'0')} น.`;
                 const item = document.createElement('div');
@@ -988,7 +1052,6 @@
         
         window.addEventListener('resize', window.updatePreviewScale);
         setTimeout(window.updatePreviewScale, 100);
-
 
         // ==========================================
         // ระบบจดหมายข่าวเดิม 
