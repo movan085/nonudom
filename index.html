@@ -16,13 +16,26 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
-    <!-- ฟอนต์ Kanit สำหรับ UI และ TH Sarabun New สำหรับเอกสารราชการ (ทดแทน IT๙) -->
+    <!-- ฟอนต์ Kanit สำหรับ UI -->
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.spicydog.org/fonts/th-sarabun-new/th-sarabun-new.css" rel="stylesheet">
     
     <style>
+        /* โหลดฟอนต์ TH Sarabun New จาก Jsdelivr (เสถียร 100%) */
+        @font-face {
+            font-family: 'THSarabunNew';
+            font-style: normal;
+            font-weight: normal;
+            src: url('https://cdn.jsdelivr.net/gh/lazywasabi/thai-web-fonts@7/fonts/THSarabunNew/THSarabunNew.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'THSarabunNew';
+            font-style: normal;
+            font-weight: bold;
+            src: url('https://cdn.jsdelivr.net/gh/lazywasabi/thai-web-fonts@7/fonts/THSarabunNew/THSarabunNew%20Bold.woff2') format('woff2');
+        }
+
         body { font-family: 'Kanit', sans-serif; }
-        .font-sarabun { font-family: 'TH Sarabun New', sans-serif; }
+        .font-sarabun { font-family: 'THSarabunNew', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .text-shadow-md { text-shadow: 2px 2px 5px rgba(0,0,0,0.15); }
@@ -44,24 +57,22 @@
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* ระบบจุดไข่ปลาเอกสาร (แก้ปัญหาตกบรรทัด) */
+        /* ระบบจุดไข่ปลาเอกสาร (ระบบยืดหยุ่น Flexbox แก้ปัญหาตกบรรทัด 100%) */
         .blank-fill {
             border-bottom: 2px dotted #000;
-            display: inline-block;
             text-align: center;
             color: #1d4ed8;
             font-weight: bold;
-            vertical-align: baseline;
-            line-height: 1.1;
-            min-height: 1.2em;
-        }
-        .blank-fill:empty::after {
-            content: "\00a0\00a0\00a0\00a0"; /* เติมช่องว่างไม่ให้เส้นหดหาย */
+            white-space: nowrap;
+            overflow: visible;
         }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-100 via-sky-50 to-yellow-100 min-h-screen flex flex-col justify-between relative">
     
+    <!-- ซ่อนข้อความเพื่อบังคับให้เบราว์เซอร์โหลดฟอนต์รอไว้เลย -->
+    <div style="font-family: 'THSarabunNew'; visibility: hidden; position: absolute; width: 0; height: 0;">โหลดฟอนต์</div>
+
     <!-- Toast Notification -->
     <div id="toast-message" class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-2xl z-50 flex items-center gap-2 transition-all duration-300 opacity-0 pointer-events-none -translate-y-10">
         <span>✅</span> <span id="toast-text">แจ้งเตือน!</span>
@@ -221,90 +232,118 @@
             <!-- แผงขวา: พรีวิว A4 -->
             <div id="v-preview-container" class="w-full xl:w-7/12 flex items-start justify-center bg-gray-200/50 p-4 rounded-3xl shadow-inner border border-gray-300 overflow-hidden relative z-10 min-h-[600px] xl:h-auto custom-scroll overflow-y-auto">
                 
-                <!-- กระดาษ A4 (จัดเลย์เอาต์ตามเอกสาร Word เป๊ะ 100%) -->
+                <!-- 📄 กระดาษ A4 (ดีไซน์ใหม่แบบ Flexbox แก้อาการตกบรรทัด 100%) -->
                 <div id="doc-a4" class="w-[794px] h-[1123px] bg-white shadow-xl shrink-0 p-[70px_80px] flex flex-col font-sarabun text-[22px] leading-[1.6] text-black origin-top mx-auto relative relative z-10">
                     
-                    <div class="absolute top-[40px] right-[80px] font-bold">แบบ ๓</div>
+                    <div class="text-right font-bold w-full">แบบ ๓</div>
 
                     <!-- Title -->
-                    <div class="text-center font-bold text-[26px] mt-4 mb-4">
-                        ใบขออนุญาตใช้<span id="s-car-title">รถยนต์บรรทุกน้ำอเนกประสงค์</span> ของสำนักงาน อบต.โนนอุดม
+                    <div class="text-center font-bold text-[26px] mt-1 mb-4 leading-tight">
+                        ใบขออนุญาตใช้<span id="s-car-title">รถยนต์บรรทุกน้ำอเนกประสงค์</span><br>ของสำนักงาน อบต.โนนอุดม
                     </div>
 
                     <!-- Date -->
-                    <div class="text-right mb-4">
-                        วันที่ <span class="blank-fill w-10 s-today-d"></span>
-                        เดือน <span class="blank-fill w-32 s-today-m"></span>
-                        พ.ศ. <span class="blank-fill w-16 s-today-y"></span>
+                    <div class="flex items-baseline justify-end mb-4">
+                        <span>วันที่</span>
+                        <span class="blank-fill w-12 mx-2 s-today-d"></span>
+                        <span>เดือน</span>
+                        <span class="blank-fill w-32 mx-2 s-today-m"></span>
+                        <span>พ.ศ.</span>
+                        <span class="blank-fill w-16 ml-2 s-today-y"></span>
                     </div>
 
                     <div class="mb-2">เรียน นายกองค์การบริหารส่วนตำบลโนนอุดม</div>
 
-                    <div class="mb-2 ml-[60px]">
-                        ข้าพเจ้า <span class="blank-fill min-w-[250px] s-req-name text-blue-700"></span>
-                        ตำแหน่ง <span class="blank-fill min-w-[200px] s-req-pos text-blue-700"></span>
+                    <div class="flex items-baseline mb-2 pl-[60px]">
+                        <span class="whitespace-nowrap">ข้าพเจ้า</span>
+                        <span class="blank-fill flex-1 mx-2 s-req-name text-blue-700"></span>
+                        <span class="whitespace-nowrap">ตำแหน่ง</span>
+                        <span class="blank-fill flex-1 ml-2 s-req-pos text-blue-700"></span>
                     </div>
                     
-                    <div class="mb-2">
-                        สำนัก/กอง <span class="blank-fill min-w-[200px] s-req-dept text-blue-700"></span>
-                        ขออนุญาตใช้<span id="s-car-title-2">รถยนต์บรรทุกน้ำอเนกประสงค์</span>ของ
+                    <div class="flex items-baseline mb-2">
+                        <span class="whitespace-nowrap">สำนัก/กอง</span>
+                        <span class="blank-fill flex-1 mx-2 s-req-dept text-blue-700"></span>
+                        <span class="whitespace-nowrap">ขออนุญาตใช้<span id="s-car-title-2">รถยนต์บรรทุกน้ำอเนกประสงค์</span>ของ</span>
                     </div>
 
-                    <div class="mb-2">
-                        อบต.โนนอุดม เพื่อไปราชการที่ <span class="blank-fill w-[520px] s-dest text-blue-700"></span>
+                    <div class="flex items-baseline mb-2">
+                        <span class="whitespace-nowrap">อบต.โนนอุดม เพื่อไปราชการที่</span>
+                        <span class="blank-fill flex-1 ml-2 s-dest text-blue-700"></span>
                     </div>
                     
-                    <div class="mb-2">
-                        เพื่อปฏิบัติราชการเกี่ยวกับเรื่อง <span class="blank-fill w-[510px] s-purpose text-blue-700"></span>
+                    <div class="flex items-baseline mb-2">
+                        <span class="whitespace-nowrap">เพื่อปฏิบัติราชการเกี่ยวกับเรื่อง</span>
+                        <span class="blank-fill flex-1 ml-2 s-purpose text-blue-700"></span>
                     </div>
 
-                    <div class="mb-2">
-                        มีผู้นั่งไปในครั้งนี้ จำนวน <span class="blank-fill w-16 s-pax text-blue-700"></span> คน 
-                        โดยใช้น้ำมันเชื้อเพลิงจากงบประมาณของแผนงาน/งาน 
+                    <div class="flex items-baseline mb-2">
+                        <span class="whitespace-nowrap">มีผู้นั่งไปในครั้งนี้ จำนวน</span>
+                        <span class="blank-fill w-16 mx-2 s-pax text-blue-700"></span>
+                        <span class="whitespace-nowrap">คน โดยใช้น้ำมันเชื้อเพลิงจากงบประมาณของแผนงาน/งาน</span>
                     </div>
 
-                    <div class="mb-2">
-                        <span class="blank-fill w-[300px] s-budget text-blue-700"></span>
-                        ทั้งนี้ ขอใช้รถยนต์ในวันที่ <span class="blank-fill w-10 s-start-d text-blue-700"></span> 
-                        เดือน <span class="blank-fill w-28 s-start-m text-blue-700"></span> 
-                        พ.ศ. <span class="blank-fill w-16 s-start-y text-blue-700"></span> 
+                    <div class="flex items-baseline mb-2">
+                        <span class="blank-fill flex-1 mr-2 s-budget text-blue-700"></span>
+                        <span class="whitespace-nowrap">ทั้งนี้ ขอใช้รถยนต์ในวันที่</span>
+                        <span class="blank-fill w-12 mx-2 s-start-d text-blue-700"></span>
+                        <span class="whitespace-nowrap">เดือน</span>
+                        <span class="blank-fill w-28 mx-2 s-start-m text-blue-700"></span>
+                        <span class="whitespace-nowrap">พ.ศ.</span>
+                        <span class="blank-fill w-16 ml-2 s-start-y text-blue-700"></span>
                     </div>
 
-                    <div class="mb-8">
-                        เวลา <span class="blank-fill w-20 s-start-time text-blue-700"></span> น. 
-                        ถึงวันที่ <span class="blank-fill w-10 s-end-d text-blue-700"></span> 
-                        เดือน <span class="blank-fill w-28 s-end-m text-blue-700"></span> 
-                        พ.ศ. <span class="blank-fill w-16 s-end-y text-blue-700"></span> 
-                        เวลา <span class="blank-fill w-20 s-end-time text-blue-700"></span> น.
+                    <div class="flex items-baseline mb-6">
+                        <span class="whitespace-nowrap">เวลา</span>
+                        <span class="blank-fill w-20 mx-2 s-start-time text-blue-700"></span>
+                        <span class="whitespace-nowrap">น. ถึงวันที่</span>
+                        <span class="blank-fill w-12 mx-2 s-end-d text-blue-700"></span>
+                        <span class="whitespace-nowrap">เดือน</span>
+                        <span class="blank-fill w-28 mx-2 s-end-m text-blue-700"></span>
+                        <span class="whitespace-nowrap">พ.ศ.</span>
+                        <span class="blank-fill w-16 mx-2 s-end-y text-blue-700"></span>
+                        <span class="whitespace-nowrap">เวลา</span>
+                        <span class="blank-fill w-20 mx-2 s-end-time text-blue-700"></span>
+                        <span class="whitespace-nowrap">น.</span>
                     </div>
 
-                    <div class="flex flex-col items-center w-[350px] self-end mb-8">
+                    <!-- ลายเซ็นผู้ขออนุญาต -->
+                    <div class="flex flex-col items-center w-[350px] self-end mb-6">
                         <div class="flex items-baseline w-full justify-center">
                             <span>ลงชื่อ</span>
                             <span class="blank-fill w-[200px] mx-2 border-b-2"></span>
                             <span>ผู้ขออนุญาตใช้รถยนต์</span>
                         </div>
-                        <div class="mt-1">(<span class="blank-fill w-[180px] s-req-name border-none text-blue-700"></span>)</div>
-                        <div class="flex items-baseline w-full justify-center mt-1 pl-[40px]">
+                        <div class="mt-1 flex items-baseline w-full justify-center pl-8">
+                            <span>(</span>
+                            <span class="blank-fill w-[180px] mx-1 s-req-name border-none text-blue-700 font-normal"></span>
+                            <span>)</span>
+                        </div>
+                        <div class="flex items-baseline w-full justify-center mt-1 pl-[30px]">
                             <span>ตำแหน่ง</span>
-                            <span class="blank-fill w-[200px] mx-2 s-req-pos border-none text-blue-700"></span>
+                            <span class="blank-fill flex-1 mx-2 s-req-pos border-none text-blue-700 font-normal"></span>
                         </div>
                     </div>
 
-                    <div class="mb-2 ml-[60px]">
-                        ได้ตรวจสอบแล้ว มีรถยนต์ว่างอยู่ จึงเห็นสมควรอนุญาตใช้รถยนต์ หมายเลขทะเบียน <span id="s-car-reg">ผอ ๖๙๑๙ นครราชสีมา</span> 
+                    <div class="flex items-baseline mb-2 pl-[60px]">
+                        <span class="whitespace-nowrap">ได้ตรวจสอบแล้ว มีรถยนต์ว่างอยู่ จึงเห็นสมควรอนุญาตใช้รถยนต์ หมายเลขทะเบียน <span id="s-car-reg">ผอ ๖๙๑๙ นครราชสีมา</span></span>
                     </div>
                     
-                    <div class="mb-2">
-                        โดยมี <span class="blank-fill min-w-[280px] s-driver text-blue-700"></span> เป็นพนักงานขับรถยนต์
+                    <div class="flex items-baseline mb-6">
+                        <span class="whitespace-nowrap pl-[60px] md:pl-0">โดยมี</span>
+                        <span class="blank-fill flex-1 mx-2 s-driver text-blue-700"></span>
+                        <span class="whitespace-nowrap">เป็นพนักงานขับรถยนต์</span>
                     </div>
 
-                    <div class="mb-8 ml-[60px]">
-                        เลขไมล์ก่อนไป <span class="blank-fill min-w-[200px]"></span> 
-                        เลขไมล์หลังไป <span class="blank-fill min-w-[200px]"></span>
+                    <div class="flex items-baseline mb-6 pl-[60px]">
+                        <span class="whitespace-nowrap">เลขไมล์ก่อนไป</span>
+                        <span class="blank-fill flex-1 mx-2"></span>
+                        <span class="whitespace-nowrap">เลขไมล์หลังไป</span>
+                        <span class="blank-fill flex-1 ml-2"></span>
                     </div>
 
-                    <div class="flex flex-col items-center w-[350px] self-start ml-[80px] mb-8">
+                    <!-- ลายเซ็นปลัด -->
+                    <div class="flex flex-col items-center w-[350px] self-start ml-[60px] mb-6">
                         <div class="flex items-baseline w-full justify-center">
                             <span>ลงชื่อ</span>
                             <span class="blank-fill w-[200px] mx-2 border-b-2"></span>
@@ -315,16 +354,17 @@
                         </div>
                     </div>
 
-                    <div class="mb-2 ml-[60px]">ความเห็นของผู้มีอำนาจสั่งการให้ใช้รถยนต์</div>
-                    <div class="flex flex-col gap-1 ml-[120px] mb-8">
+                    <div class="mb-2 pl-[60px]">ความเห็นของผู้มีอำนาจสั่งการให้ใช้รถยนต์</div>
+                    <div class="flex flex-col gap-1 pl-[120px] mb-6">
                         <div class="flex items-center gap-4">
-                            <div class="w-5 h-5 border border-black flex-shrink-0"></div> <span>อนุญาต</span>
+                            <div class="w-5 h-5 border border-black rounded-full flex-shrink-0"></div> <span>อนุญาต</span>
                         </div>
                         <div class="flex items-center gap-4">
-                            <div class="w-5 h-5 border border-black flex-shrink-0"></div> <span>ไม่อนุญาต</span>
+                            <div class="w-5 h-5 border border-black rounded-full flex-shrink-0"></div> <span>ไม่อนุญาต</span>
                         </div>
                     </div>
 
+                    <!-- ลายเซ็นนายก -->
                     <div class="flex flex-col items-center w-[350px] self-end">
                         <div class="flex items-baseline w-full justify-center">
                             <span>ลงชื่อ</span>
@@ -1067,384 +1107,4 @@
             const isoDateVal = document.getElementById('manage-iso-date').value;
             const [year, month, day] = isoDateVal.split('-');
             const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
-            const thYear = parseInt(year) + 543;
-            const generatedDateStr = `${parseInt(day)} ${thaiMonths[parseInt(month)-1]} ${thYear}`;
-            const generatedMonthGrp = `${thaiMonths[parseInt(month)-1]} ${thYear}`;
-
-            const newAsset = {
-                id: idStr ? parseInt(idStr) : Date.now(),
-                title: document.getElementById('manage-title').value.trim(),
-                isoDate: isoDateVal,
-                dateStr: generatedDateStr,
-                monthGrp: generatedMonthGrp,
-                thumbUrl: document.getElementById('manage-thumb').value.trim(),
-                downloadUrl: document.getElementById('manage-download').value.trim(),
-                caption: document.getElementById('manage-caption').value.trim()
-            };
-
-            if (isFirebaseReady && auth.currentUser) {
-                try { await setDoc(doc(publicDataRef, newAsset.id.toString()), newAsset); window.showToast(idStr ? "อัปเดตขึ้นคลาวด์เรียบร้อย!" : "บันทึกขึ้นคลาวด์เรียบร้อย!"); window.resetManagerForm(); } 
-                catch (error) { console.error("Save Error:", error); window.showToast("เกิดข้อผิดพลาดตอนเซฟลงคลาวด์"); }
-            } else {
-                const index = assetData.findIndex(e => e.id === newAsset.id);
-                if(index !== -1) assetData[index] = newAsset; else assetData.push(newAsset);
-                assetData.sort((a, b) => b.id - a.id);
-                localStorage.setItem('prStudioAssets', JSON.stringify(assetData));
-                window.renderCalendarList(); window.renderManagerList(); window.resetManagerForm();
-                window.showToast(idStr ? "อัปเดตข้อมูลในเครื่องเรียบร้อย!" : "เพิ่มข้อมูลในเครื่องเรียบร้อย!");
-            }
-        }
-
-        window.deleteAsset = async function(id) {
-            if(confirm("แน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?")) {
-                if (isFirebaseReady && auth.currentUser) {
-                    try { await deleteDoc(doc(publicDataRef, id.toString())); window.showToast("ลบข้อมูลจากคลาวด์สำเร็จ!"); } 
-                    catch (error) { console.error("Delete Error:", error); window.showToast("เกิดข้อผิดพลาดในการลบข้อมูล"); }
-                } else {
-                    assetData = assetData.filter(e => e.id !== id);
-                    localStorage.setItem('prStudioAssets', JSON.stringify(assetData));
-                    window.renderManagerList(); window.showToast("ลบข้อมูลสำเร็จ!");
-                }
-            }
-        }
-
-        // ==========================================
-        // ⚡ ฟังก์ชันโหลดวันหยุด
-        // ==========================================
-        window.importHolidays2026 = async function() {
-            if(!confirm("ระบบจะทำการเพิ่มข้อมูลวันหยุดราชการ (ก.ค. - ธ.ค. 2569) ลงในระบบของคุณ\n\nต้องการดำเนินการต่อหรือไม่?")) return;
-            const holidays2026 = [
-                { isoDate: "2026-07-28", title: "วันเฉลิมพระชนมพรรษา พระบาทสมเด็จพระเจ้าอยู่หัว รัชกาลที่ ๑๐", thumbUrl: "https://placehold.co/400x300/FDBE15/0071BA?text=28+July+2026", caption: "ทรงพระเจริญ\nด้วยเกล้าด้วยกระหม่อม ขอเดชะ\nข้าพระพุทธเจ้า คณะผู้บริหารและเจ้าหน้าที่ องค์การบริหารส่วนตำบลโนนอุดม" },
-                { isoDate: "2026-08-12", title: "วันเฉลิมพระชนมพรรษา สมเด็จพระนางเจ้าสิริกิติ์ฯ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง (วันแม่แห่งชาติ)", thumbUrl: "https://placehold.co/400x300/60A5FA/FFFFFF?text=12+August+2026", caption: "ทีฆายุกา โหตุ มหาราชินี\nด้วยเกล้าด้วยกระหม่อม ขอเดชะ\nข้าพระพุทธเจ้า คณะผู้บริหารและเจ้าหน้าที่ องค์การบริหารส่วนตำบลโนนอุดม" },
-                { isoDate: "2026-10-13", title: "วันนวมินทรมหาราช (วันคล้ายวันสวรรคต รัชกาลที่ ๙)", thumbUrl: "https://placehold.co/400x300/FDBE15/0071BA?text=13+October+2026", caption: "ธ สถิตในดวงใจตราบนิรันดร์\nน้อมรำลึกในพระมหากรุณาธิคุณอันหาที่สุดมิได้\nข้าพระพุทธเจ้า คณะผู้บริหารและเจ้าหน้าที่ องค์การบริหารส่วนตำบลโนนอุดม" },
-                { isoDate: "2026-10-23", title: "วันปิยมหาราช (วันคล้ายวันสวรรคต รัชกาลที่ ๕)", thumbUrl: "https://placehold.co/400x300/F472B6/FFFFFF?text=23+October+2026", caption: "น้อมรำลึกในพระมหากรุณาธิคุณอันหาที่สุดมิได้\nข้าพระพุทธเจ้า คณะผู้บริหารและเจ้าหน้าที่ องค์การบริหารส่วนตำบลโนนอุดม" },
-                { isoDate: "2026-12-05", title: "วันคล้ายวันพระบรมราชสมภพ รัชกาลที่ ๙ / วันชาติ / วันพ่อแห่งชาติ", thumbUrl: "https://placehold.co/400x300/FDBE15/0071BA?text=5+December+2026", caption: "น้อมรำลึกในพระมหากรุณาธิคุณอันหาที่สุดมิได้\nข้าพระพุทธเจ้า คณะผู้บริหารและเจ้าหน้าที่ องค์การบริหารส่วนตำบลโนนอุดม" },
-                { isoDate: "2026-12-10", title: "วันพระราชทานรัฐธรรมนูญ", thumbUrl: "https://placehold.co/400x300/ef4444/FFFFFF?text=10+December+2026", caption: "๑๐ ธันวาคม วันพระราชทานรัฐธรรมนูญ\n\nองค์การบริหารส่วนตำบลโนนอุดม" },
-                { isoDate: "2026-12-31", title: "วันสิ้นปี", thumbUrl: "https://placehold.co/400x300/10B981/FFFFFF?text=31+December+2026", caption: "ส่งท้ายปีเก่า ต้อนรับปีใหม่\nขอให้ทุกท่านมีความสุข สุขภาพแข็งแรงตลอดปี\n\nองค์การบริหารส่วนตำบลโนนอุดม" }
-            ];
-
-            let addedCount = 0; const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
-
-            for(const h of holidays2026) {
-                if(assetData.some(a => a.isoDate === h.isoDate)) continue; 
-                const [year, month, day] = h.isoDate.split('-'); const thYear = parseInt(year) + 543;
-                const generatedDateStr = `${parseInt(day)} ${thaiMonths[parseInt(month)-1]} ${thYear}`;
-                const generatedMonthGrp = `${thaiMonths[parseInt(month)-1]} ${thYear}`;
-                const newAsset = { id: Date.now() + Math.floor(Math.random() * 10000), title: h.title, isoDate: h.isoDate, dateStr: generatedDateStr, monthGrp: generatedMonthGrp, thumbUrl: h.thumbUrl, downloadUrl: h.thumbUrl, caption: h.caption };
-                if (isFirebaseReady && auth.currentUser) { try { await setDoc(doc(publicDataRef, newAsset.id.toString()), newAsset); addedCount++; } catch (error) { console.error("Auto Sync Error:", error); } } else { assetData.push(newAsset); addedCount++; }
-            }
-            if (!isFirebaseReady || !auth.currentUser) { assetData.sort((a, b) => b.id - a.id); localStorage.setItem('prStudioAssets', JSON.stringify(assetData)); }
-            window.renderCalendarList(); window.renderManagerList(); window.showToast(`เพิ่มข้อมูลวันหยุดสำเร็จ ${addedCount} รายการ!`);
-        }
-
-        window.showToast = function(text) {
-            const toast = document.getElementById("toast-message");
-            document.getElementById("toast-text").innerText = text;
-            toast.classList.remove("opacity-0", "pointer-events-none", "-translate-y-10");
-            toast.classList.add("opacity-100", "translate-y-0");
-            setTimeout(() => { toast.classList.remove("opacity-100", "translate-y-0"); toast.classList.add("opacity-0", "pointer-events-none", "-translate-y-10"); }, 3000);
-        }
-
-        // ==========================================
-        // 🛠️ เครื่องมือจัดหน้าข้อความ (Toolbar)
-        // ==========================================
-        window.toggleFormat = function(displayClass, formatStyle, btnElement) {
-            document.querySelectorAll('.' + displayClass).forEach(el => { el.classList.toggle(formatStyle); });
-            if (btnElement) {
-                if (btnElement.classList.contains('border-transparent')) { btnElement.classList.remove('border-transparent'); btnElement.classList.add('bg-green-100', 'text-green-700', 'border-green-300'); } 
-                else { btnElement.classList.add('border-transparent'); btnElement.classList.remove('bg-green-100', 'text-green-700', 'border-green-300'); }
-            }
-        };
-
-        window.setAlignment = function(displayClass, alignStyle, btnElement) {
-            document.querySelectorAll('.' + displayClass).forEach(el => { el.classList.remove('text-left', 'text-center', 'text-right', 'text-justify'); el.classList.add(alignStyle); });
-            if (btnElement) {
-                const group = btnElement.parentElement.querySelectorAll('.btn-align');
-                group.forEach(btn => { btn.classList.remove('bg-green-100', 'text-green-700', 'border-green-300'); btn.classList.add('border-transparent'); });
-                btnElement.classList.remove('border-transparent'); btnElement.classList.add('bg-green-100', 'text-green-700', 'border-green-300');
-            }
-        };
-
-        window.changeFontSize = function(displayClass, inputId, delta) {
-            const input = document.getElementById(inputId);
-            let newVal = parseInt(input.value) + delta;
-            if(newVal >= 10 && newVal <= 60) {
-                input.value = newVal;
-                document.querySelectorAll('.' + displayClass).forEach(el => { el.style.fontSize = newVal + 'px'; });
-            }
-        };
-
-        // ==========================================
-        // ประวัติจดหมายข่าว (History Modal)
-        // ==========================================
-        window.showHistoryModal = function() {
-            const modal = document.getElementById('history-modal'); const content = document.getElementById('history-modal-content');
-            modal.classList.remove('hidden'); setTimeout(() => { modal.classList.remove('opacity-0'); content.classList.remove('scale-95'); }, 10); window.renderHistoryList();
-        }
-
-        window.closeHistoryModal = function() {
-            const modal = document.getElementById('history-modal'); const content = document.getElementById('history-modal-content');
-            modal.classList.add('opacity-0'); content.classList.add('scale-95'); setTimeout(() => { modal.classList.add('hidden'); }, 300);
-        }
-
-        window.renderHistoryList = function() {
-            const container = document.getElementById('history-list-container'); container.innerHTML = '';
-            if (historyData.length === 0) { container.innerHTML = '<div class="text-center py-8 text-gray-500">ยังไม่มีประวัติการสร้างจดหมายข่าว</div>'; return; }
-            historyData.slice(0, 20).forEach(hist => { 
-                const dateObj = new Date(hist.timestamp);
-                const displayTime = `${dateObj.getDate()}/${dateObj.getMonth()+1}/${dateObj.getFullYear()+543} เวลา ${String(dateObj.getHours()).padStart(2,'0')}:${String(dateObj.getMinutes()).padStart(2,'0')} น.`;
-                const item = document.createElement('div'); item.className = "p-4 border border-gray-200 rounded-xl hover:bg-indigo-50 hover:border-indigo-200 transition group relative";
-                item.innerHTML = `
-                    <div class="flex justify-between items-start gap-4 mb-2">
-                        <div><span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded font-bold">${displayTime}</span><h4 class="font-bold text-gray-800 text-sm mt-1 line-clamp-1">${hist.topic || 'ไม่มีหัวเรื่อง'}</h4></div>
-                        <button onclick="window.useHistory(${hist.timestamp})" class="shrink-0 bg-indigo-100 text-indigo-700 hover:bg-indigo-600 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition shadow-sm border border-indigo-200">นำมาใช้ใหม่</button>
-                    </div><p class="text-xs text-gray-500 line-clamp-2 leading-relaxed">${hist.description || 'ไม่มีคำบรรยาย'}</p>`;
-                container.appendChild(item);
-            });
-        }
-
-        window.useHistory = function(timestamp) {
-            const hist = historyData.find(h => h.timestamp === timestamp);
-            if(hist) {
-                document.getElementById('input-topic').value = hist.topic; document.getElementById('input-description').value = hist.description;
-                document.getElementById('input-topic').dispatchEvent(new Event('input')); document.getElementById('input-description').dispatchEvent(new Event('input'));
-                window.closeHistoryModal(); window.showToast("โหลดประวัติเรียบร้อยแล้ว!");
-            }
-        }
-
-        // ==========================================
-        // 🛠️ Auto Scale ป้องกันล้นจอในมือถือ (ใช้ได้ทั้งจดหมายข่าวและเอกสารจองรถ)
-        // ==========================================
-        window.updatePreviewScale = function() {
-            // ส่วนจดหมายข่าว (800px)
-            const previewContainer = document.getElementById('preview-container');
-            if (previewContainer) {
-                const padding = window.innerWidth >= 768 ? 64 : 32;
-                const availableWidth = previewContainer.clientWidth - padding;
-                let scale = availableWidth / 800; 
-                if (scale > 1) scale = 1;
-
-                ['template-1', 'template-2'].forEach(id => {
-                    const temp = document.getElementById(id);
-                    if (temp) { temp.style.transform = `scale(${scale})`; const heightDiff = 1131 - (1131 * scale); temp.style.marginBottom = `-${heightDiff}px`; }
-                });
-            }
-
-            // ส่วนเอกสารจองรถ A4 (794px)
-            const vPreviewContainer = document.getElementById('v-preview-container');
-            if (vPreviewContainer) {
-                const paddingV = window.innerWidth >= 768 ? 32 : 16;
-                const availableWidthV = vPreviewContainer.clientWidth - paddingV;
-                let scaleV = availableWidthV / 794; 
-                if (scaleV > 1) scaleV = 1;
-
-                const docA4 = document.getElementById('doc-a4');
-                if (docA4) { docA4.style.transform = `scale(${scaleV})`; const heightDiffV = 1123 - (1123 * scaleV); docA4.style.marginBottom = `-${heightDiffV}px`; }
-            }
-        }
-        window.addEventListener('resize', window.updatePreviewScale);
-        setTimeout(window.updatePreviewScale, 100);
-
-        // ==========================================
-        // 🚙 ระบบจองรถส่วนกลาง
-        // ==========================================
-        
-        // ข้อมูลรถแต่ละคันอิงตามเอกสารที่ระบุ
-        const vehicleData = {
-            car1: { title: "รถยนต์บรรทุกน้ำอเนกประสงค์", reg: "ผอ ๖๙๑๙ นครราชสีมา", signerName: "(นายสุพจน์ สมน้อย)", signerPos: "นายกองค์การบริหารส่วนตำบลโนนอุดม" },
-            car2: { title: "รถยนต์ส่วนกลาง", reg: "จก ๘๓๓๗ นครราชสีมา", signerName: "(นางดนิตา มนไธสง)", signerPos: "รองปลัดองค์การบริหารส่วนตำบล รักษาราชการแทน\nปลัดองค์การบริหารส่วนตำบล ปฏิบัติหน้าที่\nนายกองค์การบริหารส่วนตำบลโนนอุดม" },
-            car3: { title: "รถยนต์ส่วนกลาง", reg: "กพ ๗๗๔๓ นครราชสีมา", signerName: "(นายสุพจน์ สมน้อย)", signerPos: "นายกองค์การบริหารส่วนตำบลโนนอุดม" },
-            car4: { title: "รถยนต์กู้ภัย", reg: "๒ฒห๖๙๘๑ กรุงเทพมหานคร", signerName: "(นายสุพจน์ สมน้อย)", signerPos: "นายกองค์การบริหารส่วนตำบลโนนอุดม" }
-        };
-
-        const thaiMonthsFull = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
-
-        // แปลงเลขอารบิกเป็นเลขไทย
-        const toThaiNum = (str) => {
-            if(!str) return '';
-            const thaiNums = ['๐','๑','๒','๓','๔','๕','๖','๗','๘','๙'];
-            return str.toString().replace(/[0-9]/g, match => thaiNums[match]);
-        };
-
-        window.updateVehicleType = function() {
-            const selected = document.getElementById('v-select-car').value;
-            const data = vehicleData[selected];
-            document.getElementById('s-car-title').textContent = data.title;
-            document.getElementById('s-car-title-2').textContent = data.title;
-            document.getElementById('s-car-reg').textContent = data.reg;
-            document.getElementById('s-signer-name').textContent = data.signerName;
-            document.getElementById('s-signer-pos').textContent = data.signerPos;
-        };
-
-        // เซ็ตวันที่ปัจจุบันบนหัวกระดาษ
-        const setupToday = () => {
-            const today = new Date();
-            document.querySelector('.s-today-d').textContent = toThaiNum(today.getDate());
-            document.querySelector('.s-today-m').textContent = thaiMonthsFull[today.getMonth()];
-            document.querySelector('.s-today-y').textContent = toThaiNum(today.getFullYear() + 543);
-        };
-        setupToday();
-
-        window.syncV = function(inputId, syncClass) {
-            let val = document.getElementById(inputId).value;
-            const els = document.querySelectorAll('.' + syncClass);
-            
-            // บังคับแปลง format เวลาให้เป็น 24 ชั่วโมงเสมอ และเปลี่ยน : เป็น . ตามแบบฟอร์ม
-            if (document.getElementById(inputId).type === 'time' && val) {
-                // เบราว์เซอร์จะดึงค่าเป็น 24h เสมอ (เช่น "14:30") 
-                val = val.substring(0, 5).replace(':', '.'); 
-            }
-
-            let displayVal = '';
-            if (val) {
-                displayVal = toThaiNum(val); // แปลงเป็นเลขไทย
-            }
-
-            els.forEach(el => el.textContent = displayVal);
-        };
-
-        window.updateVDate = function() {
-            const startDate = document.getElementById('v-start-date').value;
-            if(startDate) {
-                const [y, m, d] = startDate.split('-');
-                document.querySelector('.s-start-d').textContent = toThaiNum(parseInt(d));
-                document.querySelector('.s-start-m').textContent = thaiMonthsFull[parseInt(m)-1];
-                document.querySelector('.s-start-y').textContent = toThaiNum(parseInt(y) + 543);
-            } else {
-                document.querySelector('.s-start-d').textContent = '';
-                document.querySelector('.s-start-m').textContent = '';
-                document.querySelector('.s-start-y').textContent = '';
-            }
-
-            const endDate = document.getElementById('v-end-date').value;
-            if(endDate) {
-                const [y, m, d] = endDate.split('-');
-                document.querySelector('.s-end-d').textContent = toThaiNum(parseInt(d));
-                document.querySelector('.s-end-m').textContent = thaiMonthsFull[parseInt(m)-1];
-                document.querySelector('.s-end-y').textContent = toThaiNum(parseInt(y) + 543);
-            } else {
-                document.querySelector('.s-end-d').textContent = '';
-                document.querySelector('.s-end-m').textContent = '';
-                document.querySelector('.s-end-y').textContent = '';
-            }
-        };
-
-        // ปุ่มเซฟใบจองรถ
-        const btnExportV = document.getElementById('btn-export-vehicle');
-        if(btnExportV) {
-            btnExportV.addEventListener('click', async () => {
-                btnExportV.disabled = true; btnExportV.classList.add('opacity-70'); 
-                document.getElementById('btn-text-v').textContent = 'กำลังแปลงรูปภาพ...'; window.scrollTo(0, 0);
-                
-                const docA4 = document.getElementById('doc-a4'); 
-                const currentTransform = docA4.style.transform; 
-                const currentMargin = docA4.style.marginBottom;
-                // ปลดสเกลเพื่อแคปเจอร์เต็มความละเอียด
-                docA4.style.transform = 'none'; docA4.style.marginBottom = '0px';
-
-                try {
-                    const canvas = await html2canvas(docA4, { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollY: 0, scrollX: 0 });
-                    const link = document.createElement('a'); link.href = canvas.toDataURL("image/jpeg", 1.0);
-                    link.download = `ใบขออนุญาตใช้รถ_${document.getElementById('v-req-name').value || 'เจ้าหน้าที่'}.jpg`; link.click();
-                    window.showToast("บันทึกใบขออนุญาตเรียบร้อย นำส่ง LINE ได้เลย!");
-                } catch (error) { 
-                    alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"); 
-                } finally {
-                    docA4.style.transform = currentTransform; docA4.style.marginBottom = currentMargin;
-                    btnExportV.disabled = false; btnExportV.classList.remove('opacity-70'); document.getElementById('btn-text-v').textContent = 'บันทึกเป็นรูปเอกสาร';
-                }
-            });
-        }
-
-
-        // ==========================================
-        // จดหมายข่าวเดิม
-        // ==========================================
-        const selectTemplate = document.getElementById('select-template');
-        const template1 = document.getElementById('template-1');
-        const template2 = document.getElementById('template-2');
-        let activeTemplateId = 'template-1';
-
-        selectTemplate.addEventListener('change', (e) => {
-            if(e.target.value === '1') { template1.classList.remove('hidden'); template2.classList.add('hidden'); activeTemplateId = 'template-1'; } 
-            else { template2.classList.remove('hidden'); template1.classList.add('hidden'); activeTemplateId = 'template-2'; }
-            window.updatePreviewScale(); 
-        });
-
-        const syncData = (inputId, displayClass, defaultText) => {
-            const input = document.getElementById(inputId);
-            input.addEventListener('input', (e) => { const text = e.target.value || defaultText; document.querySelectorAll('.' + displayClass).forEach(el => { el.textContent = text; }); });
-        };
-        syncData('input-topic', 'sync-topic', 'หัวเรื่องกิจกรรม');
-        syncData('input-description', 'sync-description', 'คำบรรยายกิจกรรม');
-
-        const selectDay = document.getElementById('select-day'), selectMonth = document.getElementById('select-month'), selectYear = document.getElementById('select-year');
-        const today = new Date(); 
-        for (let i = 1; i <= 31; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = i; if (i === today.getDate()) opt.selected = true; selectDay.appendChild(opt); }
-        selectMonth.value = thaiMonthsFull[today.getMonth()];
-        for (let i = today.getFullYear() + 543 - 5; i <= today.getFullYear() + 543 + 5; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = i; if (i === today.getFullYear() + 543) opt.selected = true; selectYear.appendChild(opt); }
-        const updateDisplayDate = () => { document.querySelectorAll('.sync-date').forEach(el => el.textContent = `วันที่ ${selectDay.value} ${selectMonth.value} ${selectYear.value}`); };
-        selectDay.addEventListener('change', updateDisplayDate); selectMonth.addEventListener('change', updateDisplayDate); selectYear.addEventListener('change', updateDisplayDate);
-        updateDisplayDate();
-
-        let uploadHtml = '';
-        for (let i = 0; i < 6; i++) {
-            uploadHtml += `
-                <div class="relative group">
-                    <input type="file" accept="image/*" class="hidden" id="upload-img-${i}"/>
-                    <label for="upload-img-${i}" id="label-img-${i}" class="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm">
-                        <div id="icon-img-${i}" class="flex flex-col items-center justify-center pointer-events-none"><span class="text-xl text-yellow-500 mb-0.5 leading-none">+</span><span class="text-[10px] font-medium border px-1.5 py-0.5 rounded-md text-blue-700 bg-blue-50 border-blue-200">รูปที่ ${i+1}</span></div>
-                        <img id="thumb-img-${i}" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
-                    </label>
-                </div>`;
-        }
-        document.getElementById('upload-buttons-container').innerHTML = uploadHtml;
-        for (let i = 0; i < 6; i++) {
-            document.getElementById(`upload-img-${i}`).addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                    const url = URL.createObjectURL(file);
-                    document.getElementById(`icon-img-${i}`).classList.add('hidden');
-                    document.getElementById(`thumb-img-${i}`).src = url; document.getElementById(`thumb-img-${i}`).classList.remove('hidden');
-                    document.getElementById(`label-img-${i}`).classList.replace('border-yellow-400', 'border-blue-500');
-                    document.querySelectorAll(`.show-gallery-${i}`).forEach(el => { el.style.backgroundImage = `url('${url}')`; el.classList.remove('hidden'); });
-                    document.querySelectorAll(`.ph-gallery-${i}`).forEach(el => el.classList.add('hidden'));
-                }
-            });
-        }
-
-        const btnExport = document.getElementById('btn-export'), btnText = document.getElementById('btn-text');
-        btnExport.addEventListener('click', async () => {
-            btnExport.disabled = true; btnExport.classList.add('opacity-70'); btnText.textContent = 'กำลังแปลงรูปภาพ...'; window.scrollTo(0, 0);
-            
-            const topic = document.getElementById('input-topic').value;
-            const desc = document.getElementById('input-description').value;
-            if (topic || desc) {
-                const newHist = { timestamp: Date.now(), topic: topic, description: desc };
-                if (isFirebaseReady && auth.currentUser) {
-                    try { await setDoc(doc(historyRef, newHist.timestamp.toString()), newHist); } catch (err) { console.error("Save Hist Error", err); }
-                } else {
-                    historyData.unshift(newHist); localStorage.setItem('prStudioHistory', JSON.stringify(historyData));
-                }
-            }
-
-            const activeTemp = document.getElementById(activeTemplateId); 
-            const currentTransform = activeTemp.style.transform; 
-            const currentMargin = activeTemp.style.marginBottom;
-            activeTemp.style.transform = 'none'; activeTemp.style.marginBottom = '0px';
-
-            try {
-                const canvas = await html2canvas(activeTemp, { scale: 2.5, useCORS: true, backgroundColor: activeTemplateId === 'template-1' ? '#fdfcf8' : '#f8f9fa', scrollY: 0, scrollX: 0 });
-                const link = document.createElement('a'); link.href = canvas.toDataURL("image/jpeg", 1.0);
-                link.download = `จดหมายข่าว_${topic || 'Newsletter'}.jpg`; link.click();
-                window.showToast("บันทึกรูปภาพและเก็บประวัติสำเร็จ!");
-            } catch (error) { 
-                alert("เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"); 
-            } finally {
-                activeTemp.style.transform = currentTransform; activeTemp.style.marginBottom = currentMargin;
-                btnExport.disabled = false; btnExport.classList.remove('opacity-70'); btnText.textContent = '💾 บันทึกเป็นรูปภาพ';
-            }
-        });
-    </script>
-</body>
-</html>
+            const thYear = parseInt(
