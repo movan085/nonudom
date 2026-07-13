@@ -117,14 +117,31 @@
         </div>
 
         <div class="flex flex-col xl:flex-row gap-6 w-full flex-1 min-h-0">
-            <div class="w-full xl:w-1/3 bg-white/90 backdrop-blur-md p-0 rounded-3xl shadow-xl border border-white overflow-hidden flex flex-col h-[350px] xl:h-full shrink-0">
+            <div class="w-full xl:w-1/3 bg-white/90 backdrop-blur-md p-0 rounded-3xl shadow-xl border border-white overflow-hidden flex flex-col h-auto xl:h-full shrink-0">
                 <div class="bg-gradient-to-r from-[#0071BA] to-[#00AEEF] p-5 text-white shadow-md z-10 shrink-0">
                     <h2 class="text-xl font-bold flex items-center gap-2">
-                        <span class="text-2xl">📋</span> รายการวันสำคัญ
+                        <span class="text-2xl">🗓️</span> ปฏิทินวันสำคัญ
                     </h2>
-                    <p class="text-sm opacity-90 mt-1">เลือกรายการเพื่อดูสื่อและแคปชัน</p>
+                    <p class="text-sm opacity-90 mt-1">จุดสีแดงคือวันที่มีข้อมูล (คลิกวันว่างเพื่อเพิ่มใหม่ได้)</p>
                 </div>
-                <div id="event-list-container" class="flex-1 overflow-y-auto custom-scroll p-4 space-y-3 bg-gray-50/50">
+                
+                <!-- ส่วนปฏิทินแบบ Grid -->
+                <div class="p-3 bg-white border-b flex justify-between items-center shadow-sm relative z-10 shrink-0">
+                     <button onclick="window.changeCalendarMonth(-1)" class="w-8 h-8 flex items-center justify-center hover:bg-blue-50 text-blue-600 rounded-lg transition-colors font-bold">◀</button>
+                     <h3 id="calendar-month-text" class="font-bold text-gray-800 text-[15px]"></h3>
+                     <button onclick="window.changeCalendarMonth(1)" class="w-8 h-8 flex items-center justify-center hover:bg-blue-50 text-blue-600 rounded-lg transition-colors font-bold">▶</button>
+                </div>
+                <div class="grid grid-cols-7 gap-1 text-center text-xs font-bold text-gray-500 bg-gray-50 py-2 border-b shrink-0">
+                    <div class="text-red-500">อา</div><div>จ</div><div>อ</div><div>พ</div><div>พฤ</div><div>ศ</div><div class="text-blue-500">ส</div>
+                </div>
+                <div id="calendar-grid-container" class="grid grid-cols-7 gap-1 p-3 bg-white text-sm shrink-0">
+                    <!-- วันที่จะถูกแทรกที่นี่ -->
+                </div>
+                
+                <div class="bg-gray-50 px-4 py-2 border-t border-b shrink-0">
+                    <h4 class="text-xs font-bold text-gray-500">รายการในเดือนนี้</h4>
+                </div>
+                <div id="event-list-container" class="flex-1 overflow-y-auto custom-scroll p-3 space-y-2 bg-gray-50/50 max-h-[250px] xl:max-h-none">
                     <!-- รายการจะถูกแทรกที่นี่ -->
                 </div>
             </div>
@@ -203,16 +220,12 @@
                             <label class="block text-sm font-bold text-gray-700 mb-1">หัวข้อ / ชื่อวันสำคัญ *</label>
                             <input type="text" id="manage-title" required placeholder="เช่น วันเฉลิมพระชนมพรรษา..." class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none">
                         </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">วันที่แสดงผล *</label>
-                                <input type="text" id="manage-date" required placeholder="เช่น 28 ก.ค. 69" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-1">กลุ่มเดือน (สำหรับจัดหมวด) *</label>
-                                <input type="text" id="manage-monthGrp" required placeholder="เช่น กรกฎาคม 2569" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none">
-                            </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-1">วันที่ของกิจกรรม / วันสำคัญ *</label>
+                            <input type="date" id="manage-iso-date" required class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none font-sans text-gray-700">
                         </div>
+
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-1">ลิงก์รูปภาพพรีวิว (URL) *</label>
                             <input type="url" id="manage-thumb" required placeholder="https://..." class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none text-sm">
@@ -622,6 +635,20 @@
         // ==========================================
         // ส่งต่อฟังก์ชันให้ใช้งานแบบ Global
         // ==========================================
+        window.currentNavDate = new Date();
+
+        window.changeCalendarMonth = function(delta) {
+            window.currentNavDate.setMonth(window.currentNavDate.getMonth() + delta);
+            window.renderCalendarList();
+        }
+
+        window.createNewOnDate = function(isoDate) {
+            window.switchView('view-asset-manager');
+            window.resetManagerForm();
+            document.getElementById('manage-iso-date').value = isoDate;
+            window.showToast("เลือกวันที่แล้ว กรอกข้อมูลต่อได้เลย!");
+        }
+
         window.switchView = function(viewId) {
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-newsletter').classList.add('hidden');
@@ -631,11 +658,9 @@
             document.getElementById(viewId).classList.remove('hidden');
 
             if(viewId === 'view-newsletter') {
-                setTimeout(() => {
-                    window.dispatchEvent(new Event('resize'));
-                    window.updatePreviewScale();
-                }, 50);
+                setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
             } else if (viewId === 'view-calendar') {
+                window.currentNavDate = new Date(); // รีเซ็ตกลับมาเดือนปัจจุบันเสมอเมื่อเปิดหน้า
                 window.renderCalendarList();
             } else if (viewId === 'view-asset-manager') {
                 window.renderManagerList();
@@ -645,24 +670,79 @@
         }
 
         window.renderCalendarList = function() {
-            const container = document.getElementById('event-list-container');
-            container.innerHTML = ''; 
-            if(assetData.length === 0) { container.innerHTML = '<p class="text-gray-500 text-center text-sm py-4">ยังไม่มีข้อมูลวันสำคัญ</p>'; return; }
-            let currentMonth = "";
-            assetData.forEach(event => {
-                if(event.monthGrp !== currentMonth) {
-                    currentMonth = event.monthGrp;
-                    const monthHeader = document.createElement('h3');
-                    monthHeader.className = "text-[#0071BA] font-bold text-sm pt-3 pb-1 border-b border-gray-200 mt-2";
-                    monthHeader.innerText = currentMonth;
-                    container.appendChild(monthHeader);
-                }
-                const btn = document.createElement('button');
-                btn.className = "w-full text-left bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:border-blue-400 hover:shadow-md hover:bg-blue-50 transition-all flex flex-col gap-1 focus:ring-2 focus:ring-blue-300 outline-none";
-                btn.onclick = () => window.selectAsset(event.id);
-                btn.innerHTML = `<span class="text-xs font-semibold text-blue-500 bg-blue-100 px-2 py-0.5 rounded w-fit">${event.dateStr}</span><span class="font-bold text-gray-800 leading-tight text-sm line-clamp-2">${event.title}</span>`;
-                container.appendChild(btn);
+            const grid = document.getElementById('calendar-grid-container');
+            const list = document.getElementById('event-list-container');
+            const monthText = document.getElementById('calendar-month-text');
+            
+            if(!grid || !list) return;
+
+            const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+            
+            const year = window.currentNavDate.getFullYear();
+            const month = window.currentNavDate.getMonth();
+            monthText.innerText = `${thaiMonths[month]} ${year + 543}`;
+
+            grid.innerHTML = '';
+            list.innerHTML = '';
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            for(let i = 0; i < firstDay; i++) {
+                grid.innerHTML += `<div class="p-2"></div>`;
+            }
+
+            const currentMonthGrp = `${thaiMonths[month]} ${year + 543}`;
+            
+            const eventsThisMonth = assetData.filter(e => {
+                 if(e.isoDate) return e.isoDate.startsWith(`${year}-${String(month+1).padStart(2,'0')}`);
+                 return e.monthGrp === currentMonthGrp; 
             });
+
+            const today = new Date();
+
+            for(let i = 1; i <= daysInMonth; i++) {
+                const dateStrIso = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+                
+                const evs = eventsThisMonth.filter(e => {
+                    if(e.isoDate) return e.isoDate === dateStrIso;
+                    return e.dateStr && e.dateStr.startsWith(`${i} `); 
+                });
+
+                let btnClass = "relative w-full aspect-square flex flex-col items-center justify-center rounded-xl text-gray-700 hover:bg-blue-100 transition-colors font-medium border border-transparent";
+                let dot = '';
+                let onclick = `onclick="window.createNewOnDate('${dateStrIso}')"`;
+                let tooltip = "คลิกเพื่อเพิ่มข้อมูลวันสำคัญใหม่";
+
+                if(year === today.getFullYear() && month === today.getMonth() && i === today.getDate()) {
+                    btnClass += " bg-blue-50 font-bold text-blue-600";
+                }
+
+                if(evs.length > 0) {
+                    btnClass += " font-bold text-blue-800 bg-blue-100 border-blue-200 hover:bg-blue-200 hover:scale-105 transform shadow-sm";
+                    dot = `<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full shadow-sm animate-pulse"></span>`;
+                    onclick = `onclick="window.selectAsset(${evs[0].id})"`;
+                    tooltip = "เปิดดู: " + evs[0].title;
+                }
+
+                grid.innerHTML += `<button class="${btnClass}" ${onclick} title="${tooltip}">
+                                      <span>${i}</span>
+                                      ${dot}
+                                   </button>`;
+            }
+
+            if(eventsThisMonth.length === 0) {
+                list.innerHTML = '<p class="text-gray-400 text-center text-xs py-4">ไม่มีวันสำคัญในเดือนนี้</p>';
+            } else {
+                eventsThisMonth.forEach(event => {
+                    const btn = document.createElement('button');
+                    btn.className = "w-full text-left bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:border-blue-400 hover:bg-blue-50 transition-all flex flex-col gap-1 outline-none";
+                    btn.onclick = () => window.selectAsset(event.id);
+                    btn.innerHTML = `<span class="text-[10px] font-bold text-blue-500 bg-blue-100 px-2 py-0.5 rounded w-fit">${event.dateStr}</span>
+                                     <span class="font-bold text-gray-800 text-sm line-clamp-1">${event.title}</span>`;
+                    list.appendChild(btn);
+                });
+            }
         }
 
         window.selectAsset = function(id) {
@@ -711,34 +791,51 @@
         window.resetManagerForm = function() {
             document.getElementById('asset-manager-form').reset();
             document.getElementById('manage-id').value = '';
+            document.getElementById('manage-iso-date').value = '';
             document.getElementById('form-mode-title').innerHTML = `<span>➕ เพิ่มข้อมูลใหม่</span> <button type="button" onclick="window.resetManagerForm()" class="text-sm font-normal text-blue-500 hover:underline bg-white px-3 py-1 rounded-lg border shadow-sm">ล้างฟอร์ม</button>`;
         }
 
         window.editAsset = function(id) {
             const event = assetData.find(e => e.id === id);
             if(!event) return;
+
             document.getElementById('manage-id').value = event.id;
             document.getElementById('manage-title').value = event.title;
-            document.getElementById('manage-date').value = event.dateStr;
-            document.getElementById('manage-monthGrp').value = event.monthGrp;
+            if(event.isoDate) {
+                document.getElementById('manage-iso-date').value = event.isoDate;
+            } else {
+                document.getElementById('manage-iso-date').value = ''; // ป้องกันบั๊กกรณีข้อมูลเก่า ให้ผู้ใช้เลือกใหม่
+            }
             document.getElementById('manage-thumb').value = event.thumbUrl;
             document.getElementById('manage-download').value = event.downloadUrl;
             document.getElementById('manage-caption').value = event.caption;
+
             document.getElementById('form-mode-title').innerHTML = `<span class="text-blue-600">✏️ แก้ไข: ${event.title}</span> <button type="button" onclick="window.resetManagerForm()" class="text-sm font-normal text-blue-500 hover:underline bg-white px-3 py-1 rounded-lg border shadow-sm">ยกเลิกการแก้ไข</button>`;
         }
 
         window.saveAssetData = async function(e) {
             e.preventDefault();
             const idStr = document.getElementById('manage-id').value;
+            
+            // ประมวลผลวันที่จาก Input Date อัตโนมัติ (ไม่ต้องให้ผู้ใช้พิมพ์ชื่อเดือนเองแล้ว)
+            const isoDateVal = document.getElementById('manage-iso-date').value;
+            const [year, month, day] = isoDateVal.split('-');
+            const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+            const thYear = parseInt(year) + 543;
+            const generatedDateStr = `${parseInt(day)} ${thaiMonths[parseInt(month)-1]} ${thYear}`;
+            const generatedMonthGrp = `${thaiMonths[parseInt(month)-1]} ${thYear}`;
+
             const newAsset = {
                 id: idStr ? parseInt(idStr) : Date.now(),
                 title: document.getElementById('manage-title').value.trim(),
-                dateStr: document.getElementById('manage-date').value.trim(),
-                monthGrp: document.getElementById('manage-monthGrp').value.trim(),
+                isoDate: isoDateVal,
+                dateStr: generatedDateStr,
+                monthGrp: generatedMonthGrp,
                 thumbUrl: document.getElementById('manage-thumb').value.trim(),
                 downloadUrl: document.getElementById('manage-download').value.trim(),
                 caption: document.getElementById('manage-caption').value.trim()
             };
+
             if (isFirebaseReady && auth.currentUser) {
                 try {
                     await setDoc(doc(publicDataRef, newAsset.id.toString()), newAsset);
