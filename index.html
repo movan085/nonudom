@@ -920,34 +920,7 @@
                 document.querySelectorAll('.' + displayClass).forEach(el => el.textContent = window.toThaiNum(timeStr));
             } else {
                 document.querySelectorAll('.' + displayClass).forEach(el => el.textContent = window.toThaiNum(inputVal));
-            }
-        }
-
-        window.updateVDate = function() {
-            const startDate = document.getElementById('v-start-date').value;
-            const endDate = document.getElementById('v-end-date').value;
-            
-            if(startDate) {
-                const d = new Date(startDate);
-                document.querySelectorAll('.s-start-d').forEach(el => el.textContent = window.toThaiNum(d.getDate().toString()));
-                document.querySelectorAll('.s-start-m').forEach(el => el.textContent = thaiMonths[d.getMonth()]);
-                document.querySelectorAll('.s-start-y').forEach(el => el.textContent = window.toThaiNum((d.getFullYear() + 543).toString()));
-            }
-            if(endDate) {
-                const d = new Date(endDate);
-                document.querySelectorAll('.s-end-d').forEach(el => el.textContent = window.toThaiNum(d.getDate().toString()));
-                document.querySelectorAll('.s-end-m').forEach(el => el.textContent = thaiMonths[d.getMonth()]);
-                document.querySelectorAll('.s-end-y').forEach(el => el.textContent = window.toThaiNum((d.getFullYear() + 543).toString()));
-            }
-        }
-
-        const tDate = new Date();
-        document.querySelectorAll('.s-today-d').forEach(el => el.textContent = window.toThaiNum(tDate.getDate().toString()));
-        document.querySelectorAll('.s-today-m').forEach(el => el.textContent = thaiMonths[tDate.getMonth()]);
-        document.querySelectorAll('.s-today-y').forEach(el => el.textContent = window.toThaiNum((tDate.getFullYear() + 543).toString()));
-
-        // ฟังก์ชันโหลดเป็นไฟล์ Microsoft Word (.doc) 
-        window.exportVehicleDoc = function() {
+        window.exportVehicleDoc = async function() {
             const btn = document.getElementById('btn-export-vehicle');
             const btnText = document.getElementById('btn-text-v');
             if(btn) { btn.disabled = true; btn.classList.add('opacity-70'); }
@@ -984,14 +957,15 @@
                 };
                 const tTime = (timeStr) => window.toThaiNum((timeStr || '').replace(':', '.')) || '............';
 
-                const reqName = document.getElementById('v-req-name').value || '.......................................................';
-                const pos = document.getElementById('v-req-pos').value || '.......................................................';
-                const dept = document.getElementById('v-req-dept').value || '.......................................................';
-                const dest = document.getElementById('v-dest').value || '......................................................................................................';
-                const purpose = document.getElementById('v-purpose').value || '......................................................................................................';
+                // ดึงข้อมูลและแปลงเป็นเลขไทย (จำลอง TH Sarabun IT9)
+                const reqName = window.toThaiNum(document.getElementById('v-req-name').value) || '.......................................................';
+                const pos = window.toThaiNum(document.getElementById('v-req-pos').value) || '.......................................................';
+                const dept = window.toThaiNum(document.getElementById('v-req-dept').value) || '.......................................................';
+                const dest = window.toThaiNum(document.getElementById('v-dest').value) || '..........................................................................................';
+                const purpose = window.toThaiNum(document.getElementById('v-purpose').value) || '..........................................................................................';
                 const pax = t(document.getElementById('v-pax').value);
-                const budget = document.getElementById('v-budget').value || '...................................................';
-                const driver = document.getElementById('v-driver').value || '......................................................................';
+                const budget = window.toThaiNum(document.getElementById('v-budget').value) || '...................................................';
+                const driver = window.toThaiNum(document.getElementById('v-driver').value) || '......................................................................';
 
                 const startD = tDate(document.getElementById('v-start-date').value);
                 const endD = tDate(document.getElementById('v-end-date').value);
@@ -1005,62 +979,88 @@
 
                 // สร้าง HTML Structure สำหรับเปิดใน MS Word โดยเฉพาะ
                 const wordHTML = `
-                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <html xmlns:v="urn:schemas-microsoft-com:vml"
+                      xmlns:o="urn:schemas-microsoft-com:office:office"
+                      xmlns:w="urn:schemas-microsoft-com:office:word"
+                      xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
+                      xmlns="http://www.w3.org/TR/REC-html40">
                 <head>
-                    <meta charset='utf-8'>
+                    <meta charset="utf-8">
                     <style>
-                        body { font-family: 'TH SarabunPSK', 'TH Sarabun New', sans-serif; font-size: 16pt; line-height: 1.1; margin: 0; padding: 0; }
-                        p { margin: 0 0 4pt 0; padding: 0; }
+                        /* ตั้งค่าหน้ากระดาษ A4 แบบตายตัว */
+                        @page Section1 {
+                            size: 21cm 29.7cm;
+                            margin: 2.54cm 2.54cm 2.54cm 2.54cm;
+                            mso-header-margin: 1.27cm;
+                            mso-footer-margin: 1.27cm;
+                            mso-paper-source: 0;
+                        }
+                        div.Section1 { page: Section1; }
+                        body {
+                            font-family: 'TH SarabunPSK', 'TH Sarabun New', sans-serif;
+                            font-size: 16pt;
+                            line-height: 1.15;
+                        }
+                        p { margin: 0; padding: 0; margin-bottom: 6pt; }
                         .center { text-align: center; }
                         .right { text-align: right; }
-                        .tab1 { display: inline-block; width: 35px; }
-                        .indent { margin-left: 50px; }
-                        .sign-box { margin-left: 55%; text-align: center; }
-                        .sign-box-left { margin-left: 10%; text-align: center; width: 45%; }
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 6pt; }
+                        td { padding: 0; vertical-align: top; }
                     </style>
                 </head>
                 <body>
-                    <p class="right"><b>แบบ ๓</b></p>
-                    <p class="center"><b>ใบขออนุญาตใช้${carTitle} ของสำนักงาน อบต.โนนอุดม</b></p>
-                    <p class="center">วันที่ ${todayD} เดือน ${todayM} พ.ศ. ${todayY}</p>
-                    <p><br></p>
-                    <p>เรียน นายกองค์การบริหารส่วนตำบลโนนอุดม</p>
-                    <p><span class="tab1"></span>ข้าพเจ้า ${reqName} ตำแหน่ง ${pos}</p>
-                    <p>สำนัก/กอง ${dept} ขออนุญาตใช้${carTitle2}ของ อบต.โนนอุดม เพื่อไปราชการที่ ${dest}</p>
-                    <p>เพื่อปฏิบัติราชการเกี่ยวกับเรื่อง ${purpose}</p>
-                    <p>มีผู้นั่งไปในครั้งนี้ จำนวน ${pax} คน โดยใช้น้ำมันเชื้อเพลิงจากงบประมาณของแผนงาน/งาน ${budget}</p>
-                    <p>ทั้งนี้ ขอใช้รถยนต์ในวันที่ ${startD.d} เดือน ${startD.m} พ.ศ. ${startD.y}</p>
-                    <p>เวลา ${startTime} น. ถึงวันที่ ${endD.d} เดือน ${endD.m} พ.ศ. ${endD.y} เวลา ${endTime} น.</p>
-                    <p><br></p>
+                    <div class="Section1">
+                        <p class="right"><b>แบบ ๓</b></p>
+                        <p class="center" style="font-size: 18pt;"><b>ใบขออนุญาตใช้${carTitle} ของสำนักงาน อบต.โนนอุดม</b></p>
+                        <p class="center">วันที่ ${todayD} เดือน ${todayM} พ.ศ. ${todayY}</p>
+                        <p style="margin-top: 12pt;">เรียน นายกองค์การบริหารส่วนตำบลโนนอุดม</p>
+                        <p style="text-indent: 2.5cm;">ข้าพเจ้า ${reqName} ตำแหน่ง ${pos}</p>
+                        <p>สำนัก/กอง ${dept} ขออนุญาตใช้${carTitle2}ของ อบต.โนนอุดม เพื่อไปราชการที่ ${dest}</p>
+                        <p>เพื่อปฏิบัติราชการเกี่ยวกับเรื่อง ${purpose}</p>
+                        <p>มีผู้นั่งไปในครั้งนี้ จำนวน ${pax} คน โดยใช้น้ำมันเชื้อเพลิงจากงบประมาณของแผนงาน/งาน ${budget}</p>
+                        <p>ทั้งนี้ ขอใช้รถยนต์ในวันที่ ${startD.d} เดือน ${startD.m} พ.ศ. ${startD.y}</p>
+                        <p>เวลา ${startTime} น. ถึงวันที่ ${endD.d} เดือน ${endD.m} พ.ศ. ${endD.y} เวลา ${endTime} น.</p>
+                        
+                        <table style="margin-top: 16pt;">
+                            <tr>
+                                <td style="width: 50%;"></td>
+                                <td style="width: 50%; text-align: center;">
+                                    <p>ลงชื่อ.........................................................ผู้ขออนุญาตใช้รถยนต์</p>
+                                    <p>( ${reqName} )</p>
+                                    <p>ตำแหน่ง ${pos}</p>
+                                </td>
+                            </tr>
+                        </table>
 
-                    <div class="sign-box">
-                        <p>ลงชื่อ.........................................................ผู้ขออนุญาตใช้รถยนต์</p>
-                        <p>(${reqName})</p>
-                        <p>ตำแหน่ง ${pos}</p>
-                    </div>
-                    <p><br></p>
-                    <p><span class="tab1"></span>ได้ตรวจสอบแล้ว มีรถยนต์ว่างอยู่ จึงเห็นสมควรอนุญาตใช้รถยนต์ หมายเลขทะเบียน ${carReg}</p>
-                    <p>โดยมี ${driver} เป็นพนักงานขับรถยนต์</p>
-                    <p><span class="tab1"></span>เลขไมล์ก่อนไป......................................................เลขไมล์หลังไป.....................................................</p>
-                    <p><br></p>
+                        <p style="text-indent: 2.5cm; margin-top: 16pt;">
+                            ได้ตรวจสอบแล้ว มีรถยนต์ว่างอยู่ จึงเห็นสมควรอนุญาตใช้รถยนต์ หมายเลขทะเบียน ${carReg} โดยมี ${driver} เป็นพนักงานขับรถยนต์
+                        </p>
+                        <p style="text-indent: 2.5cm;">
+                            เลขไมล์ก่อนไป......................................................เลขไมล์หลังไป.....................................................
+                        </p>
 
-                    ${showDeputy ? `
-                    <div class="sign-box-left">
-                        <p>ลงชื่อ....................................................</p>
-                        <p>(นางดนิตา มนไธสง)</p>
-                        <p>รองปลัดองค์การบริหารส่วนตำบล รักษาราชการแทน</p>
-                        <p>ปลัดองค์การบริหารส่วนตำบลโนนอุดม</p>
-                    </div><p><br></p>` : ''}
+                        ${showDeputy ? `
+                        <div style="text-align: center; margin-top: 16pt;">
+                            <p>ลงชื่อ....................................................</p>
+                            <p>(นางดนิตา มนไธสง)</p>
+                            <p>รองปลัดองค์การบริหารส่วนตำบล รักษาราชการแทน</p>
+                            <p>ปลัดองค์การบริหารส่วนตำบลโนนอุดม</p>
+                        </div>` : ''}
 
-                    <p><span class="tab1"></span>ความเห็นของผู้มีอำนาจสั่งการให้ใช้รถยนต์</p>
-                    <p class="indent"><span class="tab1"></span><span style="font-family: 'Segoe UI Symbol', sans-serif;">&#9711;</span> อนุญาต</p>
-                    <p class="indent"><span class="tab1"></span><span style="font-family: 'Segoe UI Symbol', sans-serif;">&#9711;</span> ไม่อนุญาต</p>
-                    <p><br></p>
+                        <p style="text-indent: 2.5cm; margin-top: 16pt;">ความเห็นของผู้มีอำนาจสั่งการให้ใช้รถยนต์</p>
+                        <p style="margin-left: 3.5cm;"><span style="font-family: 'Segoe UI Symbol', sans-serif;">&#9711;</span> อนุญาต</p>
+                        <p style="margin-left: 3.5cm;"><span style="font-family: 'Segoe UI Symbol', sans-serif;">&#9711;</span> ไม่อนุญาต</p>
 
-                    <div class="sign-box">
-                        <p>ลงชื่อ............................................................</p>
-                        <p>${signerName}</p>
-                        <p>${signerPos}</p>
+                        <table style="margin-top: 16pt;">
+                            <tr>
+                                <td style="width: 50%;"></td>
+                                <td style="width: 50%; text-align: center;">
+                                    <p>ลงชื่อ............................................................</p>
+                                    <p>${signerName}</p>
+                                    <p>${signerPos}</p>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </body>
                 </html>
