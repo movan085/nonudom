@@ -218,143 +218,109 @@
 
             <!-- แผงขวา: พรีวิว A4 -->
             <div id="v-preview-container" class="w-full xl:w-7/12 flex items-start justify-center bg-gray-200/50 p-4 rounded-3xl shadow-inner border border-gray-300 overflow-hidden relative z-10 min-h-[600px] xl:h-auto custom-scroll overflow-y-auto">
-                <div id="doc-a4" class="w-[794px] h-[1123px] bg-white shadow-xl shrink-0 p-[70px_80px] flex flex-col font-sarabun text-[22px] leading-[1.6] text-black origin-top mx-auto relative relative z-10">
-                    <div class="text-right font-bold w-full">แบบ ๓</div>
+                
+                <div id="doc-a4" class="w-[794px] h-[1123px] bg-white shadow-xl shrink-0 p-[70px_70px] flex flex-col font-sarabun text-[22px] leading-[1.7] text-black origin-top mx-auto relative z-10 box-border">
+                    <div class="text-right font-bold w-full leading-none mb-4">แบบ ๓</div>
 
-                    <div class="text-center font-bold text-[26px] mt-1 mb-4 leading-tight">
-                        ใบขออนุญาตใช้<span id="s-car-title">รถยนต์บรรทุกน้ำอเนกประสงค์</span><br>ของสำนักงาน อบต.โนนอุดม
+                    <div class="text-center font-bold text-[26px] mb-6 leading-tight">
+                        ใบขออนุญาตใช้<span id="s-car-title">รถยนต์บรรทุกน้ำอเนกประสงค์</span> ของสำนักงาน อบต.โนนอุดม
                     </div>
 
-                    <div class="flex items-baseline justify-end mb-4">
-                        <span>วันที่</span>
-                        <span class="blank-fill min-w-[40px] px-2 mx-1 s-today-d"></span>
-                        <span>เดือน</span>
-                        <span class="blank-fill min-w-[120px] px-2 mx-1 s-today-m"></span>
-                        <span>พ.ศ.</span>
-                        <span class="blank-fill min-w-[60px] px-2 ml-1 s-today-y"></span>
+                    <div class="text-center pl-[150px] mb-2">
+                        วันที่ <span class="a4-blank w-[40px] s-today-d"></span>
+                        เดือน <span class="a4-blank w-[120px] s-today-m"></span>
+                        พ.ศ. <span class="a4-blank w-[60px] s-today-y"></span>
                     </div>
 
-                    <div class="mb-2">เรียน นายกองค์การบริหารส่วนตำบลโนนอุดม</div>
+                    <div class="mb-1">เรียน นายกองค์การบริหารส่วนตำบลโนนอุดม</div>
 
-                    <div class="flex items-baseline mb-2 pl-[60px]">
-                        <span class="whitespace-nowrap">ข้าพเจ้า</span>
-                        <span class="blank-fill flex-1 px-2 mx-1 s-req-name text-blue-700"></span>
-                        <span class="whitespace-nowrap">ตำแหน่ง</span>
-                        <span class="blank-fill flex-1 px-2 ml-1 s-req-pos text-blue-700"></span>
+                    <div class="pl-[50px]">
+                        ข้าพเจ้า <span class="a4-blank w-[240px] s-req-name"></span> 
+                        ตำแหน่ง <span class="a4-blank w-[200px] s-req-pos"></span>
                     </div>
                     
-                    <div class="flex items-baseline mb-2">
-                        <span class="whitespace-nowrap">สำนัก/กอง</span>
-                        <span class="blank-fill flex-1 px-2 mx-1 s-req-dept text-blue-700"></span>
-                        <span class="whitespace-nowrap">ขออนุญาตใช้<span id="s-car-title-2">รถบรรทุกน้ำอเนกประสงค์</span>ของ</span>
-                    </div>
-
-                    <div class="flex items-baseline mb-2">
-                        <span class="whitespace-nowrap">อบต.โนนอุดม เพื่อไปราชการที่</span>
-                        <span class="blank-fill flex-1 px-2 ml-1 s-dest text-blue-700"></span>
+                    <div>
+                        สำนัก/กอง <span class="a4-blank w-[200px] s-req-dept"></span> 
+                        ขออนุญาตใช้<span id="s-car-title-2">รถบรรทุกน้ำอเนกประสงค์</span>ของ
                     </div>
                     
-                    <div class="flex items-baseline mb-2">
-                        <span class="whitespace-nowrap">เพื่อปฏิบัติราชการเกี่ยวกับเรื่อง</span>
-                        <span class="blank-fill flex-1 px-2 ml-1 s-purpose text-blue-700"></span>
+                    <div>
+                        อบต.โนนอุดม เพื่อไปราชการที่ <span class="a4-blank w-[460px] s-dest"></span>
+                    </div>
+                    
+                    <div>
+                        เพื่อปฏิบัติราชการเกี่ยวกับเรื่อง <span class="a4-blank w-[460px] s-purpose"></span>
+                    </div>
+                    
+                    <div>
+                        มีผู้นั่งไปในครั้งนี้ จำนวน <span class="a4-blank w-[50px] s-pax"></span> คน โดยใช้น้ำมันเชื้อเพลิงจากงบประมาณของแผนงาน/งาน
+                    </div>
+                    
+                    <div>
+                        <span class="a4-blank w-[200px] s-budget"></span>
+                        ทั้งนี้ ขอใช้รถยนต์ในวันที่ <span class="a4-blank w-[40px] s-start-d"></span>
+                        เดือน <span class="a4-blank w-[120px] s-start-m"></span>
+                        พ.ศ. <span class="a4-blank w-[50px] s-start-y"></span>
+                    </div>
+                    
+                    <div>
+                        เวลา <span class="a4-blank w-[60px] s-start-time"></span> น. 
+                        ถึงวันที่ <span class="a4-blank w-[40px] s-end-d"></span>
+                        เดือน <span class="a4-blank w-[120px] s-end-m"></span>
+                        พ.ศ. <span class="a4-blank w-[50px] s-end-y"></span>
+                        เวลา <span class="a4-blank w-[60px] s-end-time"></span> น.
                     </div>
 
-                    <div class="flex items-baseline mb-2">
-                        <span class="whitespace-nowrap">มีผู้นั่งไปในครั้งนี้ จำนวน</span>
-                        <span class="blank-fill min-w-[50px] px-2 mx-1 s-pax text-blue-700"></span>
-                        <span class="whitespace-nowrap">คน โดยใช้น้ำมันเชื้อเพลิงจากงบประมาณของแผนงาน/งาน</span>
-                    </div>
-
-                    <div class="flex items-baseline mb-2">
-                        <span class="blank-fill flex-1 mr-1 s-budget text-blue-700 px-2"></span>
-                        <span class="whitespace-nowrap">ทั้งนี้ ขอใช้รถยนต์ในวันที่</span>
-                        <span class="blank-fill min-w-[40px] px-2 mx-1 s-start-d text-blue-700"></span>
-                        <span class="whitespace-nowrap">เดือน</span>
-                        <span class="blank-fill min-w-[100px] px-2 mx-1 s-start-m text-blue-700"></span>
-                        <span class="whitespace-nowrap">พ.ศ.</span>
-                        <span class="blank-fill min-w-[60px] px-2 ml-1 s-start-y text-blue-700"></span>
-                    </div>
-
-                    <div class="flex items-baseline mb-6">
-                        <span class="whitespace-nowrap">เวลา</span>
-                        <span class="blank-fill min-w-[60px] px-2 mx-1 s-start-time text-blue-700"></span>
-                        <span class="whitespace-nowrap">น. ถึงวันที่</span>
-                        <span class="blank-fill min-w-[40px] px-2 mx-1 s-end-d text-blue-700"></span>
-                        <span class="whitespace-nowrap">เดือน</span>
-                        <span class="blank-fill min-w-[100px] px-2 mx-1 s-end-m text-blue-700"></span>
-                        <span class="whitespace-nowrap">พ.ศ.</span>
-                        <span class="blank-fill min-w-[60px] px-2 mx-1 s-end-y text-blue-700"></span>
-                        <span class="whitespace-nowrap">เวลา</span>
-                        <span class="blank-fill min-w-[60px] px-2 mx-1 s-end-time text-blue-700"></span>
-                        <span class="whitespace-nowrap">น.</span>
-                    </div>
-
-                    <div class="flex flex-col items-center w-[350px] self-end mb-6">
-                        <div class="flex items-baseline w-full justify-center">
-                            <span>ลงชื่อ</span>
-                            <span class="blank-fill min-w-[200px] mx-1 border-b-2"></span>
-                            <span>ผู้ขออนุญาตใช้รถยนต์</span>
-                        </div>
-                        <div class="mt-1 flex items-baseline w-full justify-center pl-8">
-                            <span>(</span>
-                            <span class="blank-fill min-w-[180px] mx-1 s-req-name border-none text-blue-700 font-normal"></span>
-                            <span>)</span>
-                        </div>
-                        <div class="flex items-baseline w-full justify-center mt-1 pl-[30px]">
-                            <span>ตำแหน่ง</span>
-                            <span class="blank-fill flex-1 mx-1 s-req-pos border-none text-blue-700 font-normal"></span>
+                    <!-- ลายเซ็นผู้ขอ -->
+                    <div class="mt-6 flex justify-end">
+                        <div class="w-[350px] text-center">
+                            <div>ลงชื่อ <span class="a4-blank w-[200px]"></span> ผู้ขออนุญาตใช้รถยนต์</div>
+                            <div class="mt-1">( <span class="a4-blank w-[180px] border-none s-req-name text-blue-700"></span> )</div>
+                            <div class="mt-1 flex items-center justify-center">ตำแหน่ง <span class="a4-blank w-[200px] border-none s-req-pos text-blue-700"></span></div>
                         </div>
                     </div>
 
-                    <div class="flex items-baseline mb-2 pl-[60px]">
-                        <span class="whitespace-nowrap">ได้ตรวจสอบแล้ว มีรถยนต์ว่างอยู่ จึงเห็นสมควรอนุญาตใช้รถยนต์ หมายเลขทะเบียน <span id="s-car-reg">ผอ ๖๙๑๙ นครราชสีมา</span></span>
+                    <div class="mt-4 pl-[50px]">
+                        ได้ตรวจสอบแล้ว มีรถยนต์ว่างอยู่ จึงเห็นสมควรอนุญาตใช้รถยนต์ หมายเลขทะเบียน <span id="s-car-reg" class="font-bold">ผอ ๖๙๑๙ นครราชสีมา</span>
                     </div>
-                    
-                    <div class="flex items-baseline mb-6">
-                        <span class="whitespace-nowrap pl-[60px] md:pl-0">โดยมี</span>
-                        <span class="blank-fill flex-1 px-2 mx-1 s-driver text-blue-700"></span>
-                        <span class="whitespace-nowrap">เป็นพนักงานขับรถยนต์</span>
+                    <div>
+                        โดยมี <span class="a4-blank w-[250px] s-driver"></span> เป็นพนักงานขับรถยนต์
                     </div>
-
-                    <div class="flex items-baseline mb-6 pl-[60px]">
-                        <span class="whitespace-nowrap">เลขไมล์ก่อนไป</span>
-                        <span class="blank-fill flex-1 mx-1"></span>
-                        <span class="whitespace-nowrap">เลขไมล์หลังไป</span>
-                        <span class="blank-fill flex-1 ml-1"></span>
+                    <div class="pl-[50px]">
+                        เลขไมล์ก่อนไป <span class="a4-blank w-[180px]"></span> เลขไมล์หลังไป <span class="a4-blank w-[180px]"></span>
                     </div>
 
                     <!-- ลายเซ็นปลัด -->
-                    <div id="s-signer-1" class="flex flex-col items-center w-[350px] self-start ml-[60px] mb-6">
-                        <div class="flex items-baseline w-full justify-center">
-                            <span>ลงชื่อ</span>
-                            <span class="blank-fill min-w-[200px] mx-1 border-b-2"></span>
-                        </div>
-                        <div class="mt-1">(นางดนิตา มนไธสง)</div>
-                        <div class="text-center leading-tight mt-1">
-                            รองปลัดองค์การบริหารส่วนตำบล รักษาราชการแทน<br>ปลัดองค์การบริหารส่วนตำบลโนนอุดม
-                        </div>
-                    </div>
-
-                    <div class="mb-2 pl-[60px]">ความเห็นของผู้มีอำนาจสั่งการให้ใช้รถยนต์</div>
-                    <div class="flex flex-col gap-1 pl-[120px] mb-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-5 h-5 border border-black rounded-full flex-shrink-0"></div> <span>อนุญาต</span>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="w-5 h-5 border border-black rounded-full flex-shrink-0"></div> <span>ไม่อนุญาต</span>
+                    <div id="s-signer-1" class="mt-6 flex justify-end w-[400px]">
+                        <div class="w-[350px] text-center">
+                            <div>ลงชื่อ <span class="a4-blank w-[200px]"></span></div>
+                            <div class="mt-1">(นางดนิตา มนไธสง)</div>
+                            <div class="mt-1 leading-tight">
+                                รองปลัดองค์การบริหารส่วนตำบล รักษาราชการแทน<br>ปลัดองค์การบริหารส่วนตำบลโนนอุดม
+                            </div>
                         </div>
                     </div>
 
-                    <!-- ลายเซ็นนายก/ปลัด -->
-                    <div class="flex flex-col items-center w-[350px] self-end">
-                        <div class="flex items-baseline w-full justify-center">
-                            <span>ลงชื่อ</span>
-                            <span class="blank-fill min-w-[200px] mx-1 border-b-2"></span>
+                    <div class="mt-4 pl-[50px]">ความเห็นของผู้มีอำนาจสั่งการให้ใช้รถยนต์</div>
+                    <div class="pl-[100px] flex flex-col gap-1 mt-1">
+                        <div class="flex items-center gap-3">
+                            <div class="w-5 h-5 border border-black rounded-full"></div> อนุญาต
                         </div>
-                        <div id="s-signer-name" class="mt-1">(นายสุพจน์ สมน้อย)</div>
-                        <div id="s-signer-pos" class="text-center leading-tight mt-1 whitespace-pre-wrap">นายกองค์การบริหารส่วนตำบลโนนอุดม</div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-5 h-5 border border-black rounded-full"></div> ไม่อนุญาต
+                        </div>
+                    </div>
+
+                    <!-- ลายเซ็นนายก -->
+                    <div class="mt-4 flex justify-end">
+                        <div class="w-[350px] text-center">
+                            <div>ลงชื่อ <span class="a4-blank w-[200px]"></span></div>
+                            <div id="s-signer-name" class="mt-1">(นายสุพจน์ สมน้อย)</div>
+                            <div id="s-signer-pos" class="mt-1 leading-tight whitespace-pre-wrap">นายกองค์การบริหารส่วนตำบลโนนอุดม</div>
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
