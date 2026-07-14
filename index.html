@@ -51,16 +51,6 @@
         .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* เส้นประสำหรับใบจองรถ (ใช้สำหรับพรีวิวบนเว็บเท่านั้น) */
-        .a4-blank {
-            border-bottom: 2px dotted #000;
-            text-align: center;
-            color: #1d4ed8;
-            display: inline-block;
-            min-height: 24px;
-            line-height: 1.2;
-        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-100 via-sky-50 to-yellow-100 min-h-screen flex flex-col justify-between relative">
@@ -126,7 +116,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- VIEW: VEHICLE BOOKING (ระบบจองรถส่วนกลาง) -->
+    <!-- VIEW: VEHICLE BOOKING (ระบบจองรถส่วนกลาง - โหลดเป็น Word) -->
     <!-- ========================================== -->
     <div id="view-vehicle" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in relative">
         <div class="flex items-center justify-between bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-white">
@@ -134,7 +124,12 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
                 กลับหน้าหลัก
             </button>
-            <h2 class="font-bold text-gray-700 md:text-lg">🚙 สร้างใบขออนุญาตใช้รถยนต์ (โหลดเป็น Word)</h2>
+            <div class="flex items-center gap-4">
+                <h2 class="font-bold text-gray-700 md:text-lg hidden md:block">🚙 สร้างใบขออนุญาตใช้รถยนต์</h2>
+                <button onclick="window.showVehicleHistoryModal()" class="flex items-center gap-1.5 bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg border border-yellow-200 hover:bg-yellow-100 transition text-sm font-bold shadow-sm">
+                    <span>📜</span> ตารางประวัติการใช้รถ
+                </button>
+            </div>
         </div>
 
         <div class="flex flex-col xl:flex-row gap-6 w-full">
@@ -147,7 +142,7 @@
                 <div class="p-5 md:p-6 space-y-4">
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1">เลือกรถที่ต้องการขออนุญาต *</label>
-                        <select id="v-select-car" class="w-full p-2.5 bg-yellow-50 border border-yellow-200 text-yellow-900 font-bold rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none cursor-pointer" onchange="window.updateVehicleType()">
+                        <select id="v-select-car" class="w-full p-2.5 bg-yellow-50 border border-yellow-200 text-yellow-900 font-bold rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none cursor-pointer">
                             <option value="car1">รถยนต์บรรทุกน้ำอเนกประสงค์ (ผอ 6919)</option>
                             <option value="car2">รถยนต์ส่วนกลาง (จก 8337)</option>
                             <option value="car3">รถยนต์ส่วนกลาง (กพ 7743)</option>
@@ -158,54 +153,54 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-1">ชื่อ-สกุล ผู้ขอ</label>
-                            <input type="text" id="v-req-name" placeholder="เช่น นายสมชาย ใจดี" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm" oninput="window.syncV('v-req-name', 's-req-name')">
+                            <input type="text" id="v-req-name" placeholder="เช่น นายสมชาย ใจดี" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-1">ตำแหน่ง</label>
-                            <input type="text" id="v-req-pos" placeholder="เช่น นักวิเคราะห์ฯ" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm" oninput="window.syncV('v-req-pos', 's-req-pos')">
+                            <input type="text" id="v-req-pos" placeholder="เช่น นักวิเคราะห์ฯ" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
                         </div>
                     </div>
                     
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1">สำนัก / กอง</label>
-                        <input type="text" id="v-req-dept" placeholder="เช่น สำนักปลัด" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm" oninput="window.syncV('v-req-dept', 's-req-dept')">
+                        <input type="text" id="v-req-dept" placeholder="เช่น สำนักปลัด" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
                     </div>
 
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1">เพื่อไปราชการที่ (สถานที่)</label>
-                        <input type="text" id="v-dest" placeholder="เช่น ศาลากลางจังหวัดนครราชสีมา" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm" oninput="window.syncV('v-dest', 's-dest')">
+                        <input type="text" id="v-dest" placeholder="เช่น ศาลากลางจังหวัดนครราชสีมา" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
                     </div>
 
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1">เพื่อปฏิบัติราชการเกี่ยวกับเรื่อง</label>
-                        <textarea id="v-purpose" rows="2" placeholder="ระบุเหตุผลการเดินทาง" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm custom-scroll" oninput="window.syncV('v-purpose', 's-purpose')"></textarea>
+                        <textarea id="v-purpose" rows="2" placeholder="ระบุเหตุผลการเดินทาง" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm custom-scroll"></textarea>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-1">จำนวนผู้เดินทาง (คน)</label>
-                            <input type="number" id="v-pax" placeholder="เช่น 3" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm" oninput="window.syncV('v-pax', 's-pax')">
+                            <input type="number" id="v-pax" placeholder="เช่น 3" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-1">พนักงานขับรถ</label>
-                            <input type="text" id="v-driver" placeholder="ชื่อคนขับ (ถ้ามี)" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm" oninput="window.syncV('v-driver', 's-driver')">
+                            <input type="text" id="v-driver" placeholder="ชื่อคนขับ (ถ้ามี)" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-bold text-gray-700 mb-1">งบประมาณจากแผนงาน/งาน</label>
-                        <input type="text" id="v-budget" placeholder="เช่น งานบริหารทั่วไป" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm" oninput="window.syncV('v-budget', 's-budget')">
+                        <input type="text" id="v-budget" placeholder="เช่น งานบริหารทั่วไป" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
                     </div>
 
                     <div class="bg-gray-50 p-3 rounded-xl border border-gray-200">
                         <label class="block text-sm font-bold text-gray-700 mb-2">วันและเวลาที่ใช้รถ</label>
                         <div class="grid grid-cols-2 gap-2 mb-2">
-                            <div><span class="text-xs text-gray-500">ตั้งแต่วันที่</span><input type="date" id="v-start-date" class="w-full p-2 border rounded-lg text-xs" onchange="window.updateVDate()"></div>
-                            <div><span class="text-xs text-gray-500">เวลา (น.)</span><input type="time" id="v-start-time" class="w-full p-2 border rounded-lg text-xs" onchange="window.syncV('v-start-time', 's-start-time')"></div>
+                            <div><span class="text-xs text-gray-500">ตั้งแต่วันที่</span><input type="date" id="v-start-date" class="w-full p-2 border rounded-lg text-xs"></div>
+                            <div><span class="text-xs text-gray-500">เวลา (น.)</span><input type="time" id="v-start-time" class="w-full p-2 border rounded-lg text-xs"></div>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
-                            <div><span class="text-xs text-gray-500">ถึงวันที่</span><input type="date" id="v-end-date" class="w-full p-2 border rounded-lg text-xs" onchange="window.updateVDate()"></div>
-                            <div><span class="text-xs text-gray-500">เวลา (น.)</span><input type="time" id="v-end-time" class="w-full p-2 border rounded-lg text-xs" onchange="window.syncV('v-end-time', 's-end-time')"></div>
+                            <div><span class="text-xs text-gray-500">ถึงวันที่</span><input type="date" id="v-end-date" class="w-full p-2 border rounded-lg text-xs"></div>
+                            <div><span class="text-xs text-gray-500">เวลา (น.)</span><input type="time" id="v-end-time" class="w-full p-2 border rounded-lg text-xs"></div>
                         </div>
                     </div>
 
@@ -213,118 +208,49 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                         <span id="btn-text-v">ดาวน์โหลดไฟล์ Word (.doc)</span>
                     </button>
-                    <p class="text-xs text-gray-500 text-center mt-2">✨ ระบบจะสร้างไฟล์ Word พร้อมจัดหน้าให้คุณนำไปพิมพ์ต่อได้ทันที</p>
+                    <p class="text-xs text-gray-500 text-center mt-2">✨ ระบบจะสร้างไฟล์ Word แบบจัดหน้าเป๊ะให้คุณนำไปพิมพ์ต่อได้ทันที</p>
                 </div>
             </div>
 
-            <!-- แผงขวา: พรีวิว A4 (แสดงผลให้ดูเฉยๆ ไม่ได้ใช้แคปรูปแล้ว) -->
-            <div id="v-preview-container" class="w-full xl:w-7/12 flex items-start justify-center bg-gray-200/50 p-4 rounded-3xl shadow-inner border border-gray-300 overflow-hidden relative z-10 min-h-[600px] xl:h-auto custom-scroll overflow-y-auto">
-                
-                <div id="doc-a4" class="w-[794px] h-[1123px] bg-white shadow-xl shrink-0 p-[70px_70px] flex flex-col font-sarabun text-[22px] leading-[1.7] text-black origin-top mx-auto relative z-10 box-border">
-                    <div class="text-right font-bold w-full leading-none mb-4">แบบ ๓</div>
-
-                    <div class="text-center font-bold text-[26px] mb-6 leading-tight">
-                        ใบขออนุญาตใช้<span id="s-car-title">รถยนต์บรรทุกน้ำอเนกประสงค์</span> ของสำนักงาน อบต.โนนอุดม
-                    </div>
-
-                    <div class="text-center pl-[150px] mb-2">
-                        วันที่ <span class="a4-blank w-[40px] s-today-d"></span>
-                        เดือน <span class="a4-blank w-[120px] s-today-m"></span>
-                        พ.ศ. <span class="a4-blank w-[60px] s-today-y"></span>
-                    </div>
-
-                    <div class="mb-1">เรียน นายกองค์การบริหารส่วนตำบลโนนอุดม</div>
-
-                    <div class="pl-[50px]">
-                        ข้าพเจ้า <span class="a4-blank w-[240px] s-req-name"></span> 
-                        ตำแหน่ง <span class="a4-blank w-[200px] s-req-pos"></span>
-                    </div>
-                    
-                    <div>
-                        สำนัก/กอง <span class="a4-blank w-[200px] s-req-dept"></span> 
-                        ขออนุญาตใช้<span id="s-car-title-2">รถบรรทุกน้ำอเนกประสงค์</span>ของ
-                    </div>
-                    
-                    <div>
-                        อบต.โนนอุดม เพื่อไปราชการที่ <span class="a4-blank w-[460px] s-dest"></span>
-                    </div>
-                    
-                    <div>
-                        เพื่อปฏิบัติราชการเกี่ยวกับเรื่อง <span class="a4-blank w-[460px] s-purpose"></span>
-                    </div>
-                    
-                    <div>
-                        มีผู้นั่งไปในครั้งนี้ จำนวน <span class="a4-blank w-[50px] s-pax"></span> คน โดยใช้น้ำมันเชื้อเพลิงจากงบประมาณของแผนงาน/งาน
-                    </div>
-                    
-                    <div>
-                        <span class="a4-blank w-[200px] s-budget"></span>
-                        ทั้งนี้ ขอใช้รถยนต์ในวันที่ <span class="a4-blank w-[40px] s-start-d"></span>
-                        เดือน <span class="a4-blank w-[120px] s-start-m"></span>
-                        พ.ศ. <span class="a4-blank w-[50px] s-start-y"></span>
-                    </div>
-                    
-                    <div>
-                        เวลา <span class="a4-blank w-[60px] s-start-time"></span> น. 
-                        ถึงวันที่ <span class="a4-blank w-[40px] s-end-d"></span>
-                        เดือน <span class="a4-blank w-[120px] s-end-m"></span>
-                        พ.ศ. <span class="a4-blank w-[50px] s-end-y"></span>
-                        เวลา <span class="a4-blank w-[60px] s-end-time"></span> น.
-                    </div>
-
-                    <!-- ลายเซ็นผู้ขอ -->
-                    <div class="mt-6 flex justify-end">
-                        <div class="w-[350px] text-center">
-                            <div>ลงชื่อ <span class="a4-blank w-[200px]"></span> ผู้ขออนุญาตใช้รถยนต์</div>
-                            <div class="mt-1">( <span class="a4-blank w-[180px] border-none s-req-name text-blue-700"></span> )</div>
-                            <div class="mt-1 flex items-center justify-center">ตำแหน่ง <span class="a4-blank w-[200px] border-none s-req-pos text-blue-700"></span></div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 pl-[50px]">
-                        ได้ตรวจสอบแล้ว มีรถยนต์ว่างอยู่ จึงเห็นสมควรอนุญาตใช้รถยนต์ หมายเลขทะเบียน <span id="s-car-reg" class="font-bold">ผอ ๖๙๑๙ นครราชสีมา</span>
-                    </div>
-                    <div>
-                        โดยมี <span class="a4-blank w-[250px] s-driver"></span> เป็นพนักงานขับรถยนต์
-                    </div>
-                    <div class="pl-[50px]">
-                        เลขไมล์ก่อนไป <span class="a4-blank w-[180px]"></span> เลขไมล์หลังไป <span class="a4-blank w-[180px]"></span>
-                    </div>
-
-                    <!-- ลายเซ็นปลัด -->
-                    <div id="s-signer-1" class="mt-6 flex justify-end w-[400px]">
-                        <div class="w-[350px] text-center">
-                            <div>ลงชื่อ <span class="a4-blank w-[200px]"></span></div>
-                            <div class="mt-1">(นางดนิตา มนไธสง)</div>
-                            <div class="mt-1 leading-tight">
-                                รองปลัดองค์การบริหารส่วนตำบล รักษาราชการแทน<br>ปลัดองค์การบริหารส่วนตำบลโนนอุดม
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-4 pl-[50px]">ความเห็นของผู้มีอำนาจสั่งการให้ใช้รถยนต์</div>
-                    <div class="pl-[100px] flex flex-col gap-1 mt-1">
-                        <div class="flex items-center gap-3">
-                            <div class="w-5 h-5 border border-black rounded-full"></div> อนุญาต
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-5 h-5 border border-black rounded-full"></div> ไม่อนุญาต
-                        </div>
-                    </div>
-
-                    <!-- ลายเซ็นนายก -->
-                    <div class="mt-4 flex justify-end">
-                        <div class="w-[350px] text-center">
-                            <div>ลงชื่อ <span class="a4-blank w-[200px]"></span></div>
-                            <div id="s-signer-name" class="mt-1">(นายสุพจน์ สมน้อย)</div>
-                            <div id="s-signer-pos" class="mt-1 leading-tight whitespace-pre-wrap">นายกองค์การบริหารส่วนตำบลโนนอุดม</div>
-                        </div>
+            <!-- แผงขวา: คำแนะนำ -->
+            <div id="v-preview-container" class="w-full xl:w-7/12 flex items-center justify-center bg-blue-50/50 p-6 md:p-12 rounded-3xl border border-blue-100 overflow-hidden relative z-10 min-h-[400px]">
+                <div class="text-center max-w-md">
+                    <div class="text-6xl mb-6">📄</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-3">ระบบพร้อมสร้างเอกสาร</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">กรอกข้อมูลให้ครบถ้วนทางด้านซ้าย เมื่อกดปุ่มดาวน์โหลด ระบบจะนำข้อมูลทั้งหมดไปจัดเรียงลงในฟอร์ม <b>"แบบ ๓ ใบขออนุญาตใช้รถยนต์"</b> ให้อัตโนมัติ พร้อมตั้งค่าหน้ากระดาษ A4 ให้คุณเรียบร้อย</p>
+                    <div class="inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-medium">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        รองรับการเปิดด้วย Microsoft Word
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: ประวัติใบจองรถ (ตาราง) -->
+    <!-- ========================================== -->
+    <div id="vehicle-history-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[85vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300" id="vehicle-history-modal-content">
+            <div class="bg-yellow-50 px-6 py-4 border-b border-yellow-200 flex justify-between items-center shrink-0">
+                <div>
+                    <h3 class="text-lg font-bold text-yellow-900 flex items-center gap-2">
+                        <span>📅</span> ตารางประวัติการใช้รถส่วนกลาง
+                    </h3>
+                    <p class="text-xs text-yellow-700 mt-1">คลิก "นำมาใช้ใหม่" เพื่อคัดลอกข้อมูลลงในฟอร์ม</p>
+                </div>
+                <button onclick="window.closeVehicleHistoryModal()" class="text-gray-400 hover:text-gray-600 bg-white hover:bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center transition shadow-sm border">✕</button>
+            </div>
+            <div id="vehicle-history-list-container" class="flex-1 overflow-y-auto custom-scroll p-4 bg-white">
+                <!-- ตารางประวัติจะถูกแทรกที่นี่ด้วย JS -->
+                <div class="text-center py-8 text-gray-400 flex flex-col items-center gap-2">
+                    <svg class="w-8 h-8 animate-spin text-yellow-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    กำลังโหลดข้อมูล...
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- ========================================== -->
     <!-- VIEW: CALENDAR & ASSETS (ระบบคลังสื่อ) -->
@@ -744,8 +670,9 @@
         // ==========================================
         let assetData = [];
         let historyData = [];
+        let vehicleHistoryData = []; // ตัวแปรเก็บประวัติขอใช้รถ
         let isFirebaseReady = false;
-        let db, auth, publicDataRef, historyRef;
+        let db, auth, publicDataRef, historyRef, vehicleHistoryRef;
 
         const myFirebaseConfig = {
           apiKey: "AIzaSyBysqombxqHciw4hWmUo5zSaOgAiguR8Ig",
@@ -786,9 +713,11 @@
                     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
                     publicDataRef = collection(db, 'artifacts', appId, 'public', 'data', 'pr_assets');
                     historyRef = collection(db, 'artifacts', appId, 'public', 'data', 'pr_history');
+                    vehicleHistoryRef = collection(db, 'artifacts', appId, 'public', 'data', 'pr_vehicle_history');
                 } else {
                     publicDataRef = collection(db, 'pr_assets');
                     historyRef = collection(db, 'pr_history'); 
+                    vehicleHistoryRef = collection(db, 'pr_vehicle_history');
                 }
                 
                 isFirebaseReady = true;
@@ -823,6 +752,13 @@
                             snapshot.forEach((doc) => historyData.push(doc.data()));
                             historyData.sort((a, b) => b.timestamp - a.timestamp); 
                         });
+
+                        // ดึงประวัติการจองรถ
+                        onSnapshot(vehicleHistoryRef, (snapshot) => {
+                            vehicleHistoryData = [];
+                            snapshot.forEach((doc) => vehicleHistoryData.push(doc.data()));
+                            vehicleHistoryData.sort((a, b) => b.timestamp - a.timestamp); 
+                        });
                     }
                 });
             } else {
@@ -833,6 +769,7 @@
             updateCloudStatus("โหมดออฟไลน์ (เซฟข้อมูลลงในเครื่องเท่านั้น) ⚠️", true);
             assetData = JSON.parse(localStorage.getItem('prStudioAssets')) || [];
             historyData = JSON.parse(localStorage.getItem('prStudioHistory')) || [];
+            vehicleHistoryData = JSON.parse(localStorage.getItem('prStudioVehicleHistory')) || [];
         }
 
         // ==========================================
@@ -847,7 +784,7 @@
 
             document.getElementById(viewId).classList.remove('hidden');
 
-            if(viewId === 'view-newsletter' || viewId === 'view-vehicle') {
+            if(viewId === 'view-newsletter') {
                 setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
             } else if (viewId === 'view-calendar') {
                 window.currentNavDate = new Date(); 
@@ -878,48 +815,12 @@
 
         const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 
-        // ==========================================
-        // 3. ระบบใบจองรถ (Vehicle) แบบโหลดเป็นไฟล์ Word
-        // ==========================================
-        window.updateVehicleType = function() {
-            const carVal = document.getElementById('v-select-car').value;
-            const sTitle = document.getElementById('s-car-title');
-            const sTitle2 = document.getElementById('s-car-title-2');
-            const sReg = document.getElementById('s-car-reg');
-            const sSignerName = document.getElementById('s-signer-name');
-            const sSignerPos = document.getElementById('s-signer-pos');
-            const sSigner1 = document.getElementById('s-signer-1');
-            
-            if(carVal === 'car1') {
-                sTitle.innerText = "รถยนต์บรรทุกน้ำอเนกประสงค์"; sTitle2.innerText = "รถบรรทุกน้ำอเนกประสงค์";
-                sReg.innerText = window.toThaiNum("ผอ 6919 นครราชสีมา");
-                sSignerName.innerText = "(นายสุพจน์ สมน้อย)"; sSignerPos.innerText = "นายกองค์การบริหารส่วนตำบลโนนอุดม";
-                sSigner1.classList.remove('hidden');
-            } else if (carVal === 'car2') {
-                sTitle.innerText = "รถยนต์ส่วนกลาง"; sTitle2.innerText = "รถยนต์ส่วนกลาง";
-                sReg.innerText = window.toThaiNum("จก 8337 นครราชสีมา");
-                sSignerName.innerText = "(นางดนิตา มนไธสง)"; sSignerPos.innerText = "รองปลัดองค์การบริหารส่วนตำบล รักษาราชการแทน\nปลัดองค์การบริหารส่วนตำบล ปฏิบัติหน้าที่\nนายกองค์การบริหารส่วนตำบลโนนอุดม";
-                sSigner1.classList.add('hidden');
-            } else if (carVal === 'car3') {
-                sTitle.innerText = "รถยนต์ส่วนกลาง"; sTitle2.innerText = "รถยนต์ส่วนกลาง";
-                sReg.innerText = window.toThaiNum("กพ 7743 นครราชสีมา");
-                sSignerName.innerText = "(นายสุพจน์ สมน้อย)"; sSignerPos.innerText = "นายกองค์การบริหารส่วนตำบลโนนอุดม";
-                sSigner1.classList.remove('hidden');
-            } else if (carVal === 'car4') {
-                sTitle.innerText = "รถยนต์กู้ภัย"; sTitle2.innerText = "รถกู้ภัย";
-                sReg.innerText = window.toThaiNum("2ฒห 6981 กรุงเทพมหานคร");
-                sSignerName.innerText = "(นายสุพจน์ สมน้อย)"; sSignerPos.innerText = "นายกองค์การบริหารส่วนตำบลโนนอุดม";
-                sSigner1.classList.remove('hidden');
-            }
-        }
 
-        window.syncV = function(inputId, displayClass) {
-            const inputVal = document.getElementById(inputId).value;
-            if(inputId.includes('time') && inputVal) {
-                const timeStr = inputVal.replace(':', '.');
-                document.querySelectorAll('.' + displayClass).forEach(el => el.textContent = window.toThaiNum(timeStr));
-            } else {
-                document.querySelectorAll('.' + displayClass).forEach(el => el.textContent = window.toThaiNum(inputVal));
+        // ==========================================
+        // 3. ระบบใบจองรถ (Vehicle) -> โหลดเป็นไฟล์ Word
+        // ==========================================
+        
+        // ฟังก์ชันสร้างเอกสาร Word
         window.exportVehicleDoc = async function() {
             const btn = document.getElementById('btn-export-vehicle');
             const btnText = document.getElementById('btn-text-v');
@@ -957,7 +858,6 @@
                 };
                 const tTime = (timeStr) => window.toThaiNum((timeStr || '').replace(':', '.')) || '............';
 
-                // ดึงข้อมูลและแปลงเป็นเลขไทย (จำลอง TH Sarabun IT9)
                 const reqName = window.toThaiNum(document.getElementById('v-req-name').value) || '.......................................................';
                 const pos = window.toThaiNum(document.getElementById('v-req-pos').value) || '.......................................................';
                 const dept = window.toThaiNum(document.getElementById('v-req-dept').value) || '.......................................................';
@@ -977,7 +877,7 @@
                 const todayM = thaiMonths[today.getMonth()];
                 const todayY = window.toThaiNum((today.getFullYear() + 543).toString());
 
-                // สร้าง HTML Structure สำหรับเปิดใน MS Word โดยเฉพาะ
+                // MSO XML โค้ดลับสำหรับการจัดหน้าให้ Word มองเห็นเป็น A4
                 const wordHTML = `
                 <html xmlns:v="urn:schemas-microsoft-com:vml"
                       xmlns:o="urn:schemas-microsoft-com:office:office"
@@ -986,16 +886,25 @@
                       xmlns="http://www.w3.org/TR/REC-html40">
                 <head>
                     <meta charset="utf-8">
+                    <!--[if gte mso 9]>
+                    <xml>
+                        <w:WordDocument>
+                            <w:View>Print</w:View>
+                            <w:Zoom>100</w:Zoom>
+                            <w:DoNotOptimizeForBrowser/>
+                        </w:WordDocument>
+                    </xml>
+                    <![endif]-->
                     <style>
                         /* ตั้งค่าหน้ากระดาษ A4 แบบตายตัว */
-                        @page Section1 {
+                        @page WordSection1 {
                             size: 21cm 29.7cm;
                             margin: 2.54cm 2.54cm 2.54cm 2.54cm;
                             mso-header-margin: 1.27cm;
                             mso-footer-margin: 1.27cm;
                             mso-paper-source: 0;
                         }
-                        div.Section1 { page: Section1; }
+                        div.WordSection1 { page: WordSection1; }
                         body {
                             font-family: 'TH SarabunPSK', 'TH Sarabun New', sans-serif;
                             font-size: 16pt;
@@ -1009,7 +918,7 @@
                     </style>
                 </head>
                 <body>
-                    <div class="Section1">
+                    <div class="WordSection1">
                         <p class="right"><b>แบบ ๓</b></p>
                         <p class="center" style="font-size: 18pt;"><b>ใบขออนุญาตใช้${carTitle} ของสำนักงาน อบต.โนนอุดม</b></p>
                         <p class="center">วันที่ ${todayD} เดือน ${todayM} พ.ศ. ${todayY}</p>
@@ -1040,7 +949,7 @@
                         </p>
 
                         ${showDeputy ? `
-                        <div style="text-align: center; margin-top: 16pt;">
+                        <div style="text-align: center; margin-top: 16pt; margin-left: 50%;">
                             <p>ลงชื่อ....................................................</p>
                             <p>(นางดนิตา มนไธสง)</p>
                             <p>รองปลัดองค์การบริหารส่วนตำบล รักษาราชการแทน</p>
@@ -1077,7 +986,34 @@
                 document.body.removeChild(link);
                 setTimeout(() => URL.revokeObjectURL(url), 100);
 
-                window.showToast("บันทึกไฟล์ Word สำเร็จ! เปิดแก้ไขต่อได้เลย");
+                // บันทึกประวัติลงคลาวด์/Local
+                const hId = Date.now();
+                const hData = {
+                    id: hId, timestamp: hId,
+                    car: carVal,
+                    reqName: document.getElementById('v-req-name').value,
+                    reqPos: document.getElementById('v-req-pos').value,
+                    reqDept: document.getElementById('v-req-dept').value,
+                    dest: document.getElementById('v-dest').value,
+                    purpose: document.getElementById('v-purpose').value,
+                    pax: document.getElementById('v-pax').value,
+                    driver: document.getElementById('v-driver').value,
+                    budget: document.getElementById('v-budget').value,
+                    startDate: document.getElementById('v-start-date').value,
+                    endDate: document.getElementById('v-end-date').value,
+                    startTime: document.getElementById('v-start-time').value,
+                    endTime: document.getElementById('v-end-time').value
+                };
+
+                if (isFirebaseReady && auth.currentUser) {
+                    await setDoc(doc(vehicleHistoryRef, hId.toString()), hData);
+                } else {
+                    vehicleHistoryData.push(hData);
+                    vehicleHistoryData.sort((a, b) => b.timestamp - a.timestamp);
+                    localStorage.setItem('prStudioVehicleHistory', JSON.stringify(vehicleHistoryData));
+                }
+
+                window.showToast("บันทึกไฟล์ Word พร้อมเก็บประวัติสำเร็จ!");
 
             } catch (error) {
                 alert("เกิดข้อผิดพลาดในการสร้างไฟล์ Word");
@@ -1086,6 +1022,106 @@
                 if(btn) { btn.disabled = false; btn.classList.remove('opacity-70'); }
                 btnText.textContent = 'ดาวน์โหลดไฟล์ Word (.doc)';
             }
+        }
+
+        // ระบบตารางประวัติการใช้รถ
+        window.showVehicleHistoryModal = function() {
+            const modal = document.getElementById('vehicle-history-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('vehicle-history-modal-content').classList.remove('scale-95'); }, 10);
+            window.loadVehicleHistoryList();
+        }
+
+        window.closeVehicleHistoryModal = function() {
+            const modal = document.getElementById('vehicle-history-modal');
+            modal.classList.add('opacity-0'); document.getElementById('vehicle-history-modal-content').classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        window.loadVehicleHistoryList = function() {
+            const container = document.getElementById('vehicle-history-list-container');
+            container.innerHTML = '';
+            
+            if(vehicleHistoryData.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-500 py-6">ยังไม่มีประวัติการขอใช้รถ</p>'; 
+                return;
+            }
+
+            // สร้างตาราง
+            let tableHTML = `
+            <div class="overflow-x-auto rounded-xl border border-gray-200">
+                <table class="w-full text-sm text-left text-gray-600">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-100/80 border-b border-gray-200">
+                        <tr>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">วันที่เดินทาง</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">ผู้ขออนุญาต</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">รถที่ใช้</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap">สถานที่ไป</th>
+                            <th scope="col" class="px-4 py-3 whitespace-nowrap text-center">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            vehicleHistoryData.forEach((h, index) => {
+                let carText = "รถยนต์บรรทุกน้ำฯ (ผอ 6919)";
+                if(h.car === 'car2') carText = "รถยนต์ส่วนกลาง (จก 8337)";
+                if(h.car === 'car3') carText = "รถยนต์ส่วนกลาง (กพ 7743)";
+                if(h.car === 'car4') carText = "รถยนต์กู้ภัย (2ฒห 6981)";
+
+                const dateDisplay = h.startDate ? new Date(h.startDate).toLocaleDateString('th-TH', {day:'numeric', month:'short', year:'numeric'}) : '-';
+
+                tableHTML += `
+                    <tr class="border-b last:border-b-0 hover:bg-yellow-50/50 transition-colors">
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="font-bold text-gray-800">${dateDisplay}</div>
+                            <div class="text-[11px] text-gray-500 mt-0.5">เวลา: ${h.startTime || '-'} น.</div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <div class="font-medium text-gray-800">${h.reqName || '-'}</div>
+                            <div class="text-[11px] text-gray-500 mt-0.5">${h.reqDept || '-'}</div>
+                        </td>
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            <span class="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md text-xs font-bold border border-blue-100">
+                                🚙 ${carText}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 min-w-[200px]">
+                            <div class="line-clamp-1 font-medium text-gray-800" title="${h.dest}">${h.dest || '-'}</div>
+                            <div class="line-clamp-1 text-[11px] text-gray-500 mt-0.5" title="${h.purpose}">${h.purpose || '-'}</div>
+                        </td>
+                        <td class="px-4 py-3 text-center whitespace-nowrap">
+                            <button onclick='window.useVehicleHistoryByIndex(${index})' class="bg-yellow-400 text-yellow-900 px-3 py-1.5 rounded-lg hover:bg-yellow-500 transition font-bold text-xs shadow-sm transform hover:scale-105">
+                                นำมาใช้ใหม่ ✏️
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `</tbody></table></div>`;
+            container.innerHTML = tableHTML;
+        }
+
+        window.useVehicleHistoryByIndex = function(index) {
+            const h = vehicleHistoryData[index];
+            document.getElementById('v-select-car').value = h.car || 'car1';
+            document.getElementById('v-req-name').value = h.reqName || '';
+            document.getElementById('v-req-pos').value = h.reqPos || '';
+            document.getElementById('v-req-dept').value = h.reqDept || '';
+            document.getElementById('v-dest').value = h.dest || '';
+            document.getElementById('v-purpose').value = h.purpose || '';
+            document.getElementById('v-pax').value = h.pax || '';
+            document.getElementById('v-driver').value = h.driver || '';
+            document.getElementById('v-budget').value = h.budget || '';
+            document.getElementById('v-start-date').value = h.startDate || '';
+            document.getElementById('v-start-time').value = h.startTime || '';
+            document.getElementById('v-end-date').value = h.endDate || '';
+            document.getElementById('v-end-time').value = h.endTime || '';
+
+            window.closeVehicleHistoryModal();
+            window.showToast("ดึงประวัติเรียบร้อยแล้ว!");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
 
@@ -1179,7 +1215,6 @@
             document.getElementById('asset-download-btn-bottom').href = event.downloadUrl;
         }
 
-        // ฟังก์ชันคัดลอกข้อความ
         window.copyCaption = function() {
             const textToCopy = document.getElementById("asset-caption-text").innerText;
             const tempTextArea = document.createElement("textarea");
@@ -1327,6 +1362,7 @@
             window.showToast("โหลดวันหยุดสำเร็จ " + count + " รายการ!");
         }
 
+
         // ==========================================
         // 5. ระบบจดหมายข่าว (Newsletter & History)
         // ==========================================
@@ -1344,6 +1380,7 @@
             window.dispatchEvent(new Event('resize')); 
         });
 
+        // ฟังก์ชันซิงค์ข้อความจดหมายข่าว
         const syncNewsData = (inputId, displayClass, defaultText) => {
             const input = document.getElementById(inputId);
             input.addEventListener('input', (e) => {
@@ -1379,6 +1416,7 @@
             }
         };
 
+        // ตั้งค่าวันที่จดหมายข่าวเริ่มต้น
         const selDay = document.getElementById('select-day'), selMonth = document.getElementById('select-month'), selYear = document.getElementById('select-year');
         for (let i = 1; i <= 31; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = i; if (i === tDate.getDate()) opt.selected = true; selDay.appendChild(opt); }
         selMonth.value = thaiMonths[tDate.getMonth()];
@@ -1387,6 +1425,7 @@
         selDay.addEventListener('change', updateNewsDate); selMonth.addEventListener('change', updateNewsDate); selYear.addEventListener('change', updateNewsDate);
         updateNewsDate();
 
+        // สร้างช่องอัปโหลด 6 รูป
         let uploadHtml = '';
         for (let i = 0; i < 6; i++) {
             uploadHtml += `
@@ -1420,12 +1459,13 @@
             
             const activeTemp = document.getElementById(activeTemplateId); 
             const currentTransform = activeTemp.style.transform; 
-            activeTemp.style.transform = 'none'; 
+            activeTemp.style.transform = 'none'; // ต้องเอา scale ออกก่อนถ่ายรูป
 
             try {
                 const canvas = await html2canvas(activeTemp, { scale: 2, useCORS: true, backgroundColor: activeTemplateId === 'template-1' ? '#fdfcf8' : '#f8f9fa', scrollY: 0, scrollX: 0 });
                 const topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
                 
+                // ใช้การสร้าง Blob เพื่อบังคับให้ Safari บน iOS ดาวน์โหลดไฟล์ได้
                 await new Promise((resolve) => {
                     canvas.toBlob((blob) => {
                         const url = URL.createObjectURL(blob);
@@ -1440,6 +1480,7 @@
                     }, "image/jpeg", 1.0);
                 });
 
+                // เซฟประวัติ
                 const hId = Date.now();
                 const hData = {
                     id: hId, timestamp: hId,
@@ -1520,31 +1561,23 @@
         // 6. Responsive Auto Scale (จัดการเรื่องล้นจอ)
         // ==========================================
         function setScale() {
-            const containers = ['preview-container', 'v-preview-container'];
-            const targets = ['template-1', 'template-2', 'doc-a4'];
-            
-            containers.forEach((cid, index) => {
-                const c = document.getElementById(cid);
-                if(c && c.parentElement && !c.parentElement.parentElement.classList.contains('hidden')) {
-                    const cWidth = c.clientWidth - 40; 
-                    const targetWidth = targets[index] === 'doc-a4' ? 794 : 800; 
-                    let scale = cWidth / targetWidth;
-                    if(scale > 1) scale = 1;
-                    
-                    if(index === 0) { 
-                        document.getElementById('template-1').style.transform = `scale(${scale})`;
-                        document.getElementById('template-2').style.transform = `scale(${scale})`;
-                        c.style.minHeight = (1131 * scale + 50) + "px";
-                    } else { 
-                        document.getElementById('doc-a4').style.transform = `scale(${scale})`;
-                        c.style.minHeight = (1123 * scale + 50) + "px";
-                    }
-                }
-            });
+            // โค้ดสำหรับ Newsletter
+            const c = document.getElementById('preview-container');
+            if(c && c.parentElement && !c.parentElement.parentElement.classList.contains('hidden')) {
+                const cWidth = c.clientWidth - 40; // เผื่อ padding
+                const targetWidth = 800; 
+                let scale = cWidth / targetWidth;
+                if(scale > 1) scale = 1;
+                
+                document.getElementById('template-1').style.transform = `scale(${scale})`;
+                document.getElementById('template-2').style.transform = `scale(${scale})`;
+                c.style.minHeight = (1131 * scale + 50) + "px";
+            }
         }
         window.addEventListener('resize', setScale);
-        setTimeout(setScale, 500); 
+        setTimeout(setScale, 500); // ดีเลย์ให้ตอนโหลดเว็บเสร็จตั้งค่า scale
 
+        // บังคับให้โหลดเข้าหน้า Dashboard ตอนแรก
         window.switchView('view-dashboard');
 
     </script>
