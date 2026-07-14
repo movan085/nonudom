@@ -436,7 +436,7 @@
                                 คัดลอก
                             </button>
                         </div>
-                        <textarea id="asset-caption-text" readonly class="w-full bg-white p-4 rounded-xl border border-gray-200 text-gray-700 leading-relaxed resize-none h-48 focus:outline-none focus:ring-2 focus:ring-blue-200 custom-scroll"></textarea>
+                        <div id="asset-caption-text" class="w-full bg-white p-4 rounded-xl border border-gray-200 text-gray-700 leading-relaxed h-48 overflow-y-auto custom-scroll whitespace-pre-wrap select-text"></div>
                     </div>
 
                     <a id="asset-download-btn-bottom" href="#" target="_blank" class="w-full md:hidden bg-[#0071BA] text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg flex justify-center items-center gap-2 mt-2">
@@ -991,10 +991,19 @@
             activeTemp.style.transform = 'none';
             try {
                 const canvas = await html2canvas(activeTemp, { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollY: 0, scrollX: 0 });
-                const link = document.createElement('a'); 
-                link.href = canvas.toDataURL("image/jpeg", 1.0);
-                link.download = `ใบขออนุญาตใช้รถ_${document.getElementById('v-req-name').value || 'เอกสาร'}.jpg`; 
-                link.click();
+                await new Promise((resolve) => {
+                    canvas.toBlob((blob) => {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a'); 
+                        link.download = `ใบขออนุญาตใช้รถ_${document.getElementById('v-req-name').value || 'เอกสาร'}.jpg`; 
+                        link.href = url;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        setTimeout(() => URL.revokeObjectURL(url), 100);
+                        resolve();
+                    }, "image/jpeg", 1.0);
+                });
             } catch (error) { 
                 alert("เกิดข้อผิดพลาดในการโหลดรูป"); 
             } finally {
@@ -1089,9 +1098,21 @@
             document.getElementById('asset-date').innerText = event.dateStr;
             document.getElementById('asset-title').innerText = event.title;
             document.getElementById('asset-preview-img').src = event.thumbUrl;
-            document.getElementById('asset-caption-text').value = event.caption;
+            document.getElementById('asset-caption-text').innerText = event.caption;
             document.getElementById('asset-download-btn-overlay').href = event.downloadUrl;
             document.getElementById('asset-download-btn-bottom').href = event.downloadUrl;
+        }
+
+        window.copyCaption = function() {
+            const textToCopy = document.getElementById("asset-caption-text").innerText;
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = textToCopy;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            tempTextArea.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            document.body.removeChild(tempTextArea);
+            window.showToast("คัดลอกแคปชันเรียบร้อยแล้ว!");
         }
 
         window.renderManagerList = function() {
