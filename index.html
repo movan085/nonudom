@@ -52,15 +52,14 @@
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* เส้นประสำหรับใบจองรถ */
-        .blank-fill {
+        /* เส้นประสำหรับใบจองรถ (ใช้สำหรับพรีวิวบนเว็บเท่านั้น) */
+        .a4-blank {
             border-bottom: 2px dotted #000;
             text-align: center;
             color: #1d4ed8;
-            font-weight: bold;
-            white-space: nowrap;
             display: inline-block;
             min-height: 24px;
+            line-height: 1.2;
         }
     </style>
 </head>
@@ -135,10 +134,11 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
                 กลับหน้าหลัก
             </button>
-            <h2 class="font-bold text-gray-700 md:text-lg">🚙 สร้างใบขออนุญาตใช้รถยนต์</h2>
+            <h2 class="font-bold text-gray-700 md:text-lg">🚙 สร้างใบขออนุญาตใช้รถยนต์ (โหลดเป็น Word)</h2>
         </div>
 
         <div class="flex flex-col xl:flex-row gap-6 w-full">
+            <!-- แผงกรอกข้อมูล -->
             <div class="w-full xl:w-5/12 bg-white/90 backdrop-blur-md p-0 rounded-3xl shadow-xl border border-white overflow-hidden h-fit flex flex-col shrink-0 relative z-20">
                 <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 p-5 text-yellow-900 shadow-md">
                     <h2 class="text-xl font-bold flex items-center gap-2"><span class="text-2xl">📝</span> ข้อมูลการเดินทาง</h2>
@@ -209,14 +209,15 @@
                         </div>
                     </div>
 
-                    <button onclick="window.exportVehicleDoc()" class="w-full text-white font-bold py-3.5 px-4 rounded-2xl shadow-[0_10px_20px_rgba(253,190,21,0.3)] transition duration-300 flex justify-center items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 hover:-translate-y-1 text-lg border border-yellow-300 mt-4">
+                    <button id="btn-export-vehicle" onclick="window.exportVehicleDoc()" class="w-full text-white font-bold py-3.5 px-4 rounded-2xl shadow-[0_10px_20px_rgba(253,190,21,0.3)] transition duration-300 flex justify-center items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 hover:-translate-y-1 text-lg border border-yellow-300 mt-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                        <span id="btn-text-v">บันทึกเป็นรูปเอกสาร</span>
+                        <span id="btn-text-v">ดาวน์โหลดไฟล์ Word (.doc)</span>
                     </button>
+                    <p class="text-xs text-gray-500 text-center mt-2">✨ ระบบจะสร้างไฟล์ Word พร้อมจัดหน้าให้คุณนำไปพิมพ์ต่อได้ทันที</p>
                 </div>
             </div>
 
-            <!-- แผงขวา: พรีวิว A4 -->
+            <!-- แผงขวา: พรีวิว A4 (แสดงผลให้ดูเฉยๆ ไม่ได้ใช้แคปรูปแล้ว) -->
             <div id="v-preview-container" class="w-full xl:w-7/12 flex items-start justify-center bg-gray-200/50 p-4 rounded-3xl shadow-inner border border-gray-300 overflow-hidden relative z-10 min-h-[600px] xl:h-auto custom-scroll overflow-y-auto">
                 
                 <div id="doc-a4" class="w-[794px] h-[1123px] bg-white shadow-xl shrink-0 p-[70px_70px] flex flex-col font-sarabun text-[22px] leading-[1.7] text-black origin-top mx-auto relative z-10 box-border">
@@ -877,9 +878,8 @@
 
         const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 
-
         // ==========================================
-        // 3. ระบบใบจองรถ (Vehicle)
+        // 3. ระบบใบจองรถ (Vehicle) แบบโหลดเป็นไฟล์ Word
         // ==========================================
         window.updateVehicleType = function() {
             const carVal = document.getElementById('v-select-car').value;
@@ -915,7 +915,6 @@
 
         window.syncV = function(inputId, displayClass) {
             const inputVal = document.getElementById(inputId).value;
-            // พิเศษสำหรับเวลา (แปลง : เป็น . และเติม น.)
             if(inputId.includes('time') && inputVal) {
                 const timeStr = inputVal.replace(':', '.');
                 document.querySelectorAll('.' + displayClass).forEach(el => el.textContent = window.toThaiNum(timeStr));
@@ -942,39 +941,150 @@
             }
         }
 
-        // ตั้งวันที่เขียนฟอร์มเป็นวันนี้
         const tDate = new Date();
         document.querySelectorAll('.s-today-d').forEach(el => el.textContent = window.toThaiNum(tDate.getDate().toString()));
         document.querySelectorAll('.s-today-m').forEach(el => el.textContent = thaiMonths[tDate.getMonth()]);
         document.querySelectorAll('.s-today-y').forEach(el => el.textContent = window.toThaiNum((tDate.getFullYear() + 543).toString()));
 
-        window.exportVehicleDoc = async function() {
+        // ฟังก์ชันโหลดเป็นไฟล์ Microsoft Word (.doc) 
+        window.exportVehicleDoc = function() {
             const btn = document.getElementById('btn-export-vehicle');
             const btnText = document.getElementById('btn-text-v');
-            btn.disabled = true; btn.classList.add('opacity-70'); btnText.textContent = 'กำลังสร้างเอกสาร...'; 
-            const activeTemp = document.getElementById('doc-a4'); 
-            const currentTransform = activeTemp.style.transform; 
-            activeTemp.style.transform = 'none';
+            if(btn) { btn.disabled = true; btn.classList.add('opacity-70'); }
+            btnText.textContent = 'กำลังประมวลผลไฟล์ Word...';
+
             try {
-                const canvas = await html2canvas(activeTemp, { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollY: 0, scrollX: 0 });
-                await new Promise((resolve) => {
-                    canvas.toBlob((blob) => {
-                        const url = URL.createObjectURL(blob);
-                        const link = document.createElement('a'); 
-                        link.download = `ใบขออนุญาตใช้รถ_${document.getElementById('v-req-name').value || 'เอกสาร'}.jpg`; 
-                        link.href = url;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        setTimeout(() => URL.revokeObjectURL(url), 100);
-                        resolve();
-                    }, "image/jpeg", 1.0);
-                });
-            } catch (error) { 
-                alert("เกิดข้อผิดพลาดในการโหลดรูป"); 
+                const carVal = document.getElementById('v-select-car').value;
+                let carTitle = "รถยนต์บรรทุกน้ำอเนกประสงค์";
+                let carTitle2 = "รถบรรทุกน้ำอเนกประสงค์";
+                let carReg = "ผอ ๖๙๑๙ นครราชสีมา";
+                let signerName = "(นายสุพจน์ สมน้อย)";
+                let signerPos = "นายกองค์การบริหารส่วนตำบลโนนอุดม";
+                let showDeputy = true;
+
+                if (carVal === 'car2') {
+                    carTitle = "รถยนต์ส่วนกลาง"; carTitle2 = "รถยนต์ส่วนกลาง";
+                    carReg = "จก ๘๓๓๗ นครราชสีมา";
+                    signerName = "(นางดนิตา มนไธสง)";
+                    signerPos = "รองปลัดองค์การบริหารส่วนตำบล รักษาราชการแทน<br>ปลัดองค์การบริหารส่วนตำบล ปฏิบัติหน้าที่<br>นายกองค์การบริหารส่วนตำบลโนนอุดม";
+                    showDeputy = false;
+                } else if (carVal === 'car3') {
+                    carTitle = "รถยนต์ส่วนกลาง"; carTitle2 = "รถยนต์ส่วนกลาง";
+                    carReg = "กพ ๗๗๔๓ นครราชสีมา";
+                } else if (carVal === 'car4') {
+                    carTitle = "รถยนต์กู้ภัย"; carTitle2 = "รถกู้ภัย";
+                    carReg = "๒ฒห ๖๙๘๑ กรุงเทพมหานคร";
+                }
+
+                const t = (val) => window.toThaiNum(val) || '...........................';
+                const tDate = (dateStr) => {
+                    if(!dateStr) return { d: '........', m: '........................', y: '........' };
+                    const d = new Date(dateStr);
+                    return { d: window.toThaiNum(d.getDate().toString()), m: thaiMonths[d.getMonth()], y: window.toThaiNum((d.getFullYear() + 543).toString()) };
+                };
+                const tTime = (timeStr) => window.toThaiNum((timeStr || '').replace(':', '.')) || '............';
+
+                const reqName = document.getElementById('v-req-name').value || '.......................................................';
+                const pos = document.getElementById('v-req-pos').value || '.......................................................';
+                const dept = document.getElementById('v-req-dept').value || '.......................................................';
+                const dest = document.getElementById('v-dest').value || '......................................................................................................';
+                const purpose = document.getElementById('v-purpose').value || '......................................................................................................';
+                const pax = t(document.getElementById('v-pax').value);
+                const budget = document.getElementById('v-budget').value || '...................................................';
+                const driver = document.getElementById('v-driver').value || '......................................................................';
+
+                const startD = tDate(document.getElementById('v-start-date').value);
+                const endD = tDate(document.getElementById('v-end-date').value);
+                const startTime = tTime(document.getElementById('v-start-time').value);
+                const endTime = tTime(document.getElementById('v-end-time').value);
+
+                const today = new Date();
+                const todayD = window.toThaiNum(today.getDate().toString());
+                const todayM = thaiMonths[today.getMonth()];
+                const todayY = window.toThaiNum((today.getFullYear() + 543).toString());
+
+                // สร้าง HTML Structure สำหรับเปิดใน MS Word โดยเฉพาะ
+                const wordHTML = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset='utf-8'>
+                    <style>
+                        body { font-family: 'TH SarabunPSK', 'TH Sarabun New', sans-serif; font-size: 16pt; line-height: 1.1; margin: 0; padding: 0; }
+                        p { margin: 0 0 4pt 0; padding: 0; }
+                        .center { text-align: center; }
+                        .right { text-align: right; }
+                        .tab1 { display: inline-block; width: 35px; }
+                        .indent { margin-left: 50px; }
+                        .sign-box { margin-left: 55%; text-align: center; }
+                        .sign-box-left { margin-left: 10%; text-align: center; width: 45%; }
+                    </style>
+                </head>
+                <body>
+                    <p class="right"><b>แบบ ๓</b></p>
+                    <p class="center"><b>ใบขออนุญาตใช้${carTitle} ของสำนักงาน อบต.โนนอุดม</b></p>
+                    <p class="center">วันที่ ${todayD} เดือน ${todayM} พ.ศ. ${todayY}</p>
+                    <p><br></p>
+                    <p>เรียน นายกองค์การบริหารส่วนตำบลโนนอุดม</p>
+                    <p><span class="tab1"></span>ข้าพเจ้า ${reqName} ตำแหน่ง ${pos}</p>
+                    <p>สำนัก/กอง ${dept} ขออนุญาตใช้${carTitle2}ของ อบต.โนนอุดม เพื่อไปราชการที่ ${dest}</p>
+                    <p>เพื่อปฏิบัติราชการเกี่ยวกับเรื่อง ${purpose}</p>
+                    <p>มีผู้นั่งไปในครั้งนี้ จำนวน ${pax} คน โดยใช้น้ำมันเชื้อเพลิงจากงบประมาณของแผนงาน/งาน ${budget}</p>
+                    <p>ทั้งนี้ ขอใช้รถยนต์ในวันที่ ${startD.d} เดือน ${startD.m} พ.ศ. ${startD.y}</p>
+                    <p>เวลา ${startTime} น. ถึงวันที่ ${endD.d} เดือน ${endD.m} พ.ศ. ${endD.y} เวลา ${endTime} น.</p>
+                    <p><br></p>
+
+                    <div class="sign-box">
+                        <p>ลงชื่อ.........................................................ผู้ขออนุญาตใช้รถยนต์</p>
+                        <p>(${reqName})</p>
+                        <p>ตำแหน่ง ${pos}</p>
+                    </div>
+                    <p><br></p>
+                    <p><span class="tab1"></span>ได้ตรวจสอบแล้ว มีรถยนต์ว่างอยู่ จึงเห็นสมควรอนุญาตใช้รถยนต์ หมายเลขทะเบียน ${carReg}</p>
+                    <p>โดยมี ${driver} เป็นพนักงานขับรถยนต์</p>
+                    <p><span class="tab1"></span>เลขไมล์ก่อนไป......................................................เลขไมล์หลังไป.....................................................</p>
+                    <p><br></p>
+
+                    ${showDeputy ? `
+                    <div class="sign-box-left">
+                        <p>ลงชื่อ....................................................</p>
+                        <p>(นางดนิตา มนไธสง)</p>
+                        <p>รองปลัดองค์การบริหารส่วนตำบล รักษาราชการแทน</p>
+                        <p>ปลัดองค์การบริหารส่วนตำบลโนนอุดม</p>
+                    </div><p><br></p>` : ''}
+
+                    <p><span class="tab1"></span>ความเห็นของผู้มีอำนาจสั่งการให้ใช้รถยนต์</p>
+                    <p class="indent"><span class="tab1"></span><span style="font-family: 'Segoe UI Symbol', sans-serif;">&#9711;</span> อนุญาต</p>
+                    <p class="indent"><span class="tab1"></span><span style="font-family: 'Segoe UI Symbol', sans-serif;">&#9711;</span> ไม่อนุญาต</p>
+                    <p><br></p>
+
+                    <div class="sign-box">
+                        <p>ลงชื่อ............................................................</p>
+                        <p>${signerName}</p>
+                        <p>${signerPos}</p>
+                    </div>
+                </body>
+                </html>
+                `;
+
+                // โหลดเป็นไฟล์ .doc ทันที
+                const blob = new Blob(['\ufeff', wordHTML], { type: 'application/msword' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `ใบขออนุญาตใช้รถ_${document.getElementById('v-req-name').value || 'เอกสาร'}.doc`;
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(url), 100);
+
+                window.showToast("บันทึกไฟล์ Word สำเร็จ! เปิดแก้ไขต่อได้เลย");
+
+            } catch (error) {
+                alert("เกิดข้อผิดพลาดในการสร้างไฟล์ Word");
+                console.error(error);
             } finally {
-                activeTemp.style.transform = currentTransform; 
-                btn.disabled = false; btn.classList.remove('opacity-70'); btnText.textContent = 'บันทึกเป็นรูปเอกสาร';
+                if(btn) { btn.disabled = false; btn.classList.remove('opacity-70'); }
+                btnText.textContent = 'ดาวน์โหลดไฟล์ Word (.doc)';
             }
         }
 
@@ -1069,6 +1179,7 @@
             document.getElementById('asset-download-btn-bottom').href = event.downloadUrl;
         }
 
+        // ฟังก์ชันคัดลอกข้อความ
         window.copyCaption = function() {
             const textToCopy = document.getElementById("asset-caption-text").innerText;
             const tempTextArea = document.createElement("textarea");
@@ -1233,7 +1344,6 @@
             window.dispatchEvent(new Event('resize')); 
         });
 
-        // ฟังก์ชันซิงค์ข้อความจดหมายข่าว
         const syncNewsData = (inputId, displayClass, defaultText) => {
             const input = document.getElementById(inputId);
             input.addEventListener('input', (e) => {
@@ -1269,7 +1379,6 @@
             }
         };
 
-        // ตั้งค่าวันที่จดหมายข่าวเริ่มต้น
         const selDay = document.getElementById('select-day'), selMonth = document.getElementById('select-month'), selYear = document.getElementById('select-year');
         for (let i = 1; i <= 31; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = i; if (i === tDate.getDate()) opt.selected = true; selDay.appendChild(opt); }
         selMonth.value = thaiMonths[tDate.getMonth()];
@@ -1278,7 +1387,6 @@
         selDay.addEventListener('change', updateNewsDate); selMonth.addEventListener('change', updateNewsDate); selYear.addEventListener('change', updateNewsDate);
         updateNewsDate();
 
-        // สร้างช่องอัปโหลด 6 รูป
         let uploadHtml = '';
         for (let i = 0; i < 6; i++) {
             uploadHtml += `
@@ -1312,7 +1420,7 @@
             
             const activeTemp = document.getElementById(activeTemplateId); 
             const currentTransform = activeTemp.style.transform; 
-            activeTemp.style.transform = 'none'; // ต้องเอา scale ออกก่อนถ่ายรูป
+            activeTemp.style.transform = 'none'; 
 
             try {
                 const canvas = await html2canvas(activeTemp, { scale: 2, useCORS: true, backgroundColor: activeTemplateId === 'template-1' ? '#fdfcf8' : '#f8f9fa', scrollY: 0, scrollX: 0 });
@@ -1332,7 +1440,6 @@
                     }, "image/jpeg", 1.0);
                 });
 
-                // เซฟประวัติ
                 const hId = Date.now();
                 const hData = {
                     id: hId, timestamp: hId,
@@ -1419,17 +1526,16 @@
             containers.forEach((cid, index) => {
                 const c = document.getElementById(cid);
                 if(c && c.parentElement && !c.parentElement.parentElement.classList.contains('hidden')) {
-                    const cWidth = c.clientWidth - 40; // เผื่อ padding
-                    // template กว้าง 800px, doc-a4 กว้าง 794px
+                    const cWidth = c.clientWidth - 40; 
                     const targetWidth = targets[index] === 'doc-a4' ? 794 : 800; 
                     let scale = cWidth / targetWidth;
                     if(scale > 1) scale = 1;
                     
-                    if(index === 0) { // Newsletter
+                    if(index === 0) { 
                         document.getElementById('template-1').style.transform = `scale(${scale})`;
                         document.getElementById('template-2').style.transform = `scale(${scale})`;
                         c.style.minHeight = (1131 * scale + 50) + "px";
-                    } else { // Vehicle
+                    } else { 
                         document.getElementById('doc-a4').style.transform = `scale(${scale})`;
                         c.style.minHeight = (1123 * scale + 50) + "px";
                     }
@@ -1437,9 +1543,8 @@
             });
         }
         window.addEventListener('resize', setScale);
-        setTimeout(setScale, 500); // ดีเลย์ให้ตอนโหลดเว็บเสร็จตั้งค่า scale
+        setTimeout(setScale, 500); 
 
-        // บังคับให้โหลดเข้าหน้า Dashboard ตอนแรก
         window.switchView('view-dashboard');
 
     </script>
