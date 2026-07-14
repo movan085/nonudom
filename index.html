@@ -1329,11 +1329,21 @@
 
             try {
                 const canvas = await html2canvas(activeTemp, { scale: 2, useCORS: true, backgroundColor: activeTemplateId === 'template-1' ? '#fdfcf8' : '#f8f9fa', scrollY: 0, scrollX: 0 });
-                const link = document.createElement('a'); 
-                link.href = canvas.toDataURL("image/jpeg", 1.0);
                 const topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
-                link.download = `${topic}.jpg`; 
-                link.click();
+                
+                await new Promise((resolve) => {
+                    canvas.toBlob((blob) => {
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement('a'); 
+                        link.download = `${topic}.jpg`; 
+                        link.href = url;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        setTimeout(() => URL.revokeObjectURL(url), 100);
+                        resolve();
+                    }, "image/jpeg", 1.0);
+                });
 
                 // เซฟประวัติ
                 const hId = Date.now();
