@@ -1116,7 +1116,8 @@
             activeTemp.style.transform = 'none'; 
 
             try {
-                const canvas = await html2canvas(activeTemp, { scale: 2, useCORS: true, backgroundColor: activeTemplateId === 'template-1' ? '#fdfcf8' : '#f8f9fa', scrollY: 0, scrollX: 0 });
+                // ปรับ scale จาก 2 เป็น 4 เพื่อเพิ่มความคมชัดระดับสูงสุด (อัปสเกล 4 เท่า)
+                const canvas = await html2canvas(activeTemp, { scale: 4, useCORS: true, backgroundColor: activeTemplateId === 'template-1' ? '#fdfcf8' : '#f8f9fa', scrollY: 0, scrollX: 0 });
                 const topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
                 
                 await new Promise((resolve) => {
