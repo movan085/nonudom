@@ -28,7 +28,7 @@
         body { font-family: 'Kanit', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .text-shadow-md { text-shadow: 2px 2px 5px rgba(0,0,0,0.15); }
+        .text-shadow-md { text-shadow: 2px 2px 5px rgba(0,0,0,0.15); text-shadow-sm: 1px 1px 3px rgba(0,0,0,0.2); }
         
         .img-placeholder { width: 100%; height: 100%; background-color: #f3f4f6; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .img-placeholder::before { content: ''; position: absolute; top: 35%; left: 30%; width: 40%; height: 20%; background: white; border-radius: 50%; opacity: 0.7; filter: blur(1px); }
@@ -39,7 +39,7 @@
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
@@ -47,8 +47,23 @@
 </head>
 <body class="bg-gradient-to-br from-blue-100 via-sky-50 to-yellow-100 min-h-screen flex flex-col justify-between relative overflow-x-hidden">
     
+    <!-- แจ้งเตือน Toast -->
     <div id="toast-message" class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-2xl z-50 flex items-center gap-2 transition-all duration-300 opacity-0 pointer-events-none -translate-y-10">
         <span>✅</span> <span id="toast-text">แจ้งเตือน!</span>
+    </div>
+
+    <!-- กล่องยืนยันการลบ (Confirm Modal) -->
+    <div id="confirm-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-gray-900/40 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+        <div class="bg-white p-6 rounded-3xl shadow-2xl max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300" id="confirm-box">
+            <h3 class="text-lg font-bold text-gray-800 mb-2 flex items-center gap-2">
+                <span class="text-red-500">⚠️</span> ยืนยันการทำรายการ
+            </h3>
+            <p id="confirm-message" class="text-gray-600 mb-6 text-sm"></p>
+            <div class="flex justify-end gap-3">
+                <button onclick="window.closeConfirm()" class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200 transition-colors">ยกเลิก</button>
+                <button id="confirm-yes-btn" class="px-5 py-2.5 bg-red-500 text-white rounded-xl font-bold hover:bg-red-600 shadow-md transition-colors">ยืนยัน</button>
+            </div>
+        </div>
     </div>
 
     <!-- ========================================== -->
@@ -72,7 +87,6 @@
             <div class="p-6 md:p-8">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                     <button onclick="window.switchView('view-newsletter')" class="group text-left bg-white border-2 border-blue-100 rounded-2xl p-5 hover:border-[#0071BA] hover:shadow-[0_10px_20px_rgba(0,113,186,0.15)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 bg-green-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">พร้อมใช้งาน</div>
                         <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-2xl mb-3 group-hover:bg-[#0071BA] group-hover:text-white transition-colors">📰</div>
                         <h3 class="text-base font-bold text-gray-800 mb-1">จดหมายข่าว</h3>
                         <p class="text-xs text-gray-500">สร้างภาพข่าวประชาสัมพันธ์</p>
@@ -86,7 +100,6 @@
                     </button>
 
                     <button onclick="window.switchView('view-calendar')" class="group text-left bg-white border-2 border-blue-100 rounded-2xl p-5 hover:border-[#0071BA] hover:shadow-[0_10px_20px_rgba(0,113,186,0.15)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 bg-blue-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">คลาวด์ ☁️</div>
                         <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center text-2xl mb-3 group-hover:bg-[#0071BA] group-hover:text-white transition-colors">📅</div>
                         <h3 class="text-base font-bold text-gray-800 mb-1">คลังอินโฟกราฟิก</h3>
                         <p class="text-xs text-gray-500">คลังสื่อภาพวันสำคัญ</p>
@@ -96,11 +109,11 @@
                 <!-- กระดานคิวรถบนหน้าแรก (List View) -->
                 <div class="w-full">
                     <div class="flex items-center justify-between mb-4 border-l-4 border-[#0071BA] pl-3">
-                        <h2 class="text-xl font-bold text-gray-800">กระดานคิวรถส่วนกลาง</h2>
+                        <h2 class="text-xl font-bold text-gray-800">ตารางคิวรถส่วนกลาง</h2>
                         <span id="dash-cloud-status" class="text-xs font-medium text-gray-500">ซิงค์...</span>
                     </div>
-                    <div id="dashboard-timeline" class="w-full bg-white/50 backdrop-blur-sm rounded-3xl p-4 md:p-6 shadow-inner border border-gray-200 overflow-hidden max-h-[500px] overflow-y-auto custom-scroll">
-                        <!-- รายการจองจะถูกดึงมาแสดงที่นี่ -->
+                    <div id="dashboard-timeline" class="w-full bg-transparent overflow-hidden max-h-[600px] overflow-y-auto custom-scroll pr-2">
+                        <!-- List View จะถูกดึงมาใส่ตรงนี้ -->
                     </div>
                 </div>
             </div>
@@ -108,7 +121,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- VIEW: VEHICLE BOOKING (ระบบจองรถ + ตารางเวลา) -->
+    <!-- VIEW: VEHICLE BOOKING (ระบบจองรถแบบฟอร์ม + ลิสต์) -->
     <!-- ========================================== -->
     <div id="view-vehicle" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in relative">
         <div class="flex items-center justify-between bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-white">
@@ -151,7 +164,7 @@
 
                     <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100 shadow-sm">
                         <label class="block text-sm font-bold text-blue-900 mb-2">วันและเวลาที่จอง *</label>
-                        <!-- เปลี่ยนเป็น type="text" เพื่อให้ Flatpickr จัดการ UI ได้สวยงาม -->
+                        <!-- Flatpickr Input -->
                         <input type="text" id="vb-date" required class="w-full p-2.5 bg-white border border-blue-200 rounded-xl text-sm mb-3 shadow-sm font-sans focus:ring-2 focus:ring-blue-400 outline-none cursor-pointer text-center font-bold text-gray-700">
                         <div class="flex items-center gap-2">
                             <input type="text" id="vb-start" required class="w-full p-2.5 bg-white border border-blue-200 rounded-xl text-sm shadow-sm cursor-pointer text-center font-bold text-gray-700 focus:ring-2 focus:ring-blue-400 outline-none">
@@ -166,18 +179,15 @@
                 </form>
             </div>
 
-            <!-- ฝั่งขวา: กระดานตารางเวลา (List View) -->
+            <!-- ฝั่งขวา: กระดานตารางเวลา (List View แบบเดิมที่อ่านง่ายสุด) -->
             <div class="w-full xl:w-8/12 bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border border-white flex flex-col h-auto xl:h-[700px] overflow-hidden">
                 <div class="p-5 md:p-6 bg-gray-800 text-white flex justify-between items-center shrink-0">
                     <h3 class="text-xl font-bold flex items-center gap-2">
-                        <span>🗓️</span> รายการคิวรถส่วนกลาง
+                        <span>🗓️</span> ตารางการใช้รถส่วนกลาง
                     </h3>
-                    <div class="flex gap-2">
-                        <button onclick="window.loadBookings()" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition" title="รีเฟรช">🔄</button>
-                    </div>
+                    <button onclick="window.loadBookings()" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition" title="รีเฟรช">🔄</button>
                 </div>
                 
-                <!-- พื้นที่แสดงตารางรายการ -->
                 <div id="vehicle-timeline" class="flex-1 overflow-y-auto custom-scroll p-4 md:p-6 bg-gray-50/50 space-y-6">
                     <div class="text-center py-10 text-gray-400">
                         กำลังโหลดข้อมูลตาราง...
@@ -473,7 +483,7 @@
                     <svg class="absolute top-0 left-0 z-0 opacity-80" width="250" height="250" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 250,0 0,250" fill="#FDBE15" fill-opacity="0.2"/><polygon points="0,0 180,0 0,180" fill="#0071BA" fill-opacity="0.9"/><polygon points="0,195 195,0 190,0 0,190" fill="#FDBE15"/></svg>
                     <svg class="absolute top-[831px] left-[500px] z-0 opacity-80" width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><polygon points="300,300 0,300 300,0" fill="#FDBE15" fill-opacity="0.2"/><polygon points="300,300 120,300 300,120" fill="#0071BA" fill-opacity="0.9"/><polygon points="95,300 300,95 300,100 100,300" fill="#FDBE15"/></svg>
 
-                    <div class="absolute top-[40px] left-[640px] z-20 text-center w-[120px]">
+                    <div class="absolute top-[40px] left-[630px] z-20 text-center w-[140px]">
                         <div class="w-[90px] h-[120px] mx-auto bg-gray-200 border-[3px] border-[#FDBE15] rounded-md shadow-md overflow-hidden mb-2">
                             <img src="./sysbanners_file_6.png" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x250/0071BA/FFF?text=Profile'"/>
                         </div>
@@ -532,12 +542,12 @@
                                 <p class="text-[16px] text-white opacity-90 leading-none mt-3">องค์การบริหารส่วนตำบลโนนอุดม</p>
                             </div>
                         </div>
-                        <div class="text-center w-[140px]">
+                        <div class="text-center w-[150px]">
                             <div class="w-[95px] h-[125px] mx-auto bg-[#e5e7eb] border-[3px] border-[#FDBE15] rounded-md shadow-lg overflow-hidden mb-2">
                                 <img src="./sysbanners_file_6.png" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x250/0071BA/FFF?text=Profile'"/>
                             </div>
                             <p class="text-white text-[13px] font-bold leading-tight text-shadow-sm">นายสุพจน์ สมน้อย</p>
-                            <p class="text-white text-[11px] opacity-90 leading-tight text-shadow-sm mt-0.5">นายกอบต. โนนอุดม</p>
+                            <p class="text-white text-[10px] opacity-90 leading-tight text-shadow-sm mt-0.5">นายกองค์การบริหารส่วนตำบล<br>โนนอุดม</p>
                         </div>
                     </div>
                     
@@ -608,6 +618,7 @@
         let bookingData = [];
         let isFirebaseReady = false;
         let db, auth, publicDataRef, historyRef, bookingRef;
+        let currentConfirmAction = null;
 
         const myFirebaseConfig = {
           apiKey: "AIzaSyBysqombxqHciw4hWmUo5zSaOgAiguR8Ig",
@@ -697,7 +708,7 @@
                         onSnapshot(bookingRef, (snapshot) => {
                             bookingData = [];
                             snapshot.forEach((doc) => bookingData.push(doc.data()));
-                            window.renderTimetable(); // วาดตารางใหม่ทุกครั้งที่มีข้อมูลเข้า
+                            window.renderTimetable(); 
                         });
                     }
                 });
@@ -715,6 +726,26 @@
         // ==========================================
         // 2. ฟังก์ชันส่วนกลาง (Global Functions)
         // ==========================================
+        window.showConfirm = function(msg, action) {
+            document.getElementById('confirm-message').innerText = msg;
+            currentConfirmAction = action;
+            const m = document.getElementById('confirm-modal');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+            setTimeout(() => { m.classList.remove('opacity-0'); document.getElementById('confirm-box').classList.remove('scale-95'); }, 10);
+        }
+
+        window.closeConfirm = function() {
+            const m = document.getElementById('confirm-modal');
+            m.classList.add('opacity-0'); document.getElementById('confirm-box').classList.add('scale-95');
+            setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
+        }
+
+        document.getElementById('confirm-yes-btn').addEventListener('click', () => {
+            if(currentConfirmAction) currentConfirmAction();
+            window.closeConfirm();
+        });
+
         window.switchView = function(viewId) {
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-newsletter').classList.add('hidden');
@@ -870,7 +901,7 @@
                     </div>
                     <div class="flex items-center gap-2 shrink-0 ml-2">
                         <button onclick="window.editAsset(${event.id})" class="p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors" title="แก้ไข">✏️</button>
-                        <button onclick="window.deleteAsset(${event.id})" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="ลบ">🗑️</button>
+                        <button onclick="window.showConfirm('แน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?', () => window.deleteAsset(${event.id}))" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="ลบ">🗑️</button>
                     </div>`;
                 container.appendChild(item);
             });
@@ -934,59 +965,58 @@
         }
 
         window.deleteAsset = async function(id) {
-            if(confirm("แน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?")) {
-                if (isFirebaseReady && auth.currentUser) {
-                    try {
-                        await deleteDoc(doc(publicDataRef, id.toString()));
-                        window.showToast("ลบข้อมูลสำเร็จ!");
-                    } catch (error) {
-                        console.error("Delete Error:", error); window.showToast("เกิดข้อผิดพลาดในการลบข้อมูล");
-                    }
-                } else {
-                    assetData = assetData.filter(e => e.id !== id);
-                    localStorage.setItem('prStudioAssets', JSON.stringify(assetData));
-                    window.renderManagerList(); window.renderCalendarList(); window.showToast("ลบข้อมูลสำเร็จ!");
+            if (isFirebaseReady && auth.currentUser) {
+                try {
+                    await deleteDoc(doc(publicDataRef, id.toString()));
+                    window.showToast("ลบข้อมูลสำเร็จ!");
+                } catch (error) {
+                    console.error("Delete Error:", error); window.showToast("เกิดข้อผิดพลาดในการลบข้อมูล");
                 }
+            } else {
+                assetData = assetData.filter(e => e.id !== id);
+                localStorage.setItem('prStudioAssets', JSON.stringify(assetData));
+                window.renderManagerList(); window.renderCalendarList(); window.showToast("ลบข้อมูลสำเร็จ!");
             }
         }
 
-        window.importHolidays2026 = async function() {
-            if(!confirm("ระบบจะนำเข้าข้อมูลวันหยุดที่เหลือของปี 2569 อัตโนมัติ ยืนยันหรือไม่?")) return;
-            const holidays = [
-                {isoDate:"2026-07-20", title:"วันอาสาฬหบูชา", thumbUrl:"https://placehold.co/800x600/FDBE15/0071BA?text=Asanha+Bucha"},
-                {isoDate:"2026-07-21", title:"วันเข้าพรรษา", thumbUrl:"https://placehold.co/800x600/FDBE15/0071BA?text=Khao+Phansa"},
-                {isoDate:"2026-07-28", title:"วันเฉลิมพระชนมพรรษา ร.10", thumbUrl:"https://placehold.co/800x600/FDBE15/0071BA?text=King+Rama+10"},
-                {isoDate:"2026-08-12", title:"วันแม่แห่งชาติ", thumbUrl:"https://placehold.co/800x600/38bdf8/FFF?text=Mothers+Day"},
-                {isoDate:"2026-10-13", title:"วันคล้ายวันสวรรคต ร.9", thumbUrl:"https://placehold.co/800x600/000/FFF?text=King+Rama+9"},
-                {isoDate:"2026-10-23", title:"วันปิยมหาราช", thumbUrl:"https://placehold.co/800x600/000/FFF?text=King+Chulalongkorn"},
-                {isoDate:"2026-12-05", title:"วันพ่อแห่งชาติ", thumbUrl:"https://placehold.co/800x600/FDBE15/0071BA?text=Fathers+Day"},
-                {isoDate:"2026-12-10", title:"วันรัฐธรรมนูญ", thumbUrl:"https://placehold.co/800x600/0071BA/FFF?text=Constitution+Day"},
-                {isoDate:"2026-12-31", title:"วันสิ้นปี", thumbUrl:"https://placehold.co/800x600/10b981/FFF?text=New+Years+Eve"}
-            ];
-            
-            let count = 0;
-            for(let h of holidays) {
-                const [y, m, d] = h.isoDate.split('-');
-                const mGrp = `${thaiMonths[parseInt(m)-1]} ${parseInt(y)+543}`;
-                const dateStr = `${parseInt(d)} ${thaiMonths[parseInt(m)-1]} ${parseInt(y)+543}`;
-                const newId = Date.now() + count;
-                const docData = {
-                    id: newId, title: h.title, isoDate: h.isoDate, dateStr: dateStr, monthGrp: mGrp,
-                    thumbUrl: h.thumbUrl, downloadUrl: h.thumbUrl,
-                    caption: `${dateStr} ${h.title}\n\nร่วมรำลึกและเฉลิมฉลอง\n#${h.title.replace(/ /g,'')} #อบตโนนอุดม`
-                };
-                if (isFirebaseReady && auth.currentUser) {
-                    await setDoc(doc(publicDataRef, newId.toString()), docData);
-                } else {
-                    assetData.push(docData);
+        window.importHolidays2026 = function() {
+            window.showConfirm("ระบบจะนำเข้าข้อมูลวันหยุดที่เหลือของปี 2569 อัตโนมัติ ยืนยันหรือไม่?", async () => {
+                const holidays = [
+                    {isoDate:"2026-07-20", title:"วันอาสาฬหบูชา", thumbUrl:"https://placehold.co/800x600/FDBE15/0071BA?text=Asanha+Bucha"},
+                    {isoDate:"2026-07-21", title:"วันเข้าพรรษา", thumbUrl:"https://placehold.co/800x600/FDBE15/0071BA?text=Khao+Phansa"},
+                    {isoDate:"2026-07-28", title:"วันเฉลิมพระชนมพรรษา ร.10", thumbUrl:"https://placehold.co/800x600/FDBE15/0071BA?text=King+Rama+10"},
+                    {isoDate:"2026-08-12", title:"วันแม่แห่งชาติ", thumbUrl:"https://placehold.co/800x600/38bdf8/FFF?text=Mothers+Day"},
+                    {isoDate:"2026-10-13", title:"วันคล้ายวันสวรรคต ร.9", thumbUrl:"https://placehold.co/800x600/000/FFF?text=King+Rama+9"},
+                    {isoDate:"2026-10-23", title:"วันปิยมหาราช", thumbUrl:"https://placehold.co/800x600/000/FFF?text=King+Chulalongkorn"},
+                    {isoDate:"2026-12-05", title:"วันพ่อแห่งชาติ", thumbUrl:"https://placehold.co/800x600/FDBE15/0071BA?text=Fathers+Day"},
+                    {isoDate:"2026-12-10", title:"วันรัฐธรรมนูญ", thumbUrl:"https://placehold.co/800x600/0071BA/FFF?text=Constitution+Day"},
+                    {isoDate:"2026-12-31", title:"วันสิ้นปี", thumbUrl:"https://placehold.co/800x600/10b981/FFF?text=New+Years+Eve"}
+                ];
+                
+                let count = 0;
+                for(let h of holidays) {
+                    const [y, m, d] = h.isoDate.split('-');
+                    const mGrp = `${thaiMonths[parseInt(m)-1]} ${parseInt(y)+543}`;
+                    const dateStr = `${parseInt(d)} ${thaiMonths[parseInt(m)-1]} ${parseInt(y)+543}`;
+                    const newId = Date.now() + count;
+                    const docData = {
+                        id: newId, title: h.title, isoDate: h.isoDate, dateStr: dateStr, monthGrp: mGrp,
+                        thumbUrl: h.thumbUrl, downloadUrl: h.thumbUrl,
+                        caption: `${dateStr} ${h.title}\n\nร่วมรำลึกและเฉลิมฉลอง\n#${h.title.replace(/ /g,'')} #อบตโนนอุดม`
+                    };
+                    if (isFirebaseReady && auth.currentUser) {
+                        await setDoc(doc(publicDataRef, newId.toString()), docData);
+                    } else {
+                        assetData.push(docData);
+                    }
+                    count++;
                 }
-                count++;
-            }
-            if (!isFirebaseReady) {
-                localStorage.setItem('prStudioAssets', JSON.stringify(assetData));
-                window.renderManagerList(); window.renderCalendarList();
-            }
-            window.showToast("โหลดวันหยุดสำเร็จ " + count + " รายการ!");
+                if (!isFirebaseReady) {
+                    localStorage.setItem('prStudioAssets', JSON.stringify(assetData));
+                    window.renderManagerList(); window.renderCalendarList();
+                }
+                window.showToast("โหลดวันหยุดสำเร็จ " + count + " รายการ!");
+            });
         }
 
 
@@ -1122,7 +1152,8 @@
                 setTimeout(() => window.showToast("บันทึกรูปและเก็บประวัติแล้ว!"), 500);
 
             } catch (error) { 
-                alert("เกิดข้อผิดพลาดในการโหลดรูป"); 
+                console.error(error);
+                window.showToast("เกิดข้อผิดพลาดในการโหลดรูป"); 
             } finally {
                 activeTemp.style.transform = currentTransform; 
                 btn.disabled = false; btn.classList.remove('opacity-70'); btnText.textContent = 'บันทึกเป็นรูปภาพ';
@@ -1185,81 +1216,76 @@
 
         window.resetBookingForm = function() {
             document.getElementById('vehicle-booking-form').reset();
-            // Flatpickr จัดการรีเซ็ตค่าให้อยู่แล้วจาก defaultDate
+            // Flatpickr จะจัดการเคลียร์ให้ระดับนึง แต่ให้ชัวร์คือไม่ต้องทำอะไรเพิ่มเพราะเวลาโหลดใหม่ค่าจะดีฟอลต์
         }
 
         window.renderTimetable = function() {
             const containers = [document.getElementById('dashboard-timeline'), document.getElementById('vehicle-timeline')];
 
-            const todayISO = new Date().toISOString().split('T')[0];
+            if (bookingData.length === 0) {
+                const emptyHtml = '<div class="text-center py-10 text-gray-400 font-medium">✨ ยังไม่มีคิวจองรถในระบบ ✨</div>';
+                containers.forEach(c => { if(c) c.innerHTML = emptyHtml; });
+                return;
+            }
 
-            containers.forEach((container, index) => {
-                if(!container) return;
-                container.innerHTML = '';
+            const groupedByDate = bookingData.reduce((acc, curr) => {
+                if (!acc[curr.date]) acc[curr.date] = [];
+                acc[curr.date].push(curr);
+                return acc;
+            }, {});
+
+            const sortedDates = Object.keys(groupedByDate).sort((a, b) => new Date(b) - new Date(a));
+            let html = '';
+
+            sortedDates.forEach(dateStr => {
+                const d = new Date(dateStr);
+                const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
                 
-                // สำหรับหน้า Dashboard ให้โชว์เฉพาะคิวของวันนี้
-                // สำหรับหน้าหลักของระบบ ให้โชว์คิวทั้งหมด (ตั้งแต่เมื่อวานขึ้นไป)
-                let displayData = [];
-                if (index === 0) {
-                    displayData = bookingData.filter(b => b.date === todayISO);
-                } else {
-                    displayData = bookingData.filter(b => new Date(b.date) >= new Date(Date.now() - 86400000));
-                }
+                html += `<div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-6">
+                    <div class="bg-blue-100 text-[#0071BA] font-bold px-4 py-2 border-b border-blue-200 flex items-center gap-2">
+                        📅 วันที่ ${thaiDate}
+                    </div>
+                    <div class="p-4 space-y-3">`;
 
-                if (displayData.length === 0) {
-                    container.innerHTML = `<div class="text-center py-10 text-gray-400">${index === 0 ? 'วันนี้ยังไม่มีคิวการใช้รถส่วนกลาง' : 'ยังไม่มีคิวการใช้รถในระบบ'}</div>`;
-                    return;
-                }
+                const bookingsOnDate = groupedByDate[dateStr].sort((a, b) => a.start.localeCompare(b.start));
 
-                // จัดกลุ่มตามวันที่
-                const groupedByDate = displayData.reduce((acc, curr) => {
-                    if (!acc[curr.date]) acc[curr.date] = [];
-                    acc[curr.date].push(curr);
-                    return acc;
-                }, {});
+                bookingsOnDate.forEach(b => {
+                    let carColor = "bg-gray-100 text-gray-700 border-gray-300";
+                    let timeColor = "border-current";
+                    let btnDeleteColor = "text-red-500 hover:bg-red-50";
 
-                // เรียงวันที่จากใหม่สุดไปเก่าสุด
-                const sortedDates = Object.keys(groupedByDate).sort((a, b) => new Date(b) - new Date(a));
+                    if(b.car.includes("น้ำ")) {
+                        carColor = "bg-blue-50 text-blue-700 border-blue-200";
+                    } else if(b.car.includes("ขาว")) {
+                        carColor = "bg-gray-50 text-gray-800 border-gray-300"; 
+                    } else if(b.car.includes("ดำ")) {
+                        carColor = "bg-slate-800 text-slate-100 border-slate-700 shadow-md";
+                        timeColor = "border-slate-600";
+                        btnDeleteColor = "text-red-400 hover:bg-slate-700";
+                    } else if(b.car.includes("กู้ภัย")) {
+                        carColor = "bg-red-50 text-red-700 border-red-200";
+                    }
 
-                sortedDates.forEach(dateStr => {
-                    const d = new Date(dateStr);
-                    const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
-                    
-                    let dayBlock = `<div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-6">
-                        <div class="bg-blue-100 text-blue-800 font-bold px-4 py-2 border-b border-blue-200 flex items-center justify-between">
-                            <span>📅 วันที่ ${thaiDate}</span>
-                            ${dateStr === todayISO ? '<span class="bg-blue-500 text-white text-[10px] px-2 py-0.5 rounded-full">วันนี้</span>' : ''}
-                        </div>
-                        <div class="p-3 md:p-4 space-y-3">`;
-
-                    const bookingsOnDate = groupedByDate[dateStr].sort((a, b) => a.start.localeCompare(b.start));
-
-                    bookingsOnDate.forEach(b => {
-                        let carColor = "bg-gray-100 text-gray-700 border-gray-300";
-                        if(b.car.includes("น้ำ")) carColor = "bg-blue-50 text-blue-700 border-blue-200";
-                        if(b.car.includes("รถขาว")) carColor = "bg-gray-50 text-gray-700 border-gray-200";
-                        if(b.car.includes("รถดำ")) carColor = "bg-gray-800 text-gray-100 border-gray-700";
-                        if(b.car.includes("กู้ภัย")) carColor = "bg-red-50 text-red-700 border-red-200";
-
-                        // ซ่อนปุ่มลบ ถ้าแสดงในหน้า Dashboard
-                        const deleteBtn = index === 0 ? '' : `<button onclick="window.deleteBooking(${b.id})" class="absolute top-2 right-2 p-1.5 bg-white text-red-500 rounded-lg opacity-0 group-hover:opacity-100 transition shadow hover:bg-red-50 text-xs" title="ลบข้อมูล">🗑️</button>`;
-
-                        dayBlock += `
-                            <div class="flex flex-col md:flex-row md:items-center gap-3 p-3 rounded-xl border ${carColor} relative group transition hover:shadow-md">
-                                <div class="font-bold text-lg min-w-[120px] shrink-0 border-b md:border-b-0 md:border-r border-current/20 pb-2 md:pb-0 md:pr-3">
-                                    ⏰ ${b.start} - ${b.end}
-                                </div>
-                                <div class="flex-1">
-                                    <p class="font-bold text-sm mb-0.5">${b.car}</p>
-                                    <p class="text-sm opacity-90">📍 ${b.dest} (โดย: ${b.name})</p>
-                                </div>
-                                ${deleteBtn}
-                            </div>`;
-                    });
-
-                    dayBlock += `</div></div>`;
-                    container.innerHTML += dayBlock;
+                    html += `
+                        <div class="flex flex-col md:flex-row md:items-center gap-3 p-3 rounded-xl border ${carColor} relative group transition hover:shadow-md">
+                            <div class="font-bold text-lg min-w-[120px] shrink-0 border-b md:border-b-0 md:border-r ${timeColor} pb-2 md:pb-0 md:pr-3">
+                                ⏰ ${b.start} - ${b.end}
+                            </div>
+                            <div class="flex-1 pr-8">
+                                <p class="font-bold text-sm mb-0.5">${b.car}</p>
+                                <p class="text-sm opacity-90">📍 ${b.dest} (โดย: ${b.name})</p>
+                            </div>
+                            <button onclick="window.showConfirm('แน่ใจหรือไม่ว่าต้องการลบคิวจองนี้?\\nภารกิจ: ${b.dest}', () => window.deleteBooking(${b.id}))" class="absolute top-2 right-2 p-2 bg-transparent ${btnDeleteColor} rounded-lg opacity-0 group-hover:opacity-100 transition text-sm" title="ลบข้อมูล">🗑️</button>
+                        </div>`;
                 });
+
+                html += `</div></div>`;
+            });
+
+            containers.forEach(c => {
+                if(c) {
+                    c.innerHTML = html;
+                }
             });
         }
 
@@ -1347,9 +1373,8 @@
         // ==========================================
         function setScale() {
             const containers = ['preview-container'];
-            const targets = ['template-1', 'template-2'];
             
-            containers.forEach((cid, index) => {
+            containers.forEach((cid) => {
                 const c = document.getElementById(cid);
                 if(c && c.parentElement && !c.parentElement.parentElement.classList.contains('hidden')) {
                     const cWidth = c.clientWidth - 40; 
@@ -1366,28 +1391,31 @@
         window.addEventListener('resize', setScale);
         setTimeout(setScale, 500); 
 
-        // เริ่มการทำงานระบบ Flatpickr
+        // เริ่มการทำงานระบบ Flatpickr สำหรับช่องวันที่/เวลา
         document.addEventListener('DOMContentLoaded', function() {
             flatpickr("#vb-date", {
                 locale: "th",
                 altInput: true,
                 altFormat: "d/m/Y",       // โชว์ให้ผู้ใช้เห็นเป็น วัน/เดือน/ปี
                 dateFormat: "Y-m-d",      // ส่งเข้าระบบเป็น ปี-เดือน-วัน
-                defaultDate: "today"
+                defaultDate: "today",
+                disableMobile: true       // บังคับใช้ UI ของ Flatpickr บนมือถือด้วยเพื่อป้องกันบั๊ก 12Hr
             });
             flatpickr("#vb-start", {
                 enableTime: true,
                 noCalendar: true,
                 dateFormat: "H:i",
                 time_24hr: true,
-                defaultDate: "08:30"
+                defaultDate: "08:30",
+                disableMobile: true
             });
             flatpickr("#vb-end", {
                 enableTime: true,
                 noCalendar: true,
                 dateFormat: "H:i",
                 time_24hr: true,
-                defaultDate: "12:00"
+                defaultDate: "12:00",
+                disableMobile: true
             });
         });
 
