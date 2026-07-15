@@ -14,11 +14,9 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* โหลดฟอนต์ราชการ TH Sarabun New */
         @font-face {
             font-family: 'THSarabunNew';
             font-style: normal;
@@ -91,10 +89,10 @@
                     </button>
 
                     <button onclick="window.switchView('view-vehicle')" class="group text-left bg-white border-2 border-yellow-200 rounded-2xl p-6 hover:border-[#FDBE15] hover:shadow-[0_10px_20px_rgba(253,190,21,0.2)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">เอกสารใหม่ ✨</div>
+                        <div class="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">ระบบใหม่ ✨</div>
                         <div class="w-14 h-14 bg-yellow-50 text-yellow-600 rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:bg-[#FDBE15] group-hover:text-white transition-colors">🚙</div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-2">ใบจองรถส่วนกลาง</h3>
-                        <p class="text-xs text-gray-500 line-clamp-2">สร้างใบขออนุญาตใช้รถยนต์แบบฟอร์ม ๓</p>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">จองรถส่วนกลาง</h3>
+                        <p class="text-xs text-gray-500 line-clamp-2">ตารางเวลาและแจ้งเตือนเข้า LINE กลุ่ม</p>
                     </button>
 
                     <button onclick="window.switchView('view-calendar')" class="group text-left bg-white border-2 border-blue-100 rounded-2xl p-6 hover:border-[#0071BA] hover:shadow-[0_10px_20px_rgba(0,113,186,0.15)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden">
@@ -116,7 +114,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- VIEW: VEHICLE BOOKING (ระบบจองรถส่วนกลาง - โหลดเป็น Word) -->
+    <!-- VIEW: VEHICLE BOOKING (ระบบจองรถ + ตารางเวลา) -->
     <!-- ========================================== -->
     <div id="view-vehicle" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in relative">
         <div class="flex items-center justify-between bg-white/80 backdrop-blur-sm p-4 rounded-2xl shadow-sm border border-white">
@@ -124,128 +122,71 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
                 กลับหน้าหลัก
             </button>
-            <div class="flex items-center gap-4">
-                <h2 class="font-bold text-gray-700 md:text-lg hidden md:block">🚙 สร้างใบขออนุญาตใช้รถยนต์</h2>
-                <button onclick="window.showVehicleHistoryModal()" class="flex items-center gap-1.5 bg-yellow-50 text-yellow-700 px-3 py-1.5 rounded-lg border border-yellow-200 hover:bg-yellow-100 transition text-sm font-bold shadow-sm">
-                    <span>📜</span> ตารางประวัติการใช้รถ
-                </button>
-            </div>
+            <h2 class="font-bold text-gray-700 md:text-lg">🚙 กระดานจองรถส่วนกลาง</h2>
         </div>
 
         <div class="flex flex-col xl:flex-row gap-6 w-full">
-            <!-- แผงกรอกข้อมูล -->
-            <div class="w-full xl:w-5/12 bg-white/90 backdrop-blur-md p-0 rounded-3xl shadow-xl border border-white overflow-hidden h-fit flex flex-col shrink-0 relative z-20">
-                <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 p-5 text-yellow-900 shadow-md">
-                    <h2 class="text-xl font-bold flex items-center gap-2"><span class="text-2xl">📝</span> ข้อมูลการเดินทาง</h2>
+            <!-- ฝั่งซ้าย: ฟอร์มเพิ่มข้อมูล -->
+            <div class="w-full xl:w-4/12 bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border border-white flex flex-col h-fit overflow-hidden border-t-4 border-t-blue-500">
+                <div class="p-6 bg-blue-50/50 border-b border-blue-100">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span>📝</span> บันทึกการจองรถใหม่
+                    </h3>
                 </div>
                 
-                <div class="p-5 md:p-6 space-y-4">
+                <form id="vehicle-booking-form" class="p-6 space-y-4" onsubmit="window.saveVehicleBooking(event)">
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-1">เลือกรถที่ต้องการขออนุญาต *</label>
-                        <select id="v-select-car" class="w-full p-2.5 bg-yellow-50 border border-yellow-200 text-yellow-900 font-bold rounded-xl focus:ring-2 focus:ring-yellow-400 outline-none cursor-pointer">
-                            <option value="car1">รถยนต์บรรทุกน้ำอเนกประสงค์ (ผอ 6919)</option>
-                            <option value="car2">รถยนต์ส่วนกลาง (จก 8337)</option>
-                            <option value="car3">รถยนต์ส่วนกลาง (กพ 7743)</option>
-                            <option value="car4">รถยนต์กู้ภัย / รถกู้ภัย (2ฒห 6981)</option>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">เลือกรถ *</label>
+                        <select id="vb-car" required class="w-full p-2.5 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-bold text-gray-700 cursor-pointer">
+                            <option value="รถบรรทุกน้ำ (ผอ 6919)">💦 รถบรรทุกน้ำอเนกประสงค์ (ผอ 6919)</option>
+                            <option value="รถส่วนกลาง (จก 8337)">🚗 รถส่วนกลาง (จก 8337)</option>
+                            <option value="รถส่วนกลาง (กพ 7743)">🚗 รถส่วนกลาง (กพ 7743)</option>
+                            <option value="รถกู้ภัย (2ฒห 6981)">🚑 รถกู้ภัย (2ฒห 6981)</option>
                         </select>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">ชื่อ-สกุล ผู้ขอ</label>
-                            <input type="text" id="v-req-name" placeholder="เช่น นายสมชาย ใจดี" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">ตำแหน่ง</label>
-                            <input type="text" id="v-req-pos" placeholder="เช่น นักวิเคราะห์ฯ" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
-                        </div>
-                    </div>
-                    
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-1">สำนัก / กอง</label>
-                        <input type="text" id="v-req-dept" placeholder="เช่น สำนักปลัด" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
+                        <label class="block text-sm font-bold text-gray-700 mb-1">ผู้ขอใช้รถ / คนขับ *</label>
+                        <input type="text" id="vb-name" required placeholder="ชื่อพนักงาน" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-1">เพื่อไปราชการที่ (สถานที่)</label>
-                        <input type="text" id="v-dest" placeholder="เช่น ศาลากลางจังหวัดนครราชสีมา" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
+                        <label class="block text-sm font-bold text-gray-700 mb-1">สถานที่ไป / ภารกิจ *</label>
+                        <input type="text" id="vb-dest" required placeholder="เช่น ส่งเอกสารอำเภอ" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-1">เพื่อปฏิบัติราชการเกี่ยวกับเรื่อง</label>
-                        <textarea id="v-purpose" rows="2" placeholder="ระบุเหตุผลการเดินทาง" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm custom-scroll"></textarea>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">จำนวนผู้เดินทาง (คน)</label>
-                            <input type="number" id="v-pax" placeholder="เช่น 3" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">พนักงานขับรถ</label>
-                            <input type="text" id="v-driver" placeholder="ชื่อคนขับ (ถ้ามี)" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
+                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-100">
+                        <label class="block text-sm font-bold text-blue-900 mb-2">วันและเวลาที่จอง *</label>
+                        <input type="date" id="vb-date" required class="w-full p-2.5 border border-white rounded-lg text-sm mb-2 shadow-sm font-sans">
+                        <div class="flex items-center gap-2">
+                            <input type="time" id="vb-start" required class="w-full p-2 border border-white rounded-lg text-sm shadow-sm cursor-pointer">
+                            <span class="font-bold text-gray-500">ถึง</span>
+                            <input type="time" id="vb-end" required class="w-full p-2 border border-white rounded-lg text-sm shadow-sm cursor-pointer">
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-1">งบประมาณจากแผนงาน/งาน</label>
-                        <input type="text" id="v-budget" placeholder="เช่น งานบริหารทั่วไป" class="w-full p-2.5 border border-gray-300 rounded-xl focus:ring-2 outline-none text-sm">
-                    </div>
-
-                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-200">
-                        <label class="block text-sm font-bold text-gray-700 mb-2">วันและเวลาที่ใช้รถ</label>
-                        <div class="grid grid-cols-2 gap-2 mb-2">
-                            <div><span class="text-xs text-gray-500">ตั้งแต่วันที่</span><input type="date" id="v-start-date" class="w-full p-2 border rounded-lg text-xs"></div>
-                            <div><span class="text-xs text-gray-500">เวลา (น.)</span><input type="time" id="v-start-time" class="w-full p-2 border rounded-lg text-xs"></div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div><span class="text-xs text-gray-500">ถึงวันที่</span><input type="date" id="v-end-date" class="w-full p-2 border rounded-lg text-xs"></div>
-                            <div><span class="text-xs text-gray-500">เวลา (น.)</span><input type="time" id="v-end-time" class="w-full p-2 border rounded-lg text-xs"></div>
-                        </div>
-                    </div>
-
-                    <button id="btn-export-vehicle" onclick="window.exportVehicleDoc()" class="w-full text-white font-bold py-3.5 px-4 rounded-2xl shadow-[0_10px_20px_rgba(253,190,21,0.3)] transition duration-300 flex justify-center items-center gap-2 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 hover:-translate-y-1 text-lg border border-yellow-300 mt-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                        <span id="btn-text-v">ดาวน์โหลดไฟล์ Word (.doc)</span>
+                    <button type="submit" id="btn-submit-booking" class="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white font-bold py-3 rounded-xl shadow-md transition-all transform hover:-translate-y-0.5 mt-2 flex justify-center items-center gap-2">
+                        <span>🚀</span> บันทึกและแจ้งเตือนเข้า LINE
                     </button>
-                    <p class="text-xs text-gray-500 text-center mt-2">✨ ระบบจะสร้างไฟล์ Word แบบจัดหน้าเป๊ะให้คุณนำไปพิมพ์ต่อได้ทันที</p>
-                </div>
+                </form>
             </div>
 
-            <!-- แผงขวา: คำแนะนำ -->
-            <div id="v-preview-container" class="w-full xl:w-7/12 flex items-center justify-center bg-blue-50/50 p-6 md:p-12 rounded-3xl border border-blue-100 overflow-hidden relative z-10 min-h-[400px]">
-                <div class="text-center max-w-md">
-                    <div class="text-6xl mb-6">📄</div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3">ระบบพร้อมสร้างเอกสาร</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">กรอกข้อมูลให้ครบถ้วนทางด้านซ้าย เมื่อกดปุ่มดาวน์โหลด ระบบจะนำข้อมูลทั้งหมดไปจัดเรียงลงในฟอร์ม <b>"แบบ ๓ ใบขออนุญาตใช้รถยนต์"</b> ให้อัตโนมัติ พร้อมตั้งค่าหน้ากระดาษ A4 ให้คุณเรียบร้อย</p>
-                    <div class="inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-medium">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        รองรับการเปิดด้วย Microsoft Word
+            <!-- ฝั่งขวา: กระดานตารางเวลา -->
+            <div class="w-full xl:w-8/12 bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border border-white flex flex-col h-[600px] xl:h-[700px] overflow-hidden">
+                <div class="p-5 md:p-6 bg-gray-800 text-white flex justify-between items-center shrink-0">
+                    <h3 class="text-xl font-bold flex items-center gap-2">
+                        <span>🗓️</span> ตารางการใช้รถส่วนกลาง
+                    </h3>
+                    <div class="flex gap-2">
+                        <button onclick="window.loadBookings()" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition" title="รีเฟรช">🔄</button>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- MODAL: ประวัติใบจองรถ (ตาราง) -->
-    <!-- ========================================== -->
-    <div id="vehicle-history-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl max-h-[85vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300" id="vehicle-history-modal-content">
-            <div class="bg-yellow-50 px-6 py-4 border-b border-yellow-200 flex justify-between items-center shrink-0">
-                <div>
-                    <h3 class="text-lg font-bold text-yellow-900 flex items-center gap-2">
-                        <span>📅</span> ตารางประวัติการใช้รถส่วนกลาง
-                    </h3>
-                    <p class="text-xs text-yellow-700 mt-1">คลิก "นำมาใช้ใหม่" เพื่อคัดลอกข้อมูลลงในฟอร์ม</p>
-                </div>
-                <button onclick="window.closeVehicleHistoryModal()" class="text-gray-400 hover:text-gray-600 bg-white hover:bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center transition shadow-sm border">✕</button>
-            </div>
-            <div id="vehicle-history-list-container" class="flex-1 overflow-y-auto custom-scroll p-4 bg-white">
-                <!-- ตารางประวัติจะถูกแทรกที่นี่ด้วย JS -->
-                <div class="text-center py-8 text-gray-400 flex flex-col items-center gap-2">
-                    <svg class="w-8 h-8 animate-spin text-yellow-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                    กำลังโหลดข้อมูล...
+                
+                <!-- พื้นที่แสดงตาราง -->
+                <div id="timetable-container" class="flex-1 overflow-y-auto custom-scroll p-4 md:p-6 bg-gray-50/50 space-y-6">
+                    <div class="text-center py-10 text-gray-400">
+                        กำลังโหลดข้อมูลตาราง...
+                    </div>
                 </div>
             </div>
         </div>
@@ -329,6 +270,7 @@
                                 คัดลอก
                             </button>
                         </div>
+                        <!-- เปลี่ยนเป็น div เพื่อให้ลากคลุมได้ในมือถือ -->
                         <div id="asset-caption-text" class="w-full bg-white p-4 rounded-xl border border-gray-200 text-gray-700 leading-relaxed h-48 overflow-y-auto custom-scroll whitespace-pre-wrap select-text"></div>
                     </div>
 
@@ -659,20 +601,18 @@
         </div>
     </div>
 
-    <!-- โหลดโมดูล Firebase และระบบ JS ทั้งหมด -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
         import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
         // ==========================================
-        // 1. DATA & STATE MANAGEMENT (ผสานกับ Firebase)
+        // 1. DATA & STATE MANAGEMENT
         // ==========================================
         let assetData = [];
         let historyData = [];
-        let vehicleHistoryData = []; // ตัวแปรเก็บประวัติขอใช้รถ
         let isFirebaseReady = false;
-        let db, auth, publicDataRef, historyRef, vehicleHistoryRef;
+        let db, auth, publicDataRef, historyRef;
 
         const myFirebaseConfig = {
           apiKey: "AIzaSyBysqombxqHciw4hWmUo5zSaOgAiguR8Ig",
@@ -713,11 +653,9 @@
                     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
                     publicDataRef = collection(db, 'artifacts', appId, 'public', 'data', 'pr_assets');
                     historyRef = collection(db, 'artifacts', appId, 'public', 'data', 'pr_history');
-                    vehicleHistoryRef = collection(db, 'artifacts', appId, 'public', 'data', 'pr_vehicle_history');
                 } else {
                     publicDataRef = collection(db, 'pr_assets');
                     historyRef = collection(db, 'pr_history'); 
-                    vehicleHistoryRef = collection(db, 'pr_vehicle_history');
                 }
                 
                 isFirebaseReady = true;
@@ -752,13 +690,6 @@
                             snapshot.forEach((doc) => historyData.push(doc.data()));
                             historyData.sort((a, b) => b.timestamp - a.timestamp); 
                         });
-
-                        // ดึงประวัติการจองรถ
-                        onSnapshot(vehicleHistoryRef, (snapshot) => {
-                            vehicleHistoryData = [];
-                            snapshot.forEach((doc) => vehicleHistoryData.push(doc.data()));
-                            vehicleHistoryData.sort((a, b) => b.timestamp - a.timestamp); 
-                        });
                     }
                 });
             } else {
@@ -769,7 +700,6 @@
             updateCloudStatus("โหมดออฟไลน์ (เซฟข้อมูลลงในเครื่องเท่านั้น) ⚠️", true);
             assetData = JSON.parse(localStorage.getItem('prStudioAssets')) || [];
             historyData = JSON.parse(localStorage.getItem('prStudioHistory')) || [];
-            vehicleHistoryData = JSON.parse(localStorage.getItem('prStudioVehicleHistory')) || [];
         }
 
         // ==========================================
@@ -784,7 +714,7 @@
 
             document.getElementById(viewId).classList.remove('hidden');
 
-            if(viewId === 'view-newsletter') {
+            if(viewId === 'view-newsletter' || viewId === 'view-vehicle') {
                 setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
             } else if (viewId === 'view-calendar') {
                 window.currentNavDate = new Date(); 
@@ -807,322 +737,136 @@
             }, 3000);
         }
 
-        window.toThaiNum = function(str) {
-            if (!str) return '';
-            const thaiNumbers = ['๐', '๑', '๒', '๓', '๔', '๕', '๖', '๗', '๘', '๙'];
-            return str.replace(/\d/g, match => thaiNumbers[match]);
-        }
-
         const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 
 
         // ==========================================
-        // 3. ระบบใบจองรถ (Vehicle) -> โหลดเป็นไฟล์ Word
+        // 3. ระบบตารางจองรถ (Timetable) & LINE Messaging API
         // ==========================================
-        
-        // ฟังก์ชันสร้างเอกสาร Word
-        window.exportVehicleDoc = async function() {
-            const btn = document.getElementById('btn-export-vehicle');
-            const btnText = document.getElementById('btn-text-v');
-            if(btn) { btn.disabled = true; btn.classList.add('opacity-70'); }
-            btnText.textContent = 'กำลังประมวลผลไฟล์ Word...';
+        let bookingData = [];
 
-            try {
-                const carVal = document.getElementById('v-select-car').value;
-                let carTitle = "รถยนต์บรรทุกน้ำอเนกประสงค์";
-                let carTitle2 = "รถบรรทุกน้ำอเนกประสงค์";
-                let carReg = "ผอ ๖๙๑๙ นครราชสีมา";
-                let signerName = "(นายสุพจน์ สมน้อย)";
-                let signerPos = "นายกองค์การบริหารส่วนตำบลโนนอุดม";
-                let showDeputy = true;
-
-                if (carVal === 'car2') {
-                    carTitle = "รถยนต์ส่วนกลาง"; carTitle2 = "รถยนต์ส่วนกลาง";
-                    carReg = "จก ๘๓๓๗ นครราชสีมา";
-                    signerName = "(นางดนิตา มนไธสง)";
-                    signerPos = "รองปลัดองค์การบริหารส่วนตำบล รักษาราชการแทน<br>ปลัดองค์การบริหารส่วนตำบล ปฏิบัติหน้าที่<br>นายกองค์การบริหารส่วนตำบลโนนอุดม";
-                    showDeputy = false;
-                } else if (carVal === 'car3') {
-                    carTitle = "รถยนต์ส่วนกลาง"; carTitle2 = "รถยนต์ส่วนกลาง";
-                    carReg = "กพ ๗๗๔๓ นครราชสีมา";
-                } else if (carVal === 'car4') {
-                    carTitle = "รถยนต์กู้ภัย"; carTitle2 = "รถกู้ภัย";
-                    carReg = "๒ฒห ๖๙๘๑ กรุงเทพมหานคร";
-                }
-
-                const t = (val) => window.toThaiNum(val) || '...........................';
-                const tDate = (dateStr) => {
-                    if(!dateStr) return { d: '........', m: '........................', y: '........' };
-                    const d = new Date(dateStr);
-                    return { d: window.toThaiNum(d.getDate().toString()), m: thaiMonths[d.getMonth()], y: window.toThaiNum((d.getFullYear() + 543).toString()) };
-                };
-                const tTime = (timeStr) => window.toThaiNum((timeStr || '').replace(':', '.')) || '............';
-
-                const reqName = window.toThaiNum(document.getElementById('v-req-name').value) || '.......................................................';
-                const pos = window.toThaiNum(document.getElementById('v-req-pos').value) || '.......................................................';
-                const dept = window.toThaiNum(document.getElementById('v-req-dept').value) || '.......................................................';
-                const dest = window.toThaiNum(document.getElementById('v-dest').value) || '..........................................................................................';
-                const purpose = window.toThaiNum(document.getElementById('v-purpose').value) || '..........................................................................................';
-                const pax = t(document.getElementById('v-pax').value);
-                const budget = window.toThaiNum(document.getElementById('v-budget').value) || '...................................................';
-                const driver = window.toThaiNum(document.getElementById('v-driver').value) || '......................................................................';
-
-                const startD = tDate(document.getElementById('v-start-date').value);
-                const endD = tDate(document.getElementById('v-end-date').value);
-                const startTime = tTime(document.getElementById('v-start-time').value);
-                const endTime = tTime(document.getElementById('v-end-time').value);
-
-                const today = new Date();
-                const todayD = window.toThaiNum(today.getDate().toString());
-                const todayM = thaiMonths[today.getMonth()];
-                const todayY = window.toThaiNum((today.getFullYear() + 543).toString());
-
-                // MSO XML โค้ดลับสำหรับการจัดหน้าให้ Word มองเห็นเป็น A4
-                const wordHTML = `
-                <html xmlns:v="urn:schemas-microsoft-com:vml"
-                      xmlns:o="urn:schemas-microsoft-com:office:office"
-                      xmlns:w="urn:schemas-microsoft-com:office:word"
-                      xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
-                      xmlns="http://www.w3.org/TR/REC-html40">
-                <head>
-                    <meta charset="utf-8">
-                    <!--[if gte mso 9]>
-                    <xml>
-                        <w:WordDocument>
-                            <w:View>Print</w:View>
-                            <w:Zoom>100</w:Zoom>
-                            <w:DoNotOptimizeForBrowser/>
-                        </w:WordDocument>
-                    </xml>
-                    <![endif]-->
-                    <style>
-                        /* ตั้งค่าหน้ากระดาษ A4 แบบตายตัว */
-                        @page WordSection1 {
-                            size: 21cm 29.7cm;
-                            margin: 2.54cm 2.54cm 2.54cm 2.54cm;
-                            mso-header-margin: 1.27cm;
-                            mso-footer-margin: 1.27cm;
-                            mso-paper-source: 0;
-                        }
-                        div.WordSection1 { page: WordSection1; }
-                        body {
-                            font-family: 'TH SarabunPSK', 'TH Sarabun New', sans-serif;
-                            font-size: 16pt;
-                            line-height: 1.15;
-                        }
-                        p { margin: 0; padding: 0; margin-bottom: 6pt; }
-                        .center { text-align: center; }
-                        .right { text-align: right; }
-                        table { width: 100%; border-collapse: collapse; margin-bottom: 6pt; }
-                        td { padding: 0; vertical-align: top; }
-                    </style>
-                </head>
-                <body>
-                    <div class="WordSection1">
-                        <p class="right"><b>แบบ ๓</b></p>
-                        <p class="center" style="font-size: 18pt;"><b>ใบขออนุญาตใช้${carTitle} ของสำนักงาน อบต.โนนอุดม</b></p>
-                        <p class="center">วันที่ ${todayD} เดือน ${todayM} พ.ศ. ${todayY}</p>
-                        <p style="margin-top: 12pt;">เรียน นายกองค์การบริหารส่วนตำบลโนนอุดม</p>
-                        <p style="text-indent: 2.5cm;">ข้าพเจ้า ${reqName} ตำแหน่ง ${pos}</p>
-                        <p>สำนัก/กอง ${dept} ขออนุญาตใช้${carTitle2}ของ อบต.โนนอุดม เพื่อไปราชการที่ ${dest}</p>
-                        <p>เพื่อปฏิบัติราชการเกี่ยวกับเรื่อง ${purpose}</p>
-                        <p>มีผู้นั่งไปในครั้งนี้ จำนวน ${pax} คน โดยใช้น้ำมันเชื้อเพลิงจากงบประมาณของแผนงาน/งาน ${budget}</p>
-                        <p>ทั้งนี้ ขอใช้รถยนต์ในวันที่ ${startD.d} เดือน ${startD.m} พ.ศ. ${startD.y}</p>
-                        <p>เวลา ${startTime} น. ถึงวันที่ ${endD.d} เดือน ${endD.m} พ.ศ. ${endD.y} เวลา ${endTime} น.</p>
-                        
-                        <table style="margin-top: 16pt;">
-                            <tr>
-                                <td style="width: 50%;"></td>
-                                <td style="width: 50%; text-align: center;">
-                                    <p>ลงชื่อ.........................................................ผู้ขออนุญาตใช้รถยนต์</p>
-                                    <p>( ${reqName} )</p>
-                                    <p>ตำแหน่ง ${pos}</p>
-                                </td>
-                            </tr>
-                        </table>
-
-                        <p style="text-indent: 2.5cm; margin-top: 16pt;">
-                            ได้ตรวจสอบแล้ว มีรถยนต์ว่างอยู่ จึงเห็นสมควรอนุญาตใช้รถยนต์ หมายเลขทะเบียน ${carReg} โดยมี ${driver} เป็นพนักงานขับรถยนต์
-                        </p>
-                        <p style="text-indent: 2.5cm;">
-                            เลขไมล์ก่อนไป......................................................เลขไมล์หลังไป.....................................................
-                        </p>
-
-                        ${showDeputy ? `
-                        <div style="text-align: center; margin-top: 16pt; margin-left: 50%;">
-                            <p>ลงชื่อ....................................................</p>
-                            <p>(นางดนิตา มนไธสง)</p>
-                            <p>รองปลัดองค์การบริหารส่วนตำบล รักษาราชการแทน</p>
-                            <p>ปลัดองค์การบริหารส่วนตำบลโนนอุดม</p>
-                        </div>` : ''}
-
-                        <p style="text-indent: 2.5cm; margin-top: 16pt;">ความเห็นของผู้มีอำนาจสั่งการให้ใช้รถยนต์</p>
-                        <p style="margin-left: 3.5cm;"><span style="font-family: 'Segoe UI Symbol', sans-serif;">&#9711;</span> อนุญาต</p>
-                        <p style="margin-left: 3.5cm;"><span style="font-family: 'Segoe UI Symbol', sans-serif;">&#9711;</span> ไม่อนุญาต</p>
-
-                        <table style="margin-top: 16pt;">
-                            <tr>
-                                <td style="width: 50%;"></td>
-                                <td style="width: 50%; text-align: center;">
-                                    <p>ลงชื่อ............................................................</p>
-                                    <p>${signerName}</p>
-                                    <p>${signerPos}</p>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </body>
-                </html>
-                `;
-
-                // โหลดเป็นไฟล์ .doc ทันที
-                const blob = new Blob(['\ufeff', wordHTML], { type: 'application/msword' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.download = `ใบขออนุญาตใช้รถ_${document.getElementById('v-req-name').value || 'เอกสาร'}.doc`;
-                link.href = url;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                setTimeout(() => URL.revokeObjectURL(url), 100);
-
-                // บันทึกประวัติลงคลาวด์/Local
-                const hId = Date.now();
-                const hData = {
-                    id: hId, timestamp: hId,
-                    car: carVal,
-                    reqName: document.getElementById('v-req-name').value,
-                    reqPos: document.getElementById('v-req-pos').value,
-                    reqDept: document.getElementById('v-req-dept').value,
-                    dest: document.getElementById('v-dest').value,
-                    purpose: document.getElementById('v-purpose').value,
-                    pax: document.getElementById('v-pax').value,
-                    driver: document.getElementById('v-driver').value,
-                    budget: document.getElementById('v-budget').value,
-                    startDate: document.getElementById('v-start-date').value,
-                    endDate: document.getElementById('v-end-date').value,
-                    startTime: document.getElementById('v-start-time').value,
-                    endTime: document.getElementById('v-end-time').value
-                };
-
-                if (isFirebaseReady && auth.currentUser) {
-                    await setDoc(doc(vehicleHistoryRef, hId.toString()), hData);
-                } else {
-                    vehicleHistoryData.push(hData);
-                    vehicleHistoryData.sort((a, b) => b.timestamp - a.timestamp);
-                    localStorage.setItem('prStudioVehicleHistory', JSON.stringify(vehicleHistoryData));
-                }
-
-                window.showToast("บันทึกไฟล์ Word พร้อมเก็บประวัติสำเร็จ!");
-
-            } catch (error) {
-                alert("เกิดข้อผิดพลาดในการสร้างไฟล์ Word");
-                console.error(error);
-            } finally {
-                if(btn) { btn.disabled = false; btn.classList.remove('opacity-70'); }
-                btnText.textContent = 'ดาวน์โหลดไฟล์ Word (.doc)';
-            }
+        window.resetBookingForm = function() {
+            document.getElementById('vehicle-booking-form').reset();
+            const tDate = new Date();
+            document.getElementById('vb-date').value = tDate.toISOString().split('T')[0];
         }
 
-        // ระบบตารางประวัติการใช้รถ
-        window.showVehicleHistoryModal = function() {
-            const modal = document.getElementById('vehicle-history-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => { modal.classList.remove('opacity-0'); document.getElementById('vehicle-history-modal-content').classList.remove('scale-95'); }, 10);
-            window.loadVehicleHistoryList();
-        }
-
-        window.closeVehicleHistoryModal = function() {
-            const modal = document.getElementById('vehicle-history-modal');
-            modal.classList.add('opacity-0'); document.getElementById('vehicle-history-modal-content').classList.add('scale-95');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        window.loadVehicleHistoryList = function() {
-            const container = document.getElementById('vehicle-history-list-container');
+        window.renderTimetable = function() {
+            const container = document.getElementById('timetable-container');
             container.innerHTML = '';
-            
-            if(vehicleHistoryData.length === 0) {
-                container.innerHTML = '<p class="text-center text-gray-500 py-6">ยังไม่มีประวัติการขอใช้รถ</p>'; 
+
+            if (bookingData.length === 0) {
+                container.innerHTML = '<div class="text-center py-10 text-gray-400">ยังไม่มีประวัติการจองรถในระบบ</div>';
                 return;
             }
 
-            // สร้างตาราง
-            let tableHTML = `
-            <div class="overflow-x-auto rounded-xl border border-gray-200">
-                <table class="w-full text-sm text-left text-gray-600">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-100/80 border-b border-gray-200">
-                        <tr>
-                            <th scope="col" class="px-4 py-3 whitespace-nowrap">วันที่เดินทาง</th>
-                            <th scope="col" class="px-4 py-3 whitespace-nowrap">ผู้ขออนุญาต</th>
-                            <th scope="col" class="px-4 py-3 whitespace-nowrap">รถที่ใช้</th>
-                            <th scope="col" class="px-4 py-3 whitespace-nowrap">สถานที่ไป</th>
-                            <th scope="col" class="px-4 py-3 whitespace-nowrap text-center">จัดการ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+            const groupedByDate = bookingData.reduce((acc, curr) => {
+                if (!acc[curr.date]) acc[curr.date] = [];
+                acc[curr.date].push(curr);
+                return acc;
+            }, {});
 
-            vehicleHistoryData.forEach((h, index) => {
-                let carText = "รถยนต์บรรทุกน้ำฯ (ผอ 6919)";
-                if(h.car === 'car2') carText = "รถยนต์ส่วนกลาง (จก 8337)";
-                if(h.car === 'car3') carText = "รถยนต์ส่วนกลาง (กพ 7743)";
-                if(h.car === 'car4') carText = "รถยนต์กู้ภัย (2ฒห 6981)";
+            const sortedDates = Object.keys(groupedByDate).sort((a, b) => new Date(b) - new Date(a));
 
-                const dateDisplay = h.startDate ? new Date(h.startDate).toLocaleDateString('th-TH', {day:'numeric', month:'short', year:'numeric'}) : '-';
+            sortedDates.forEach(dateStr => {
+                const d = new Date(dateStr);
+                const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
+                
+                let dayBlock = `<div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-6">
+                    <div class="bg-blue-100 text-blue-800 font-bold px-4 py-2 border-b border-blue-200 flex items-center gap-2">
+                        📅 วันที่ ${thaiDate}
+                    </div>
+                    <div class="p-4 space-y-3">`;
 
-                tableHTML += `
-                    <tr class="border-b last:border-b-0 hover:bg-yellow-50/50 transition-colors">
-                        <td class="px-4 py-3 whitespace-nowrap">
-                            <div class="font-bold text-gray-800">${dateDisplay}</div>
-                            <div class="text-[11px] text-gray-500 mt-0.5">เวลา: ${h.startTime || '-'} น.</div>
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap">
-                            <div class="font-medium text-gray-800">${h.reqName || '-'}</div>
-                            <div class="text-[11px] text-gray-500 mt-0.5">${h.reqDept || '-'}</div>
-                        </td>
-                        <td class="px-4 py-3 whitespace-nowrap">
-                            <span class="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md text-xs font-bold border border-blue-100">
-                                🚙 ${carText}
-                            </span>
-                        </td>
-                        <td class="px-4 py-3 min-w-[200px]">
-                            <div class="line-clamp-1 font-medium text-gray-800" title="${h.dest}">${h.dest || '-'}</div>
-                            <div class="line-clamp-1 text-[11px] text-gray-500 mt-0.5" title="${h.purpose}">${h.purpose || '-'}</div>
-                        </td>
-                        <td class="px-4 py-3 text-center whitespace-nowrap">
-                            <button onclick='window.useVehicleHistoryByIndex(${index})' class="bg-yellow-400 text-yellow-900 px-3 py-1.5 rounded-lg hover:bg-yellow-500 transition font-bold text-xs shadow-sm transform hover:scale-105">
-                                นำมาใช้ใหม่ ✏️
-                            </button>
-                        </td>
-                    </tr>
-                `;
+                const bookingsOnDate = groupedByDate[dateStr].sort((a, b) => a.start.localeCompare(b.start));
+
+                bookingsOnDate.forEach(b => {
+                    let carColor = "bg-gray-100 text-gray-700 border-gray-300";
+                    if(b.car.includes("น้ำ")) carColor = "bg-blue-50 text-blue-700 border-blue-200";
+                    if(b.car.includes("ส่วนกลาง")) carColor = "bg-green-50 text-green-700 border-green-200";
+                    if(b.car.includes("กู้ภัย")) carColor = "bg-red-50 text-red-700 border-red-200";
+
+                    dayBlock += `
+                        <div class="flex flex-col md:flex-row md:items-center gap-3 p-3 rounded-xl border ${carColor} relative group transition hover:shadow-md">
+                            <div class="font-bold text-lg min-w-[120px] shrink-0 border-b md:border-b-0 md:border-r border-current pb-2 md:pb-0 md:pr-3">
+                                ⏰ ${b.start} - ${b.end}
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-bold text-sm mb-0.5">${b.car}</p>
+                                <p class="text-sm opacity-90">📍 ${b.dest} (โดย: ${b.name})</p>
+                            </div>
+                            <button onclick="window.deleteBooking(${b.id})" class="absolute top-2 right-2 p-1.5 bg-white text-red-500 rounded-lg opacity-0 group-hover:opacity-100 transition shadow hover:bg-red-50 text-xs" title="ลบข้อมูล">🗑️</button>
+                        </div>`;
+                });
+
+                dayBlock += `</div></div>`;
+                container.innerHTML += dayBlock;
             });
-
-            tableHTML += `</tbody></table></div>`;
-            container.innerHTML = tableHTML;
         }
 
-        window.useVehicleHistoryByIndex = function(index) {
-            const h = vehicleHistoryData[index];
-            document.getElementById('v-select-car').value = h.car || 'car1';
-            document.getElementById('v-req-name').value = h.reqName || '';
-            document.getElementById('v-req-pos').value = h.reqPos || '';
-            document.getElementById('v-req-dept').value = h.reqDept || '';
-            document.getElementById('v-dest').value = h.dest || '';
-            document.getElementById('v-purpose').value = h.purpose || '';
-            document.getElementById('v-pax').value = h.pax || '';
-            document.getElementById('v-driver').value = h.driver || '';
-            document.getElementById('v-budget').value = h.budget || '';
-            document.getElementById('v-start-date').value = h.startDate || '';
-            document.getElementById('v-start-time').value = h.startTime || '';
-            document.getElementById('v-end-date').value = h.endDate || '';
-            document.getElementById('v-end-time').value = h.endTime || '';
-
-            window.closeVehicleHistoryModal();
-            window.showToast("ดึงประวัติเรียบร้อยแล้ว!");
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.loadBookings = function() {
+            const saved = localStorage.getItem('prStudioBookings');
+            if(saved) {
+                bookingData = JSON.parse(saved);
+                window.renderTimetable();
+            } else {
+                window.renderTimetable();
+            }
         }
+
+        window.saveVehicleBooking = async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-booking');
+            btn.disabled = true; btn.innerHTML = 'กำลังประมวลผล...';
+
+            const newBooking = {
+                id: Date.now(),
+                car: document.getElementById('vb-car').value,
+                name: document.getElementById('vb-name').value,
+                dest: document.getElementById('vb-dest').value,
+                date: document.getElementById('vb-date').value,
+                start: document.getElementById('vb-start').value,
+                end: document.getElementById('vb-end').value
+            };
+
+            bookingData.push(newBooking);
+            localStorage.setItem('prStudioBookings', JSON.stringify(bookingData));
+            window.renderTimetable();
+            window.resetBookingForm();
+
+            const d = new Date(newBooking.date);
+            const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
+            const lineMessage = `\n🚙 อัปเดตตารางใช้รถ!\n━━━━━━━━━━━━\n🚘 รถ: ${newBooking.car}\n👤 ผู้ใช้: ${newBooking.name}\n📍 ภารกิจ: ${newBooking.dest}\n📅 วันที่: ${thaiDate}\n⏰ เวลา: ${newBooking.start} น. - ${newBooking.end} น.`;
+
+            // === [ ใส่ URL Web App จาก Google Apps Script (LINE Messaging API) ตรงนี้ครับ ] ===
+            const gasWebhookUrl = "ใส่_WEB_APP_URL_จาก_GOOGLE_SCRIPT_ที่นี่"; 
+
+            try {
+                if (gasWebhookUrl.includes("script.google.com")) {
+                    await fetch(gasWebhookUrl, {
+                        method: "POST",
+                        body: JSON.stringify({ message: lineMessage })
+                    });
+                    window.showToast("บันทึกและส่งแจ้งเตือน LINE สำเร็จ!");
+                } else {
+                    window.showToast("บันทึกลงตารางแล้ว (ยังไม่ได้ตั้งค่า LINE)");
+                }
+            } catch (error) {
+                console.error(error);
+                window.showToast("บันทึกลงตารางแล้ว แต่ส่ง LINE ไม่สำเร็จ");
+            }
+
+            btn.disabled = false; btn.innerHTML = '<span>🚀</span> บันทึกและแจ้งเตือนเข้า LINE';
+        }
+
+        window.deleteBooking = function(id) {
+            if(confirm("แน่ใจหรือไม่ว่าต้องการลบการจองนี้?")) {
+                bookingData = bookingData.filter(b => b.id !== id);
+                localStorage.setItem('prStudioBookings', JSON.stringify(bookingData));
+                window.renderTimetable();
+            }
+        }
+        setTimeout(window.loadBookings, 1000);
 
 
         // ==========================================
@@ -1362,7 +1106,6 @@
             window.showToast("โหลดวันหยุดสำเร็จ " + count + " รายการ!");
         }
 
-
         // ==========================================
         // 5. ระบบจดหมายข่าว (Newsletter & History)
         // ==========================================
@@ -1380,7 +1123,6 @@
             window.dispatchEvent(new Event('resize')); 
         });
 
-        // ฟังก์ชันซิงค์ข้อความจดหมายข่าว
         const syncNewsData = (inputId, displayClass, defaultText) => {
             const input = document.getElementById(inputId);
             input.addEventListener('input', (e) => {
@@ -1416,7 +1158,7 @@
             }
         };
 
-        // ตั้งค่าวันที่จดหมายข่าวเริ่มต้น
+        const tDate = new Date();
         const selDay = document.getElementById('select-day'), selMonth = document.getElementById('select-month'), selYear = document.getElementById('select-year');
         for (let i = 1; i <= 31; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = i; if (i === tDate.getDate()) opt.selected = true; selDay.appendChild(opt); }
         selMonth.value = thaiMonths[tDate.getMonth()];
@@ -1425,7 +1167,6 @@
         selDay.addEventListener('change', updateNewsDate); selMonth.addEventListener('change', updateNewsDate); selYear.addEventListener('change', updateNewsDate);
         updateNewsDate();
 
-        // สร้างช่องอัปโหลด 6 รูป
         let uploadHtml = '';
         for (let i = 0; i < 6; i++) {
             uploadHtml += `
@@ -1459,13 +1200,12 @@
             
             const activeTemp = document.getElementById(activeTemplateId); 
             const currentTransform = activeTemp.style.transform; 
-            activeTemp.style.transform = 'none'; // ต้องเอา scale ออกก่อนถ่ายรูป
+            activeTemp.style.transform = 'none'; 
 
             try {
                 const canvas = await html2canvas(activeTemp, { scale: 2, useCORS: true, backgroundColor: activeTemplateId === 'template-1' ? '#fdfcf8' : '#f8f9fa', scrollY: 0, scrollX: 0 });
                 const topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
                 
-                // ใช้การสร้าง Blob เพื่อบังคับให้ Safari บน iOS ดาวน์โหลดไฟล์ได้
                 await new Promise((resolve) => {
                     canvas.toBlob((blob) => {
                         const url = URL.createObjectURL(blob);
@@ -1480,7 +1220,6 @@
                     }, "image/jpeg", 1.0);
                 });
 
-                // เซฟประวัติ
                 const hId = Date.now();
                 const hData = {
                     id: hId, timestamp: hId,
@@ -1558,13 +1297,12 @@
         }
 
         // ==========================================
-        // 6. Responsive Auto Scale (จัดการเรื่องล้นจอ)
+        // 6. Responsive Auto Scale 
         // ==========================================
         function setScale() {
-            // โค้ดสำหรับ Newsletter
             const c = document.getElementById('preview-container');
             if(c && c.parentElement && !c.parentElement.parentElement.classList.contains('hidden')) {
-                const cWidth = c.clientWidth - 40; // เผื่อ padding
+                const cWidth = c.clientWidth - 40; 
                 const targetWidth = 800; 
                 let scale = cWidth / targetWidth;
                 if(scale > 1) scale = 1;
@@ -1575,9 +1313,8 @@
             }
         }
         window.addEventListener('resize', setScale);
-        setTimeout(setScale, 500); // ดีเลย์ให้ตอนโหลดเว็บเสร็จตั้งค่า scale
+        setTimeout(setScale, 500); 
 
-        // บังคับให้โหลดเข้าหน้า Dashboard ตอนแรก
         window.switchView('view-dashboard');
 
     </script>
