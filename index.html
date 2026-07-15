@@ -839,7 +839,7 @@
             const lineMessage = `\n🚙 อัปเดตตารางใช้รถ!\n━━━━━━━━━━━━\n🚘 รถ: ${newBooking.car}\n👤 ผู้ใช้: ${newBooking.name}\n📍 ภารกิจ: ${newBooking.dest}\n📅 วันที่: ${thaiDate}\n⏰ เวลา: ${newBooking.start} น. - ${newBooking.end} น.`;
 
             // === [ ใส่ URL Web App จาก Google Apps Script (LINE Messaging API) ตรงนี้ครับ ] ===
-            const gasWebhookUrl = "ใส่_WEB_APP_URL_จาก_GOOGLE_SCRIPT_ที่นี่"; 
+            const gasWebhookUrl = "https://script.google.com/macros/s/AKfycbzI7C5KBLmghj19Lo3XlJL90y-QAPxgs-WGrXWII2Vj_L96FopQyMFpxFREKWun0w3ePg/exec"; 
 
             try {
                 if (gasWebhookUrl.includes("script.google.com")) {
