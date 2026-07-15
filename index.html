@@ -71,7 +71,7 @@
                     </button>
 
                     <button onclick="window.switchView('view-vehicle')" class="group text-left bg-white border-2 border-blue-100 rounded-2xl p-6 hover:border-[#0071BA] hover:shadow-[0_10px_20px_rgba(0,113,186,0.15)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">ระบบใหม่ ✨</div>
+                        <div class="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">ระบบคลาวด์ ☁️</div>
                         <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-3xl mb-4 group-hover:bg-[#0071BA] group-hover:text-white transition-colors">🚙</div>
                         <h3 class="text-lg font-bold text-gray-800 mb-2">กระดานจองรถส่วนกลาง</h3>
                         <p class="text-xs text-gray-500 line-clamp-2">ตารางการใช้รถและแจ้งเตือนเข้า LINE</p>
@@ -148,7 +148,7 @@
                         <span>🗓️</span> ตารางการใช้รถส่วนกลาง
                     </h3>
                     <div class="flex gap-2">
-                        <button onclick="window.loadBookings()" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition" title="รีเฟรช">🔄</button>
+                        <span id="booking-cloud-status" class="text-xs bg-gray-700 px-2 py-1 rounded-lg flex items-center">ซิงค์...</span>
                     </div>
                 </div>
                 
@@ -562,7 +562,7 @@
         let historyData = [];
         let bookingData = [];
         let isFirebaseReady = false;
-        let db, auth, publicDataRef, historyRef;
+        let db, auth, publicDataRef, historyRef, bookingRef;
 
         const myFirebaseConfig = {
           apiKey: "AIzaSyBysqombxqHciw4hWmUo5zSaOgAiguR8Ig",
@@ -579,6 +579,10 @@
             if(statusEl) {
                 statusEl.innerText = text;
                 statusEl.parentElement.className = `p-4 border-t flex items-center justify-center gap-2 text-sm font-medium ${isError ? 'bg-red-50 border-red-100 text-red-600' : 'bg-green-50 border-green-100 text-green-700'}`;
+            }
+            const bkStatus = document.getElementById('booking-cloud-status');
+            if(bkStatus) {
+                bkStatus.innerText = text;
             }
         }
 
@@ -603,9 +607,11 @@
                     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
                     publicDataRef = collection(db, 'artifacts', appId, 'public', 'data', 'pr_assets');
                     historyRef = collection(db, 'artifacts', appId, 'public', 'data', 'pr_history');
+                    bookingRef = collection(db, 'artifacts', appId, 'public', 'data', 'pr_bookings');
                 } else {
                     publicDataRef = collection(db, 'pr_assets');
                     historyRef = collection(db, 'pr_history'); 
+                    bookingRef = collection(db, 'pr_bookings'); 
                 }
                 
                 isFirebaseReady = true;
@@ -626,7 +632,9 @@
 
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
-                        updateCloudStatus("ซิงค์กับคลาวด์แล้ว ☁️");
+                        updateCloudStatus("ซิงค์คลาวด์แล้ว ☁️");
+                        
+                        // ฟังการเปลี่ยนแปลงคลังสื่อ
                         onSnapshot(publicDataRef, (snapshot) => {
                             assetData = [];
                             snapshot.forEach((doc) => assetData.push(doc.data()));
@@ -635,10 +643,20 @@
                             if(document.getElementById('view-asset-manager').classList.contains('hidden') === false) window.renderManagerList();
                         }, (error) => { console.error("Firestore error:", error); updateCloudStatus("เชื่อมต่อคลาวด์ล้มเหลว ❌", true); });
 
+                        // ฟังการเปลี่ยนแปลงประวัติจดหมายข่าว
                         onSnapshot(historyRef, (snapshot) => {
                             historyData = [];
                             snapshot.forEach((doc) => historyData.push(doc.data()));
                             historyData.sort((a, b) => b.timestamp - a.timestamp); 
+                        });
+
+                        // ฟังการเปลี่ยนแปลงกระดานจองรถแบบ Real-time
+                        onSnapshot(bookingRef, (snapshot) => {
+                            bookingData = [];
+                            snapshot.forEach((doc) => bookingData.push(doc.data()));
+                            if(document.getElementById('view-vehicle').classList.contains('hidden') === false) {
+                                window.renderTimetable();
+                            }
                         });
                     }
                 });
@@ -650,6 +668,7 @@
             updateCloudStatus("โหมดออฟไลน์ (เซฟข้อมูลลงในเครื่องเท่านั้น) ⚠️", true);
             assetData = JSON.parse(localStorage.getItem('prStudioAssets')) || [];
             historyData = JSON.parse(localStorage.getItem('prStudioHistory')) || [];
+            bookingData = JSON.parse(localStorage.getItem('prStudioBookings')) || [];
         }
 
         // ==========================================
@@ -672,6 +691,8 @@
             } else if (viewId === 'view-asset-manager') {
                 window.renderManagerList();
                 window.resetManagerForm();
+            } else if (viewId === 'view-vehicle') {
+                window.renderTimetable();
             }
             window.scrollTo(0, 0);
         }
@@ -1118,7 +1139,7 @@
         }
 
         // ==========================================
-        // 5. ระบบตารางจองรถ & LINE Notify
+        // 5. ระบบตารางจองรถ & LINE Notify (ต่อ Firebase)
         // ==========================================
 
         window.resetBookingForm = function() {
@@ -1180,13 +1201,12 @@
         }
 
         window.loadBookings = function() {
-            const saved = localStorage.getItem('prStudioBookings');
-            if(saved) {
-                bookingData = JSON.parse(saved);
-                window.renderTimetable();
-            } else {
-                window.renderTimetable();
+            // โหลดจาก Local Storage เผื่อไว้ในกรณีที่เน็ตหลุด
+            if (!isFirebaseReady) {
+                const saved = localStorage.getItem('prStudioBookings');
+                if(saved) bookingData = JSON.parse(saved);
             }
+            window.renderTimetable();
         }
 
         window.saveVehicleBooking = async function(e) {
@@ -1204,9 +1224,22 @@
                 end: document.getElementById('vb-end').value
             };
 
-            bookingData.push(newBooking);
-            localStorage.setItem('prStudioBookings', JSON.stringify(bookingData));
-            window.renderTimetable();
+            // บันทึกขึ้น Firebase Cloud
+            if (isFirebaseReady && auth.currentUser) {
+                try {
+                    await setDoc(doc(bookingRef, newBooking.id.toString()), newBooking);
+                    // ไม่ต้อง push เอง เพราะ onSnapshot จะดึงกลับมาให้
+                } catch (err) {
+                    console.error("Firebase save error:", err);
+                    window.showToast("เกิดข้อผิดพลาดในการเซฟลงคลาวด์");
+                }
+            } else {
+                // ออฟไลน์: เซฟลง Local Storage
+                bookingData.push(newBooking);
+                localStorage.setItem('prStudioBookings', JSON.stringify(bookingData));
+                window.renderTimetable();
+            }
+
             window.resetBookingForm();
 
             const d = new Date(newBooking.date);
@@ -1234,11 +1267,21 @@
             btn.disabled = false; btn.innerHTML = '<span>🚀</span> บันทึกและแจ้งเตือนเข้า LINE';
         }
 
-        window.deleteBooking = function(id) {
+        window.deleteBooking = async function(id) {
             if(confirm("แน่ใจหรือไม่ว่าต้องการลบการจองนี้?")) {
-                bookingData = bookingData.filter(b => b.id !== id);
-                localStorage.setItem('prStudioBookings', JSON.stringify(bookingData));
-                window.renderTimetable();
+                if (isFirebaseReady && auth.currentUser) {
+                    try {
+                        await deleteDoc(doc(bookingRef, id.toString()));
+                        window.showToast("ลบข้อมูลสำเร็จ!");
+                    } catch (error) {
+                        console.error("Delete Error:", error);
+                        window.showToast("ลบข้อมูลไม่สำเร็จ");
+                    }
+                } else {
+                    bookingData = bookingData.filter(b => b.id !== id);
+                    localStorage.setItem('prStudioBookings', JSON.stringify(bookingData));
+                    window.renderTimetable();
+                }
             }
         }
 
