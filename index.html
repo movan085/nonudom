@@ -93,7 +93,7 @@
                     <button onclick="window.switchView('view-pr-alert')" class="group text-left bg-white border-2 border-orange-100 rounded-2xl p-5 hover:border-orange-500 hover:shadow-[0_10px_20px_rgba(249,115,22,0.15)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden">
                         <div class="absolute top-0 right-0 bg-orange-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm">มาใหม่ 🔥</div>
                         <div class="w-12 h-12 bg-orange-50 text-orange-500 rounded-xl flex items-center justify-center text-2xl mb-3 group-hover:bg-orange-500 group-hover:text-white transition-colors">⏰</div>
-                        <h3 class="text-base font-bold text-gray-800 mb-1">ตั้งเวลา ปชส.</h3>
+                        <h3 class="text-base font-bold text-gray-800 mb-1">ตั้งเวลาประชาสัมพันธ์</h3>
                         <p class="text-xs text-gray-500">เตือนไลน์ล่วงหน้า 1 ชั่วโมง</p>
                     </button>
                 </div>
@@ -115,7 +115,7 @@
                     <!-- Widget 2: แจ้งเตือน ปชส. -->
                     <div class="w-full">
                         <div class="flex items-center justify-between mb-4 border-l-4 border-orange-500 pl-3">
-                            <h2 class="text-lg md:text-xl font-bold text-gray-800">เตรียมแจ้งเตือน ปชส. เร็วๆ นี้</h2>
+                            <h2 class="text-lg md:text-xl font-bold text-gray-800">เตรียมแจ้งเตือนประชาสัมพันธ์ เร็วๆ นี้</h2>
                             <button onclick="window.switchView('view-pr-alert')" class="text-xs bg-orange-50 text-orange-600 font-bold px-3 py-1.5 rounded-lg hover:bg-orange-100 transition">ตั้งเวลาเพิ่ม +</button>
                         </div>
                         <div id="dashboard-pr-alerts" class="w-full bg-orange-50/30 rounded-3xl shadow-inner border border-orange-100 p-4 max-h-[500px] overflow-y-auto custom-scroll space-y-3">
@@ -1263,7 +1263,7 @@
         // 5. ระบบตารางจองรถ (โชว์แค่ 15 วันย้อนหลัง) & LINE Notify
         // ==========================================
         // *** สำคัญ: นำ Webhook อันใหม่ของคุณมาใส่ตรงนี้ ***
-        const gasWebhookUrl = "https://script.google.com/macros/s/AKfycbw6aXoB3SIKe9jrh-prj-2yM6-V8Endqr1gDRhYTHJTt_ibTk3YazC1N8Z83ZmKIZg7JQ/exec"; 
+        const gasWebhookUrl = "https://script.google.com/macros/s/AKfycbw6UAR0m3YyH8_d-k9VdYxYlB1O7S8h_k_YwZ2gGZJk0gWl8N_b6P9_w/exec"; 
 
         window.resetBookingForm = function() {
             document.getElementById('vehicle-booking-form').reset();
@@ -1387,7 +1387,7 @@
 
             const d = new Date(newBooking.date);
             const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
-            const lineMessage = `\n🚙 อัปเดตคิวจองรถ!\n━━━━━━━━━━━━\n🚘 รถ: ${newBooking.car}\n👤 ผู้ใช้: ${newBooking.name}\n📍 ภารกิจ: ${newBooking.dest}\n📅 วันที่: ${thaiDate}\n⏰ เวลา: ${newBooking.start} น. - ${newBooking.end} น.`;
+            const lineMessage = `\n🚙 อัปเดตคิวจองรถ!\n━━━━━━━━━━━━\n🚘 รถ: ${newBooking.car}\n👤 ผู้ใช้: ${newBooking.name}\n📍 ภารกิจ: ${newBooking.dest}\n📅 วันที่: ${thaiDate}\n⏰ เวลา: ${newBooking.start} น. - ${newBooking.end} น.\n\n🌐 ดูคิวรถเพิ่มเติมได้ที่: https://bit.ly/4fLoF8v`;
 
             try {
                 if (gasWebhookUrl.includes("script.google.com")) {
@@ -1505,7 +1505,7 @@
                         method: "POST",
                         body: JSON.stringify({ action: "schedule_alert", alert: newAlert })
                     });
-                    window.showToast("ตั้งเวลาแจ้งเตือน ปชส. ล่วงหน้า 1 ชั่วโมงเรียบร้อย!");
+                    window.showToast("ตั้งเวลาแจ้งเตือนประชาสัมพันธ์ ล่วงหน้า 1 ชั่วโมงเรียบร้อย!");
                 } else {
                     window.showToast("บันทึกลงระบบแล้ว (แต่ยังไม่ได้เชื่อม Webhook)");
                 }
