@@ -14,7 +14,9 @@
 
     <!-- CSS/JS ไลบรารี -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <!-- ⭐️ เปลี่ยนจาก html2canvas มาใช้ html-to-image ตามคำแนะนำของคุณ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
     
     <!-- Flatpickr สำหรับแก้ปัญหาวันที่/เวลา -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -291,7 +293,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- VIEW: NEWSLETTER EDITOR (ระบบจดหมายข่าวเดียว) -->
+    <!-- VIEW: NEWSLETTER EDITOR (ระบบจดหมายข่าว) -->
     <!-- ========================================== -->
     <div id="view-newsletter" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in relative z-10">
         <div class="flex items-center justify-between glass-card p-4 rounded-[1.5rem] border-t border-l border-white/80 shadow-md">
@@ -377,7 +379,7 @@
                 </div>
             </div>
 
-            <!-- แผงขวา (พรีวิว): เราล็อกความกว้างด้วย Wrapper ให้แก้บัคแคปจอเพี้ยน 100% -->
+            <!-- แผงขวา (พรีวิว) -->
             <div class="w-full xl:w-8/12 flex items-start justify-center glass-card p-4 md:p-8 rounded-[2rem] border-t-2 border-l-2 border-white/80 shadow-xl overflow-hidden relative z-10 bg-white/40">
                 <div id="preview-wrapper">
                     <div id="preview-scaler">
@@ -390,7 +392,7 @@
                                 <img src="./IMG_0350.JPG" class="agency-logo-img w-full h-full rounded-full object-cover shadow-inner" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
                             </div>
 
-                            <!-- รูปหน้าปก (ลดความสูงลงเหลือ 230px เพื่อเพิ่มพื้นที่ด้านล่าง) -->
+                            <!-- รูปหน้าปก -->
                             <div class="w-full h-[230px] bg-gray-200 relative overflow-hidden z-0">
                                 <div class="ph-gallery-cover img-placeholder w-full h-full bg-[#e2e8f0]">
                                     <div class="text-gray-400 text-center font-medium">รูปภาพปก (ถ้ามี)</div>
@@ -398,21 +400,21 @@
                                 <div class="show-gallery-cover hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div>
                             </div>
 
-                            <!-- แถบสีม่วง ขยับตำแหน่งโดยใช้ absolute ล็อกตายตัว กันเลื่อนตอนแคปจอ -->
-                            <div class="absolute top-[200px] left-0 w-full z-10 flex flex-col">
-                                <div class="shape-t3-lightpurple text-[#4b3e70] font-bold text-[56px] px-10 py-1 shadow-sm w-fit pr-16 leading-none tracking-tight" style="border-radius: 0 40px 0 0;">
+                            <!-- แถบสีม่วง ขยับตำแหน่งโดยใช้ inline style absolute เพื่อกันตำแหน่งเพี้ยน -->
+                            <div style="position: absolute; top: 190px; left: 0; width: 100%; z-index: 10;">
+                                <div class="shape-t3-lightpurple text-[#4b3e70] font-bold text-[56px] px-10 pt-2 pb-1 shadow-sm w-fit pr-16 leading-none tracking-tight" style="border-radius: 0 40px 0 0;">
                                     จดหมายข่าว
                                 </div>
                             </div>
                             
-                            <!-- แถบคำว่าประชาสัมพันธ์ และ ชื่อหน่วยงาน (ล็อกตำแหน่งติดกัน) -->
-                            <div class="absolute top-[260px] left-0 w-full z-10 flex items-center">
-                                <div class="bg-white text-[#8e85b0] font-bold text-[40px] px-10 py-2 shadow-sm rounded-tr-xl flex-shrink-0" style="min-width: 350px;">
+                            <!-- แถบคำว่าประชาสัมพันธ์ และ ชื่อหน่วยงาน (ล็อกตำแหน่ง) -->
+                            <div style="position: absolute; top: 255px; left: 0; width: 100%; z-index: 10; display: flex; align-items: flex-end;">
+                                <div class="bg-white text-[#8e85b0] font-bold text-[40px] px-10 pt-2 pb-1 shadow-sm rounded-tr-xl flex-shrink-0" style="min-width: 350px;">
                                     ประชาสัมพันธ์
                                 </div>
                                 
                                 <!-- แถบชื่อหน่วยงานที่ยืดหยุ่นรองรับข้อความยาว -->
-                                <div class="shape-t3-purple text-white px-8 py-3 flex-1 flex flex-col items-end justify-center rounded-bl-3xl shadow-md relative -ml-10" style="clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%); padding-left: 60px; min-height: 75px;">
+                                <div class="shape-t3-purple text-white px-8 py-3 flex-1 flex flex-col items-end justify-center rounded-bl-3xl shadow-md relative" style="margin-left: -30px; clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%); padding-left: 60px; min-height: 75px;">
                                     <div class="agency-name-main text-right leading-tight drop-shadow-sm flex flex-col items-end w-full max-w-[400px]">
                                         <span class="text-[26px] font-bold whitespace-nowrap">องค์การบริหารส่วนตำบลโนนอุดม</span>
                                     </div>
@@ -420,7 +422,7 @@
                             </div>
 
                             <!-- เนื้อหาหลัก -->
-                            <div class="w-full flex-1 flex flex-col pt-[120px] pb-[100px] px-10 relative z-0">
+                            <div class="w-full flex-1 flex flex-col px-10 relative z-0" style="padding-top: 130px; padding-bottom: 100px;">
                                 <div class="flex justify-between items-start gap-4 mb-8">
                                     <div class="border-b-[4px] border-[#6a5996] pb-2 pt-2 whitespace-nowrap shrink-0">
                                         <span class="sync-date text-[#1f2937] font-bold text-[22px]">วันศุกร์ที่ 7 สิงหาคม 2569</span>
@@ -446,7 +448,7 @@
                                 </div>
                             </div>
 
-                            <!-- Footer (เพิ่มพื้นที่ขอบล่างนิดนึงไม่ให้ทับสระอู) -->
+                            <!-- Footer -->
                             <div class="absolute bottom-5 left-10 right-10 h-[60px] shape-t3-purple rounded-full px-10 flex items-center justify-center gap-8 z-10 shadow-lg text-white">
                                 <div class="flex items-center gap-2 shrink-0">
                                     <span class="text-[18px] font-bold">📞 โทร.044-077070</span>
@@ -846,7 +848,7 @@
         }
 
         // ==========================================
-        // 4. ระบบจดหมายข่าว (Agency & 4K Export)
+        // 4. ระบบจดหมายข่าว (Agency & Export)
         // ==========================================
         window.changeFontSize = function(displayClass, inputId, delta) {
             const input = document.getElementById(inputId);
@@ -942,32 +944,39 @@
         for (let i = 0; i < 6; i++) handleImageUpload(`img-${i}`, `gallery-${i}`);
         handleImageUpload('img-cover', 'gallery-cover');
 
+        // ฟังก์ชัน Export ที่อัปเกรดมาใช้ html-to-image
         window.exportNewsletter = async function() {
             const btn = document.getElementById('btn-export');
             const btnText = document.getElementById('btn-text');
             btn.disabled = true; btn.classList.add('opacity-70'); btnText.textContent = 'กำลังประมวลผลรูป 4K...'; 
             
             const activeTemp = document.getElementById('template-3'); 
-            const previewContainer = document.getElementById('preview-wrapper'); 
+            const previewContainer = document.getElementById('preview-wrapper');
             
             const scaler = document.getElementById('preview-scaler');
             const originalTransform = scaler.style.transform;
-            scaler.style.transform = 'scale(1)'; 
             
+            // ยกเลิกการซูมและรีเซ็ต Scroll ให้กลับไปจุดเริ่มต้นเพื่อถ่ายรูปให้แม่นยำ
+            scaler.style.transform = 'scale(1)'; 
             const origScroll = previewContainer.scrollTop;
             previewContainer.scrollTop = 0;
+            window.scrollTo(0, 0);
 
-            await new Promise(resolve => setTimeout(resolve, 300)); 
+            await new Promise(resolve => setTimeout(resolve, 300));
 
             try {
-                const canvas = await html2canvas(activeTemp, { 
-                    scale: 4, 
-                    useCORS: true, 
-                    backgroundColor: '#fdfaf6', 
+                // เปลี่ยนมาใช้ htmlToImage แทน เพื่อแก้ปัญหา DOM เลื่อนและข้อความแหว่ง
+                const dataUrl = await htmlToImage.toJpeg(activeTemp, {
+                    quality: 1.0,
+                    pixelRatio: 4, // ระดับความชัด 4K
+                    backgroundColor: '#fdfaf6',
                     width: 800,
                     height: 1131,
-                    windowWidth: 800,
-                    windowHeight: 1131
+                    style: {
+                        transform: 'scale(1)',
+                        transformOrigin: 'top left',
+                        margin: '0'
+                    }
                 });
                 
                 let agencyPrefix = 'อบต_';
@@ -978,17 +987,10 @@
                 
                 const topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
                 
-                await new Promise((resolve) => {
-                    canvas.toBlob((blob) => {
-                        const url = URL.createObjectURL(blob);
-                        const link = document.createElement('a'); 
-                        link.download = `${agencyPrefix}${topic}.jpg`; 
-                        link.href = url;
-                        link.click();
-                        setTimeout(() => URL.revokeObjectURL(url), 100);
-                        resolve();
-                    }, "image/jpeg", 1.0);
-                });
+                const link = document.createElement('a'); 
+                link.download = `${agencyPrefix}${topic}.jpg`; 
+                link.href = dataUrl;
+                link.click();
 
                 const hId = Date.now();
                 const hData = {
@@ -1011,6 +1013,7 @@
                 window.showToast("บันทึกรูป 4K สวยงามสำเร็จ!");
 
             } catch (error) { 
+                console.error("Export Error:", error);
                 window.showToast("เกิดข้อผิดพลาดในการสร้างรูปภาพ"); 
             } finally {
                 scaler.style.transform = originalTransform; 
