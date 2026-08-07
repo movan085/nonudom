@@ -902,6 +902,7 @@
             }
         };
 
+        <!-- ... existing code ... -->
         window.updateAgencyTheme = function() {
             const agency = document.getElementById('select-agency').value;
             const logoElements = document.querySelectorAll('.agency-logo-img');
@@ -910,15 +911,15 @@
             
             if (agency === 'sh1') {
                 logoElements.forEach(el => el.src = './SH1.jpg'); 
-                nameMainElements.forEach(el => el.innerHTML = 'โรงเรียนบ้านโนนอุดม<br><span style="font-size: 0.65em; font-weight: 500; opacity: 0.9;">นภดลอุปถัมภ์</span>');
+                nameMainElements.forEach(el => el.innerHTML = '<span style="font-size: 22px; white-space: nowrap;">โรงเรียนบ้านโนนอุดมนภดลอุปถัมภ์</span><br><span style="font-size: 14px; font-weight: 500; opacity: 0.9;">องค์การบริหารส่วนตำบลโนนอุดม</span>');
                 nameFooterElements.forEach(el => el.innerHTML = 'โรงเรียนบ้านโนนอุดมนภดลอุปถัมภ์');
             } else if (agency === 'sh2') {
                 logoElements.forEach(el => el.src = './SH2.jpg'); 
-                nameMainElements.forEach(el => el.innerHTML = 'ศูนย์พัฒนาเด็กเล็ก<br><span style="font-size: 0.65em; font-weight: 500; opacity: 0.9;">วัดบ้านโนนขาม</span>');
+                nameMainElements.forEach(el => el.innerHTML = '<span style="font-size: 24px; white-space: nowrap;">ศูนย์พัฒนาเด็กเล็กวัดบ้านโนนขาม</span><br><span style="font-size: 14px; font-weight: 500; opacity: 0.9;">องค์การบริหารส่วนตำบลโนนอุดม</span>');
                 nameFooterElements.forEach(el => el.innerHTML = 'ศูนย์พัฒนาเด็กเล็กวัดบ้านโนนขาม');
             } else if (agency === 'sh3') {
                 logoElements.forEach(el => el.src = './SH3.jpg'); 
-                nameMainElements.forEach(el => el.innerHTML = 'ศูนย์พัฒนาเด็กเล็ก<br><span style="font-size: 0.65em; font-weight: 500; opacity: 0.9;">ชุมชนวัดสระบัว</span>');
+                nameMainElements.forEach(el => el.innerHTML = '<span style="font-size: 22px; white-space: nowrap;">ศูนย์พัฒนาเด็กเล็กชุมชนวัดสระบัว</span><br><span style="font-size: 14px; font-weight: 500; opacity: 0.9;">องค์การบริหารส่วนตำบลโนนอุดม</span>');
                 nameFooterElements.forEach(el => el.innerHTML = 'ศูนย์พัฒนาเด็กเล็กชุมชนวัดสระบัว');
             } else {
                 logoElements.forEach(el => el.src = './IMG_0350.JPG');
@@ -928,6 +929,7 @@
         };
 
         const syncNewsData = (inputId, displayClass, defaultText) => {
+<!-- ... existing code ... -->
             document.getElementById(inputId).addEventListener('input', (e) => {
                 const text = e.target.value || defaultText;
                 document.querySelectorAll('.' + displayClass).forEach(el => el.textContent = text);
