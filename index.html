@@ -781,7 +781,7 @@
                 const d = new Date(newBooking.date);
                 const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
                 const prefix = isEditing ? "🚙 [แก้ไข] อัปเดตคิวจองรถ!\n" : "🚙 บันทึกคิวจองรถใหม่!\n";
-                const lineMessage = `\n${prefix}━━━━━━━━━━━━\n🚘 รถ: ${newBooking.car}\n👤 ผู้ใช้: ${newBooking.name}\n📍 ภารกิจ: ${newBooking.dest}\n📅 วันที่: ${thaiDate}\n⏰ เวลา: ${newBooking.start} น. - ${newBooking.end} น.\n\n🌐 ดูคิวเพิ่มเติม: https://bit.ly/4fLoF8v`;
+                const lineMessage = `\n${prefix}━━━━━━━━━━━━\n🚘 รถ: ${newBooking.car}\n👤 ผู้ใช้: ${newBooking.name}\n📍 ภารกิจ: ${newBooking.dest}\n📅 วันที่: ${thaiDate}\n⏰ เวลา: ${newBooking.start} น. - ${newBooking.end} น.`;
 
                 try {
                     await fetch(gasWebhookUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ message: lineMessage }) });
