@@ -43,6 +43,10 @@
         .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* สไตล์สำหรับเทมเพลต 3 */
+        .shape-t3-purple { background-color: #6a5996; }
+        .shape-t3-lightpurple { background-color: #a8a0c2; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-100 via-sky-50 to-yellow-100 min-h-screen flex flex-col justify-between relative overflow-x-hidden">
@@ -60,7 +64,7 @@
             <p class="text-gray-600 text-center mb-6" id="confirm-message">คุณแน่ใจหรือไม่ที่จะลบข้อมูลนี้?</p>
             <div class="flex justify-center gap-3 w-full">
                 <button id="btn-confirm-cancel" class="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-xl transition-colors">ยกเลิก</button>
-                <button id="btn-confirm-ok" class="flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition-colors shadow-md">ยืนยันลบ</button>
+                <button id="btn-confirm-ok" class="flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition-colors shadow-md">ยืนยัน</button>
             </div>
         </div>
     </div>
@@ -93,6 +97,7 @@
                     </button>
 
                     <button onclick="window.switchView('view-vehicle')" class="group text-left bg-white border-2 border-blue-100 rounded-2xl p-5 hover:border-[#0071BA] hover:shadow-[0_10px_20px_rgba(0,113,186,0.15)] transition-all duration-300 transform hover:-translate-y-1 relative overflow-hidden">
+                        <div class="absolute top-3 right-3 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-2 py-1 rounded-full shadow-sm animate-pulse">เพิ่มใหม่</div>
                         <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-2xl mb-3 group-hover:bg-[#0071BA] group-hover:text-white transition-colors">🚙</div>
                         <h3 class="text-base font-bold text-gray-800 mb-1">ระบบจองรถส่วนกลาง</h3>
                         <p class="text-xs text-gray-500">บันทึกคิวและแจ้งเตือน LINE</p>
@@ -105,14 +110,14 @@
                     </button>
                 </div>
 
-                <!-- แสดง Widget กระดานคิวรถ แบบเต็มจอ -->
-                <div class="w-full">
+                <!-- แสดง Widget กระดานคิวรถ แบบเต็มจอ กว้างๆ -->
+                <div class="w-full mt-10">
                     <div class="flex items-center justify-between mb-4 border-l-4 border-[#0071BA] pl-3">
-                        <h2 class="text-lg md:text-xl font-bold text-gray-800">กระดานคิวรถส่วนกลาง (15 วันล่าสุด)</h2>
+                        <h2 class="text-lg md:text-xl font-bold text-gray-800">กระดานคิวรถส่วนกลาง</h2>
                         <span id="dash-cloud-status" class="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">กำลังเชื่อมต่อคลาวด์...</span>
                     </div>
-                    <!-- ลดความสูงลงมานิดหน่อยเพื่อความสวยงาม -->
-                    <div id="dashboard-timeline" class="w-full bg-gray-50 rounded-3xl shadow-inner border border-gray-200 overflow-hidden max-h-[500px] overflow-y-auto custom-scroll p-4 md:p-6">
+                    <!-- ตารางคิวรถที่ขยายให้กว้างขึ้นและอ่านง่าย -->
+                    <div id="dashboard-timeline" class="w-full bg-gray-50/50 rounded-3xl border border-gray-200 overflow-hidden max-h-[600px] overflow-y-auto custom-scroll p-4 md:p-6 shadow-sm">
                         <!-- Timeline จะถูกดึงมาใส่ตรงนี้ -->
                     </div>
                 </div>
@@ -174,16 +179,16 @@
                         </div>
                     </div>
 
-                    <!-- เพิ่ม Checkbox แจ้งเตือน LINE -->
+                    <!-- เพิ่ม Checkbox แจ้งเตือน LINE (มีออปชันเลือกส่ง/ไม่ส่ง) -->
                     <div class="flex items-center bg-green-50 border border-green-200 p-3 rounded-xl shadow-sm">
                         <input type="checkbox" id="vb-notify-line" checked class="w-5 h-5 text-[#0071BA] bg-white border-gray-300 rounded focus:ring-[#0071BA] cursor-pointer">
                         <label for="vb-notify-line" class="ml-2 block text-sm font-bold text-green-800 cursor-pointer">
-                            ส่งแจ้งเตือนเข้า LINE กลุ่มอัตโนมัติ
+                            ส่งแจ้งเตือนเข้า LINE กลุ่มทันที
                         </label>
                     </div>
 
                     <button type="submit" id="btn-submit-booking" class="w-full bg-gradient-to-r from-[#0071BA] to-blue-500 hover:from-[#005a95] hover:to-[#0071BA] text-white font-bold py-3.5 rounded-xl shadow-[0_10px_20px_rgba(0,113,186,0.3)] transition-all transform hover:-translate-y-0.5 mt-2 flex justify-center items-center gap-2">
-                        <span>🚀</span> บันทึกข้อมูลการจองรถ
+                        <span>🚀</span> บันทึกข้อมูล
                     </button>
                 </form>
             </div>
@@ -390,6 +395,7 @@
         </div>
 
         <div class="flex flex-col xl:flex-row gap-6 w-full">
+            <!-- แถบเครื่องมือซ้าย -->
             <div class="w-full xl:w-1/3 bg-white/90 backdrop-blur-md p-0 rounded-3xl shadow-2xl border border-white overflow-hidden h-fit flex flex-col shrink-0 relative z-20">
                 <div class="bg-gradient-to-r from-[#0071BA] to-[#00AEEF] p-6 text-white shadow-md z-10 relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
@@ -407,6 +413,7 @@
                         <select id="select-template" class="w-full p-3 bg-white border border-indigo-200 rounded-xl focus:ring-2 focus:ring-indigo-500 font-medium text-indigo-900 shadow-inner outline-none transition-all cursor-pointer">
                             <option value="1">รูปแบบที่ 1 : ทางการ (หรูหรา กึ่งกลาง)</option>
                             <option value="2">รูปแบบที่ 2 : ทันสมัย (แถบสีฟ้า)</option>
+                            <option value="3">รูปแบบที่ 3 : ร่วมสมัย (แถบสีม่วง-หน้าปกใหญ่)</option>
                         </select>
                     </div>
 
@@ -414,7 +421,7 @@
                         <label class="block text-sm font-bold text-blue-900 mb-2 flex items-center gap-2">
                             <span class="text-lg">📝</span> หัวข้อเรื่อง (Topic)
                         </label>
-                        <textarea id="input-topic" placeholder="กรอกหัวเรื่องตรงนี้" class="w-full p-3 bg-white border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-inner transition-all custom-scroll" rows="3"></textarea>
+                        <textarea id="input-topic" placeholder="กรอกหัวเรื่องตรงนี้" class="w-full p-3 bg-white border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-inner transition-all custom-scroll" rows="2"></textarea>
                     </div>
                     
                     <div class="bg-sky-50/50 p-4 rounded-2xl border border-sky-100 shadow-sm">
@@ -464,13 +471,27 @@
                             </div>
                         </div>
                         
-                        <textarea id="input-description" placeholder="กรอกคำบรรยายกิจกรรมตรงนี้..." class="w-full p-3 bg-white border border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 outline-none shadow-inner transition-all custom-scroll" rows="8"></textarea>
+                        <textarea id="input-description" placeholder="กรอกคำบรรยายกิจกรรมตรงนี้..." class="w-full p-3 bg-white border border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 outline-none shadow-inner transition-all custom-scroll" rows="5"></textarea>
                     </div>
 
                     <div class="bg-yellow-50/70 p-4 rounded-2xl border border-yellow-200 shadow-sm hover:shadow-md transition-shadow">
-                        <label class="block text-sm font-bold text-yellow-900 mb-3 flex items-center gap-2">
-                            <span class="text-lg">🖼️</span> รูปกิจกรรม <span class="text-[10px] md:text-xs font-normal text-yellow-800 bg-yellow-200/80 px-2.5 py-0.5 rounded-full border border-yellow-300">ขนาดเท่ากัน 6 รูป</span>
+                        <label class="block text-sm font-bold text-yellow-900 mb-3 flex items-center justify-between">
+                            <span class="flex items-center gap-2"><span class="text-lg">🖼️</span> รูปกิจกรรม</span>
                         </label>
+                        
+                        <!-- เพิ่มโซนอัปโหลดรูปหน้าปก (สำหรับเทมเพลต 3) -->
+                        <div id="upload-cover-container" class="hidden mb-3">
+                            <p class="text-xs font-bold text-purple-700 mb-1">รูปหน้าปกใหญ่ (เฉพาะเทมเพลต 3)</p>
+                            <div class="relative group">
+                                <input type="file" accept="image/*" class="hidden" id="upload-img-cover"/>
+                                <label for="upload-img-cover" id="label-img-cover" class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed bg-white border-purple-400 rounded-xl cursor-pointer hover:bg-purple-50 hover:border-purple-500 transition-all overflow-hidden relative shadow-sm">
+                                    <div id="icon-img-cover" class="flex flex-col items-center justify-center pointer-events-none"><span class="text-xl text-purple-500 mb-0.5 leading-none">+</span><span class="text-[10px] font-medium border px-2 py-0.5 rounded-md text-purple-700 bg-purple-50 border-purple-200">รูปภาพปก (แนวนอน)</span></div>
+                                    <img id="thumb-img-cover" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-2 mb-2"><p class="text-xs font-bold text-yellow-800">รูปแกลเลอรี</p> <span class="text-[10px] font-normal text-yellow-800 bg-yellow-200/80 px-2 py-0.5 rounded-full border border-yellow-300">ขนาดเท่ากัน 6 รูป</span></div>
                         <div class="grid grid-cols-3 gap-2" id="upload-buttons-container"></div>
                     </div>
 
@@ -584,6 +605,87 @@
                         <p class="font-bold text-[16px] text-[#FDBE15] leading-none mb-1.5">องค์การบริหารส่วนตําบลโนนอุดม</p>
                         <p class="text-[13px] text-white opacity-90 leading-tight">โทรศัพท์ / โทรสาร (แฟกซ์) : 044-077070</p>
                         <p class="text-[13px] text-white opacity-90 leading-tight mt-0.5">เลขที่ 234 หมู่ที่ 1 ตำบลโนนอุดม อำเภอเมืองยาง จังหวัดนครราชสีมา 30270</p>
+                    </div>
+                </div>
+
+                <!-- TEMPLATE 3 : ร่วมสมัย (แถบสีม่วง - เน้นรูปใหญ่) -->
+                <div id="template-3" class="hidden w-[800px] h-[1131px] bg-[#fdfaf6] relative shadow-2xl shrink-0 overflow-hidden origin-top mx-auto border border-gray-200 flex flex-col">
+                    
+                    <!-- โลโก้ อบต. มุมขวาบนสุด (ซ้อนทับรูป) -->
+                    <div class="absolute top-4 right-4 z-30 w-24 h-24 bg-white rounded-full p-1 shadow-[0_4px_10px_rgba(0,0,0,0.3)]">
+                        <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
+                    </div>
+
+                    <!-- รูปภาพหน้าปกขนาดใหญ่ -->
+                    <div class="w-full h-[320px] bg-gray-200 relative overflow-hidden z-0">
+                        <div class="ph-gallery-cover img-placeholder w-full h-full bg-[#e2e8f0]">
+                            <div class="text-gray-400 text-center">
+                                <svg class="w-16 h-16 mx-auto mb-2 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                <span>รูปภาพปก</span>
+                            </div>
+                        </div>
+                        <div class="show-gallery-cover hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div>
+                    </div>
+
+                    <!-- แถบสีม่วงซ้อนทับ -->
+                    <div class="absolute top-[260px] left-0 z-10">
+                        <!-- แถบคำว่า จดหมายข่าว -->
+                        <div class="shape-t3-lightpurple text-[#4b3e70] font-bold text-[56px] px-10 py-1 rounded-br-3xl shadow-md w-fit pr-16 leading-none tracking-tight">
+                            จดหมายข่าว
+                        </div>
+                    </div>
+                    
+                    <div class="absolute top-[320px] left-0 w-full z-10 flex">
+                        <!-- แถบคำว่า ประชาสัมพันธ์ -->
+                        <div class="bg-white text-[#8e85b0] font-bold text-[40px] px-10 py-2 w-[40%] flex items-center shadow-sm">
+                            ประชาสัมพันธ์
+                        </div>
+                        <!-- แถบชื่อ อบต -->
+                        <div class="shape-t3-purple text-white font-bold text-[24px] px-10 py-4 w-[60%] flex items-center justify-end rounded-bl-3xl shadow-md" style="clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%); padding-left: 60px;">
+                            องค์การบริหารส่วนตำบลโนนอุดม
+                        </div>
+                    </div>
+
+                    <!-- พื้นที่เนื้อหาหลัก -->
+                    <div class="w-full flex-1 flex flex-col pt-[110px] pb-[80px] px-10 relative z-0">
+                        
+                        <!-- วันที่ และ หัวข้อ -->
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="w-[45%] border-b-[3px] border-[#6a5996] pb-2">
+                                <span class="sync-date text-[#1f2937] font-bold text-[22px]">วันที่ 5 สิงหาคม 2569</span>
+                            </div>
+                            <div class="w-[55%] shape-t3-lightpurple rounded-l-full rounded-br-full py-4 px-8 shadow-sm flex items-center justify-center min-h-[90px] relative -right-10">
+                                <h3 class="sync-topic whitespace-pre-wrap text-[20px] font-bold text-white text-center leading-snug break-words drop-shadow-sm">หัวเรื่องกิจกรรมการประชุมสภาฯ</h3>
+                            </div>
+                        </div>
+
+                        <!-- แกลเลอรีรูปภาพ (6 รูป) - ลดช่องว่างลง -->
+                        <div class="w-full grid grid-cols-3 gap-3 mb-6">
+                            <div class="w-full h-[150px] bg-white shadow-sm relative overflow-hidden rounded-md"><div class="ph-gallery-0 img-placeholder w-full h-full bg-gray-100"></div><div class="show-gallery-0 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div></div>
+                            <div class="w-full h-[150px] bg-white shadow-sm relative overflow-hidden rounded-md"><div class="ph-gallery-1 img-placeholder w-full h-full bg-gray-100"></div><div class="show-gallery-1 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div></div>
+                            <div class="w-full h-[150px] bg-white shadow-sm relative overflow-hidden rounded-md"><div class="ph-gallery-2 img-placeholder w-full h-full bg-gray-100"></div><div class="show-gallery-2 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div></div>
+                            <div class="w-full h-[150px] bg-white shadow-sm relative overflow-hidden rounded-md"><div class="ph-gallery-3 img-placeholder w-full h-full bg-gray-100"></div><div class="show-gallery-3 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div></div>
+                            <div class="w-full h-[150px] bg-white shadow-sm relative overflow-hidden rounded-md"><div class="ph-gallery-4 img-placeholder w-full h-full bg-gray-100"></div><div class="show-gallery-4 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div></div>
+                            <div class="w-full h-[150px] bg-white shadow-sm relative overflow-hidden rounded-md"><div class="ph-gallery-5 img-placeholder w-full h-full bg-gray-100"></div><div class="show-gallery-5 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div></div>
+                        </div>
+
+                        <!-- คำบรรยาย -->
+                        <div class="w-full flex-1 px-4">
+                            <p class="sync-description whitespace-pre-wrap text-center text-[16px] font-medium text-[#1e293b] leading-relaxed break-words">อบต.โนนอุดม ประชุม สมัยสามัญ สมัยที่ 3 ครั้งที่ 1 ประจำปี พ.ศ.2569<br>พร้อมด้วยคณะผู้บริหาร สมาชิกสภาฯ บุคลากรและเจ้าหน้าที่<br>เพื่อร่วมพิจารณาข้อราชการ</p>
+                        </div>
+                    </div>
+
+                    <!-- Footer แถบสีม่วงด้านล่าง -->
+                    <div class="absolute bottom-6 left-10 w-[720px] h-[60px] shape-t3-purple rounded-full px-10 flex items-center justify-center gap-6 z-10 shadow-lg text-white">
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path></svg>
+                            <span class="text-[18px] font-bold">โทร.044-077070</span>
+                        </div>
+                        <div class="w-1.5 h-1.5 bg-white rounded-full opacity-50"></div>
+                        <div class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            <span class="text-[18px] font-bold">องค์การบริหารส่วนตำบลโนนอุดม</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -769,18 +871,20 @@
         }
 
         // Custom Confirm Modal Logic (แทนที่ window.confirm)
-        window.showConfirm = function(title, message, onConfirmCallback) {
+        window.showConfirm = function(title, message, okText, onConfirmCallback) {
             const modal = document.getElementById('confirm-modal');
             document.getElementById('confirm-title').innerText = title;
             document.getElementById('confirm-message').innerText = message;
             
+            const btnOk = document.getElementById('btn-confirm-ok');
+            btnOk.innerText = okText;
+
             modal.classList.remove('hidden');
             setTimeout(() => { 
                 modal.classList.remove('opacity-0'); 
                 document.getElementById('confirm-modal-content').classList.remove('scale-95'); 
             }, 10);
 
-            const btnOk = document.getElementById('btn-confirm-ok');
             const btnCancel = document.getElementById('btn-confirm-cancel');
 
             // เคลียร์ Event เดิมก่อนผูกใหม่
@@ -988,7 +1092,7 @@
         }
 
         window.deleteAsset = function(id) {
-            window.showConfirm("ลบข้อมูลอินโฟกราฟิก", "แน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?", async () => {
+            window.showConfirm("ลบข้อมูลอินโฟกราฟิก", "แน่ใจหรือไม่ว่าต้องการลบข้อมูลนี้?", "ยืนยันลบ", async () => {
                 if (isFirebaseReady && auth.currentUser) {
                     try {
                         await deleteDoc(doc(publicDataRef, id.toString()));
@@ -1005,7 +1109,7 @@
         }
 
         window.importHolidays2026 = function() {
-            window.showConfirm("นำเข้าวันหยุดปี 2569", "ระบบจะเพิ่มข้อมูลวันหยุดที่เหลือของปี 2569 อัตโนมัติ ยืนยันหรือไม่?", async () => {
+            window.showConfirm("นำเข้าวันหยุดปี 2569", "ระบบจะเพิ่มข้อมูลวันหยุดที่เหลือของปี 2569 อัตโนมัติ ยืนยันหรือไม่?", "นำเข้าข้อมูล", async () => {
                 const holidays = [
                     {isoDate:"2026-07-20", title:"วันอาสาฬหบูชา", thumbUrl:"https://placehold.co/800x600/FDBE15/0071BA?text=Asanha+Bucha"},
                     {isoDate:"2026-07-21", title:"วันเข้าพรรษา", thumbUrl:"https://placehold.co/800x600/FDBE15/0071BA?text=Khao+Phansa"},
@@ -1051,13 +1155,22 @@
         const selectTemplate = document.getElementById('select-template');
         const template1 = document.getElementById('template-1');
         const template2 = document.getElementById('template-2');
+        const template3 = document.getElementById('template-3');
         let activeTemplateId = 'template-1';
 
         selectTemplate.addEventListener('change', (e) => {
+            template1.classList.add('hidden');
+            template2.classList.add('hidden');
+            template3.classList.add('hidden');
+            document.getElementById('upload-cover-container').classList.add('hidden');
+            
             if(e.target.value === '1') {
-                template1.classList.remove('hidden'); template2.classList.add('hidden'); activeTemplateId = 'template-1';
-            } else {
-                template2.classList.remove('hidden'); template1.classList.add('hidden'); activeTemplateId = 'template-2';
+                template1.classList.remove('hidden'); activeTemplateId = 'template-1';
+            } else if(e.target.value === '2') {
+                template2.classList.remove('hidden'); activeTemplateId = 'template-2';
+            } else if(e.target.value === '3') {
+                template3.classList.remove('hidden'); activeTemplateId = 'template-3';
+                document.getElementById('upload-cover-container').classList.remove('hidden');
             }
             window.dispatchEvent(new Event('resize')); 
         });
@@ -1101,17 +1214,33 @@
         for (let i = 1; i <= 31; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = i; if (i === tDate.getDate()) opt.selected = true; selDay.appendChild(opt); }
         selMonth.value = thaiMonths[tDate.getMonth()];
         for (let i = tDate.getFullYear() + 543 - 5; i <= tDate.getFullYear() + 543 + 5; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = i; if (i === tDate.getFullYear() + 543) opt.selected = true; selYear.appendChild(opt); }
-        const updateNewsDate = () => { document.querySelectorAll('.sync-date').forEach(el => el.textContent = `วันที่ ${selDay.value} ${selMonth.value} ${selYear.value}`); };
+        const updateNewsDate = () => { 
+            let dayName = "";
+            try {
+               const dayIndex = new Date(selYear.value - 543, thaiMonths.indexOf(selMonth.value), selDay.value).getDay();
+               const days = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"];
+               dayName = "วัน" + days[dayIndex] + " ที่ ";
+            } catch(e) {}
+            
+            document.querySelectorAll('.sync-date').forEach(el => {
+                if(activeTemplateId === 'template-3') {
+                    el.textContent = `${dayName}${selDay.value} ${selMonth.value} ${selYear.value}`;
+                } else {
+                    el.textContent = `วันที่ ${selDay.value} ${selMonth.value} ${selYear.value}`;
+                }
+            });
+        };
         selDay.addEventListener('change', updateNewsDate); selMonth.addEventListener('change', updateNewsDate); selYear.addEventListener('change', updateNewsDate);
         updateNewsDate();
 
+        // อัปโหลดรูปแกลเลอรี 6 รูป
         let uploadHtml = '';
         for (let i = 0; i < 6; i++) {
             uploadHtml += `
                 <div class="relative group">
                     <input type="file" accept="image/*" class="hidden" id="upload-img-${i}"/>
-                    <label for="upload-img-${i}" id="label-img-${i}" class="flex flex-col items-center justify-center w-full h-20 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm">
-                        <div id="icon-img-${i}" class="flex flex-col items-center justify-center pointer-events-none"><span class="text-xl text-yellow-500 mb-0.5 leading-none">+</span><span class="text-[10px] font-medium border px-1.5 py-0.5 rounded-md text-blue-700 bg-blue-50 border-blue-200">รูปที่ ${i+1}</span></div>
+                    <label for="upload-img-${i}" id="label-img-${i}" class="flex flex-col items-center justify-center w-full h-16 border-2 border-dashed bg-white border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm">
+                        <div id="icon-img-${i}" class="flex flex-col items-center justify-center pointer-events-none"><span class="text-[10px] font-medium text-yellow-700">รูปที่ ${i+1}</span></div>
                         <img id="thumb-img-${i}" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
                     </label>
                 </div>`;
@@ -1130,6 +1259,19 @@
                 }
             });
         }
+        
+        // อัปโหลดรูปหน้าปก (เทมเพลต 3)
+        document.getElementById(`upload-img-cover`).addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                document.getElementById(`icon-img-cover`).classList.add('hidden');
+                document.getElementById(`thumb-img-cover`).src = url; document.getElementById(`thumb-img-cover`).classList.remove('hidden');
+                document.getElementById(`label-img-cover`).classList.replace('border-purple-400', 'border-blue-500');
+                document.querySelectorAll(`.show-gallery-cover`).forEach(el => { el.style.backgroundImage = `url('${url}')`; el.classList.remove('hidden'); });
+                document.querySelectorAll(`.ph-gallery-cover`).forEach(el => el.classList.add('hidden'));
+            }
+        });
 
         window.exportNewsletter = async function() {
             const btn = document.getElementById('btn-export');
@@ -1141,8 +1283,12 @@
             activeTemp.style.transform = 'none'; 
 
             try {
+                let bgColor = '#fdfcf8';
+                if(activeTemplateId === 'template-2') bgColor = '#f8f9fa';
+                if(activeTemplateId === 'template-3') bgColor = '#fdfaf6';
+                
                 // ปรับเป็น 4K (Scale 4) เพื่อความคมชัดสูงสุด
-                const canvas = await html2canvas(activeTemp, { scale: 4, useCORS: true, backgroundColor: activeTemplateId === 'template-1' ? '#fdfcf8' : '#f8f9fa', scrollY: 0, scrollX: 0 });
+                const canvas = await html2canvas(activeTemp, { scale: 4, useCORS: true, backgroundColor: bgColor, scrollY: 0, scrollX: 0 });
                 const topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
                 
                 await new Promise((resolve) => {
@@ -1164,8 +1310,9 @@
                     id: hId, timestamp: hId,
                     topic: document.getElementById('input-topic').value,
                     desc: document.getElementById('input-description').value,
-                    dateText: `วันที่ ${selDay.value} ${selMonth.value} ${selYear.value}`,
-                    d: selDay.value, m: selMonth.value, y: selYear.value
+                    dateText: document.querySelector('.sync-date').textContent,
+                    d: selDay.value, m: selMonth.value, y: selYear.value,
+                    template: selectTemplate.value
                 };
 
                 if (isFirebaseReady && auth.currentUser) {
@@ -1227,6 +1374,11 @@
             document.getElementById('select-month').value = h.m || thaiMonths[tDate.getMonth()];
             document.getElementById('select-year').value = h.y || (tDate.getFullYear()+543);
             
+            if(h.template) {
+                document.getElementById('select-template').value = h.template;
+                document.getElementById('select-template').dispatchEvent(new Event('change'));
+            }
+            
             document.getElementById('input-topic').dispatchEvent(new Event('input'));
             document.getElementById('input-description').dispatchEvent(new Event('input'));
             document.getElementById('select-day').dispatchEvent(new Event('change'));
@@ -1244,7 +1396,7 @@
             document.getElementById('btn-cancel-edit').classList.add('hidden');
             
             const btn = document.getElementById('btn-submit-booking');
-            btn.innerHTML = '<span>🚀</span> บันทึกข้อมูลการจองรถ';
+            btn.innerHTML = '<span>🚀</span> บันทึกข้อมูล';
             btn.classList.replace('from-orange-500', 'from-[#0071BA]');
             btn.classList.replace('to-orange-400', 'to-blue-500');
             
@@ -1441,7 +1593,7 @@
         }
 
         window.deleteBooking = function(id) {
-            window.showConfirm("ยกเลิกการจองรถ", "แน่ใจหรือไม่ว่าต้องการยกเลิกการจองนี้?", async () => {
+            window.showConfirm("ยกเลิกการจองรถ", "แน่ใจหรือไม่ว่าต้องการยกเลิกการจองนี้?", "ยืนยันยกเลิก", async () => {
                 if (isFirebaseReady && auth.currentUser) {
                     try {
                         await deleteDoc(doc(bookingRef, id.toString()));
@@ -1459,7 +1611,6 @@
             });
         }
 
-
         // ==========================================
         // 6. Responsive Auto Scale & Initialization
         // ==========================================
@@ -1476,6 +1627,7 @@
                     
                     document.getElementById('template-1').style.transform = `scale(${scale})`;
                     document.getElementById('template-2').style.transform = `scale(${scale})`;
+                    document.getElementById('template-3').style.transform = `scale(${scale})`;
                     c.style.minHeight = (1131 * scale + 50) + "px";
                 }
             });
@@ -1489,6 +1641,9 @@
             fpDate = flatpickr("#vb-date", { locale: "th", altInput: true, altFormat: "d/m/Y", dateFormat: "Y-m-d", defaultDate: "today" });
             fpStart = flatpickr("#vb-start", { enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true, defaultDate: "08:30" });
             fpEnd = flatpickr("#vb-end", { enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true, defaultDate: "12:00" });
+            
+            // อัปเดตวันที่ของเทมเพลต 3 ตอนโหลดครั้งแรก
+            updateNewsDate();
         });
 
         // บังคับให้โหลดเข้าหน้า Dashboard ตอนแรก
