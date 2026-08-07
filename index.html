@@ -359,7 +359,9 @@
                         </label>
                         <select id="select-agency" onchange="window.updateAgencyTheme()" class="w-full p-3 glass-input rounded-xl font-bold text-purple-900 cursor-pointer shadow-sm">
                             <option value="obt">องค์การบริหารส่วนตำบลโนนอุดม</option>
-                            <option value="cdc">ศูนย์พัฒนาเด็กเล็ก อบต.โนนอุดม</option>
+                            <option value="sh1">โรงเรียนบ้านโนนอุดมนภดลอุปถัมภ์</option>
+                            <option value="sh2">ศูนย์พัฒนาเด็กเล็กวัดบ้านโนนขาม</option>
+                            <option value="sh3">ศูนย์พัฒนาเด็กเล็กชุมชนวัดสระบัว</option>
                         </select>
                     </div>
 
@@ -906,10 +908,18 @@
             const nameMainElements = document.querySelectorAll('.agency-name-main');
             const nameFooterElements = document.querySelectorAll('.agency-name-footer');
             
-            if (agency === 'cdc') {
-                logoElements.forEach(el => el.src = 'https://placehold.co/200x200/ff99cc/ffffff?text=โลโก้+ศพด.'); 
-                nameMainElements.forEach(el => el.innerHTML = 'ศูนย์พัฒนาเด็กเล็ก<br><span style="font-size: 0.65em; font-weight: 500; opacity: 0.9;">องค์การบริหารส่วนตำบลโนนอุดม</span>');
-                nameFooterElements.forEach(el => el.innerHTML = 'ศูนย์พัฒนาเด็กเล็ก อบต.โนนอุดม');
+            if (agency === 'sh1') {
+                logoElements.forEach(el => el.src = './SH1.jpg'); 
+                nameMainElements.forEach(el => el.innerHTML = 'โรงเรียนบ้านโนนอุดม<br><span style="font-size: 0.65em; font-weight: 500; opacity: 0.9;">นภดลอุปถัมภ์</span>');
+                nameFooterElements.forEach(el => el.innerHTML = 'โรงเรียนบ้านโนนอุดมนภดลอุปถัมภ์');
+            } else if (agency === 'sh2') {
+                logoElements.forEach(el => el.src = './SH2.jpg'); 
+                nameMainElements.forEach(el => el.innerHTML = 'ศูนย์พัฒนาเด็กเล็ก<br><span style="font-size: 0.65em; font-weight: 500; opacity: 0.9;">วัดบ้านโนนขาม</span>');
+                nameFooterElements.forEach(el => el.innerHTML = 'ศูนย์พัฒนาเด็กเล็กวัดบ้านโนนขาม');
+            } else if (agency === 'sh3') {
+                logoElements.forEach(el => el.src = './SH3.jpg'); 
+                nameMainElements.forEach(el => el.innerHTML = 'ศูนย์พัฒนาเด็กเล็ก<br><span style="font-size: 0.65em; font-weight: 500; opacity: 0.9;">ชุมชนวัดสระบัว</span>');
+                nameFooterElements.forEach(el => el.innerHTML = 'ศูนย์พัฒนาเด็กเล็กชุมชนวัดสระบัว');
             } else {
                 logoElements.forEach(el => el.src = './IMG_0350.JPG');
                 nameMainElements.forEach(el => el.innerHTML = 'องค์การบริหารส่วนตำบลโนนอุดม');
@@ -1000,7 +1010,13 @@
 
             try {
                 const canvas = await html2canvas(activeTemp, { scale: 4, useCORS: true, backgroundColor: '#fdfaf6', scrollY: 0, scrollX: 0 });
-                const agencyPrefix = document.getElementById('select-agency').value === 'cdc' ? 'ศพด_' : 'อบต_';
+                
+                let agencyPrefix = 'อบต_';
+                const agencyVal = document.getElementById('select-agency').value;
+                if(agencyVal === 'sh1') agencyPrefix = 'รร_โนนอุดม_';
+                else if(agencyVal === 'sh2') agencyPrefix = 'ศพด_โนนขาม_';
+                else if(agencyVal === 'sh3') agencyPrefix = 'ศพด_สระบัว_';
+                
                 const topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
                 
                 await new Promise((resolve) => {
