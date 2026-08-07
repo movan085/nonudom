@@ -398,27 +398,29 @@
                                 <div class="show-gallery-cover hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div>
                             </div>
 
-                            <!-- แถบสีม่วง ขยับขึ้นไปทับรูปปกนิดนึง -->
-                            <div class="relative -mt-12 z-10 w-full flex flex-col">
-                                <div class="shape-t3-lightpurple text-[#4b3e70] font-bold text-[56px] px-10 pt-2 pb-1 shadow-sm w-fit pr-16 leading-none tracking-tight" style="border-radius: 0 40px 0 0;">
+                            <!-- แถบสีม่วง ขยับตำแหน่งโดยใช้ absolute ล็อกตายตัว กันเลื่อนตอนแคปจอ -->
+                            <div class="absolute top-[200px] left-0 w-full z-10 flex flex-col">
+                                <div class="shape-t3-lightpurple text-[#4b3e70] font-bold text-[56px] px-10 py-1 shadow-sm w-fit pr-16 leading-none tracking-tight" style="border-radius: 0 40px 0 0;">
                                     จดหมายข่าว
                                 </div>
-                                <div class="flex items-end mt-1 w-full relative">
-                                    <div class="bg-white text-[#8e85b0] font-bold text-[40px] px-10 pt-2 pb-1 relative z-20 shadow-sm rounded-tr-xl">
-                                        ประชาสัมพันธ์
-                                    </div>
-                                    
-                                    <!-- แถบชื่อหน่วยงานที่จัดบรรทัดได้ตรงตามต้องการ -->
-                                    <div class="shape-t3-purple text-white px-10 py-3 w-[60%] flex flex-col items-end justify-center rounded-bl-3xl shadow-md relative z-10" style="clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%); padding-left: 60px; min-height: 75px;">
-                                        <div class="agency-name-main text-right leading-tight drop-shadow-sm flex flex-col items-end">
-                                            <span class="text-[26px] font-bold whitespace-nowrap">องค์การบริหารส่วนตำบลโนนอุดม</span>
-                                        </div>
+                            </div>
+                            
+                            <!-- แถบคำว่าประชาสัมพันธ์ และ ชื่อหน่วยงาน (ล็อกตำแหน่งติดกัน) -->
+                            <div class="absolute top-[260px] left-0 w-full z-10 flex items-center">
+                                <div class="bg-white text-[#8e85b0] font-bold text-[40px] px-10 py-2 shadow-sm rounded-tr-xl flex-shrink-0" style="min-width: 350px;">
+                                    ประชาสัมพันธ์
+                                </div>
+                                
+                                <!-- แถบชื่อหน่วยงานที่ยืดหยุ่นรองรับข้อความยาว -->
+                                <div class="shape-t3-purple text-white px-8 py-3 flex-1 flex flex-col items-end justify-center rounded-bl-3xl shadow-md relative -ml-10" style="clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%); padding-left: 60px; min-height: 75px;">
+                                    <div class="agency-name-main text-right leading-tight drop-shadow-sm flex flex-col items-end w-full max-w-[400px]">
+                                        <span class="text-[26px] font-bold whitespace-nowrap">องค์การบริหารส่วนตำบลโนนอุดม</span>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- เนื้อหาหลัก -->
-                            <div class="w-full flex-1 flex flex-col pt-8 pb-[100px] px-10 relative z-0">
+                            <div class="w-full flex-1 flex flex-col pt-[120px] pb-[100px] px-10 relative z-0">
                                 <div class="flex justify-between items-start gap-4 mb-8">
                                     <div class="border-b-[4px] border-[#6a5996] pb-2 pt-2 whitespace-nowrap shrink-0">
                                         <span class="sync-date text-[#1f2937] font-bold text-[22px]">วันศุกร์ที่ 7 สิงหาคม 2569</span>
@@ -444,13 +446,13 @@
                                 </div>
                             </div>
 
-                            <!-- Footer (แก้ปัญหาขอบล่างบังตัวอักษร โดยการเว้นขอบล่างขึ้นมานิดนึง) -->
+                            <!-- Footer (เพิ่มพื้นที่ขอบล่างนิดนึงไม่ให้ทับสระอู) -->
                             <div class="absolute bottom-5 left-10 right-10 h-[60px] shape-t3-purple rounded-full px-10 flex items-center justify-center gap-8 z-10 shadow-lg text-white">
                                 <div class="flex items-center gap-2 shrink-0">
                                     <span class="text-[18px] font-bold">📞 โทร.044-077070</span>
                                 </div>
                                 <div class="w-1.5 h-1.5 bg-[#d8b4e2] rounded-full shrink-0"></div>
-                                <div class="flex items-center justify-center w-full truncate">
+                                <div class="flex items-center justify-center w-full truncate pt-1">
                                     <span class="agency-name-footer text-[18px] font-bold drop-shadow-sm truncate pb-0.5">องค์การบริหารส่วนตำบลโนนอุดม</span>
                                 </div>
                             </div>
@@ -946,21 +948,18 @@
             btn.disabled = true; btn.classList.add('opacity-70'); btnText.textContent = 'กำลังประมวลผลรูป 4K...'; 
             
             const activeTemp = document.getElementById('template-3'); 
-            const previewContainer = document.getElementById('preview-wrapper'); // แคปจาก Wrapper ที่ปรับขนาดไว้แล้ว
+            const previewContainer = document.getElementById('preview-wrapper'); 
             
-            // ล็อคขนาดให้เป็น 800px เป๊ะๆ ตอนแคป (กันเพี้ยน)
             const scaler = document.getElementById('preview-scaler');
             const originalTransform = scaler.style.transform;
             scaler.style.transform = 'scale(1)'; 
             
-            // เลื่อนจอให้เต็มก่อนแคป
             const origScroll = previewContainer.scrollTop;
             previewContainer.scrollTop = 0;
 
-            await new Promise(resolve => setTimeout(resolve, 300)); // รอ UI ขยับให้เสร็จ
+            await new Promise(resolve => setTimeout(resolve, 300)); 
 
             try {
-                // แคปที่ความละเอียด 4K (scale: 4)
                 const canvas = await html2canvas(activeTemp, { 
                     scale: 4, 
                     useCORS: true, 
@@ -1014,7 +1013,6 @@
             } catch (error) { 
                 window.showToast("เกิดข้อผิดพลาดในการสร้างรูปภาพ"); 
             } finally {
-                // คืนค่า UI กลับสู่สภาวะปกติ
                 scaler.style.transform = originalTransform; 
                 previewContainer.scrollTop = origScroll;
                 btn.disabled = false; btn.classList.remove('opacity-70'); btnText.textContent = 'บันทึกรูปภาพ (4K)';
@@ -1073,20 +1071,13 @@
             const scaler = document.getElementById('preview-scaler');
             const newsletterView = document.getElementById('view-newsletter');
             
-            // เช็คว่าเปิดหน้าจดหมายข่าวอยู่ไหม
             if(wrapper && scaler && !newsletterView.classList.contains('hidden')) {
-                // คำนวณความกว้างที่มีให้ (หัก padding ของ card ออก 40px)
                 const availableWidth = wrapper.clientWidth - 40; 
-                // เทมเพลตเรา Fix ไว้ที่ 800px คงที่
                 const targetWidth = 800; 
-                
-                // หาอัตราส่วนการย่อ (ถ้าหน้าจอเล็กกว่า 800px)
                 let scale = availableWidth / targetWidth;
-                if (scale > 1) scale = 1; // ไม่ให้ใหญ่เกิน 100%
+                if (scale > 1) scale = 1; 
                 
-                // ใช้ Transform Scale ย่อเฉพาะการแสดงผลให้พอดีหน้าจอ
                 scaler.style.transform = `scale(${scale})`;
-                // จองพื้นที่ความสูงให้พอดีหลังถูกย่อ
                 wrapper.style.minHeight = (1131 * scale + 40) + "px";
             }
         }
