@@ -15,7 +15,7 @@
     <!-- CSS/JS ไลบรารี -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- ⭐️ เปลี่ยนจาก html2canvas มาใช้ html-to-image ตามคำแนะนำของคุณ -->
+    <!-- ⭐️ ใช้ html-to-image ตามที่คุณเลือก เพื่อความคมชัดและแม่นยำ -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
     
     <!-- Flatpickr สำหรับแก้ปัญหาวันที่/เวลา -->
@@ -195,7 +195,7 @@
                     <button onclick="window.switchView('view-newsletter')" class="group text-left glass-btn rounded-[2rem] p-6 md:p-8 relative overflow-hidden flex flex-col h-full border-t border-l border-white/80">
                         <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-white text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-5 group-hover:scale-110 transition-transform duration-300 shadow-sm border border-white z-10">📰</div>
                         <h3 class="text-xl font-bold text-gray-800 mb-2 z-10">จดหมายข่าว</h3>
-                        <p class="text-sm font-medium text-gray-500 z-10">สร้างภาพข่าวประชาสัมพันธ์ 4K สำหรับหน่วยงาน</p>
+                        <p class="text-sm font-medium text-gray-500 z-10">สร้างภาพข่าวประชาสัมพันธ์สำหรับหน่วยงาน</p>
                     </button>
                     <button onclick="window.switchView('view-vehicle')" class="group text-left glass-btn rounded-[2rem] p-6 md:p-8 relative overflow-hidden flex flex-col h-full border-t border-l border-white/80">
                         <div class="absolute top-5 right-5 bg-yellow-400/90 backdrop-blur-sm border border-white/50 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-sm animate-pulse z-20">เพิ่มคิวจองรถ</div>
@@ -302,7 +302,7 @@
                 กลับหน้าหลัก
             </button>
             <div class="flex items-center gap-4">
-                <h2 class="font-bold text-gray-800 hidden md:block tracking-wide">📰 สร้างจดหมายข่าว 4K</h2>
+                <h2 class="font-bold text-gray-800 hidden md:block tracking-wide">📰 สร้างจดหมายข่าว</h2>
                 <button onclick="window.showHistoryModal()" class="flex items-center gap-1.5 glass-btn text-indigo-700 px-4 py-2 rounded-xl text-sm font-bold transition shadow-sm"><span>📜</span> ประวัติ</button>
             </div>
         </div>
@@ -374,7 +374,7 @@
 
                     <button id="btn-export" onclick="window.exportNewsletter()" class="w-full text-white font-bold py-4 rounded-2xl shadow-[0_8px_20px_rgba(16,185,129,0.3)] transition-all transform hover:-translate-y-1 bg-gradient-to-r from-emerald-500/90 to-teal-500/90 hover:from-emerald-600 hover:to-teal-600 backdrop-blur-md border border-white/30 flex justify-center items-center gap-2 mt-4 text-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                        <span id="btn-text">บันทึกรูปภาพ (4K)</span>
+                        <span id="btn-text">บันทึกเป็นรูปภาพ</span>
                     </button>
                 </div>
             </div>
@@ -738,7 +738,6 @@
                 const d = new Date(newBooking.date);
                 const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
                 const prefix = isEditing ? "🚙 [แก้ไข] อัปเดตคิวจองรถ!\n" : "🚙 บันทึกคิวจองรถใหม่!\n";
-                // ข้อความ LINE แบบไม่มีลิงก์
                 const lineMessage = `\n${prefix}━━━━━━━━━━━━\n🚘 รถ: ${newBooking.car}\n👤 ผู้ใช้: ${newBooking.name}\n📍 ภารกิจ: ${newBooking.dest}\n📅 วันที่: ${thaiDate}\n⏰ เวลา: ${newBooking.start} น. - ${newBooking.end} น.`;
 
                 try {
@@ -944,31 +943,36 @@
         for (let i = 0; i < 6; i++) handleImageUpload(`img-${i}`, `gallery-${i}`);
         handleImageUpload('img-cover', 'gallery-cover');
 
-        // ฟังก์ชัน Export ที่อัปเกรดมาใช้ html-to-image
+        // ฟังก์ชัน Export (ใช้ html-to-image พร้อมลด scale เหลือ 1.5 สำหรับมือถือ เพื่อกันเครื่องค้าง)
         window.exportNewsletter = async function() {
             const btn = document.getElementById('btn-export');
             const btnText = document.getElementById('btn-text');
-            btn.disabled = true; btn.classList.add('opacity-70'); btnText.textContent = 'กำลังประมวลผลรูป 4K...'; 
+            btn.disabled = true; btn.classList.add('opacity-70'); 
+            
+            const isMobile = window.innerWidth <= 768;
+            const exportScale = isMobile ? 1.5 : 2; 
+            
+            btnText.textContent = 'กำลังสร้างรูปภาพ...'; 
             
             const activeTemp = document.getElementById('template-3'); 
-            const previewContainer = document.getElementById('preview-wrapper');
+            const previewContainer = document.getElementById('preview-wrapper'); 
             
             const scaler = document.getElementById('preview-scaler');
             const originalTransform = scaler.style.transform;
-            
-            // ยกเลิกการซูมและรีเซ็ต Scroll ให้กลับไปจุดเริ่มต้นเพื่อถ่ายรูปให้แม่นยำ
             scaler.style.transform = 'scale(1)'; 
+            
             const origScroll = previewContainer.scrollTop;
+            const winScrollX = window.scrollX;
+            const winScrollY = window.scrollY;
             previewContainer.scrollTop = 0;
             window.scrollTo(0, 0);
 
-            await new Promise(resolve => setTimeout(resolve, 300));
+            await new Promise(resolve => setTimeout(resolve, 800)); 
 
             try {
-                // เปลี่ยนมาใช้ htmlToImage แทน เพื่อแก้ปัญหา DOM เลื่อนและข้อความแหว่ง
-                const dataUrl = await htmlToImage.toJpeg(activeTemp, {
-                    quality: 1.0,
-                    pixelRatio: 4, // ระดับความชัด 4K
+                const dataUrl = await html-to-image.toJpeg(activeTemp, {
+                    quality: 0.9,
+                    pixelRatio: exportScale, 
                     backgroundColor: '#fdfaf6',
                     width: 800,
                     height: 1131,
@@ -976,7 +980,8 @@
                         transform: 'scale(1)',
                         transformOrigin: 'top left',
                         margin: '0'
-                    }
+                    },
+                    cacheBust: true 
                 });
                 
                 let agencyPrefix = 'อบต_';
@@ -1010,7 +1015,7 @@
                     localStorage.setItem('prStudioHistory', JSON.stringify(historyData));
                 }
                 
-                window.showToast("บันทึกรูป 4K สวยงามสำเร็จ!");
+                window.showToast("บันทึกรูปสำเร็จ!");
 
             } catch (error) { 
                 console.error("Export Error:", error);
@@ -1018,7 +1023,8 @@
             } finally {
                 scaler.style.transform = originalTransform; 
                 previewContainer.scrollTop = origScroll;
-                btn.disabled = false; btn.classList.remove('opacity-70'); btnText.textContent = 'บันทึกรูปภาพ (4K)';
+                window.scrollTo(winScrollX, winScrollY);
+                btn.disabled = false; btn.classList.remove('opacity-70'); btnText.textContent = 'บันทึกเป็นรูปภาพ';
             }
         }
 
@@ -1075,8 +1081,9 @@
             const newsletterView = document.getElementById('view-newsletter');
             
             if(wrapper && scaler && !newsletterView.classList.contains('hidden')) {
-                const availableWidth = wrapper.clientWidth - 40; 
+                const availableWidth = window.innerWidth <= 768 ? window.innerWidth - 32 : wrapper.clientWidth - 40; 
                 const targetWidth = 800; 
+                
                 let scale = availableWidth / targetWidth;
                 if (scale > 1) scale = 1; 
                 
@@ -1096,3 +1103,4 @@
     </script>
 </body>
 </html>
+```eof
