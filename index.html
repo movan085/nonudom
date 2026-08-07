@@ -307,7 +307,7 @@
                             <!-- กล่องหัวข้อกิจกรรมสีม่วงอ่อน -->
                             <div class="px-10 flex justify-end mt-2">
                                 <div class="bg-[#b3a8cf] text-white px-8 py-4 text-center font-bold text-xl w-3/4 shadow-sm" style="border-radius: 40px 0 40px 0;">
-                                    <span class="sync-topic">หัวเรื่องกิจกรรม</span>
+                                    <span class="sync-topic">หัวเรื่องกิจกรรมการประชุมสภาฯ</span>
                                 </div>
                             </div>
 
@@ -323,7 +323,9 @@
 
                             <!-- รายละเอียด -->
                             <div class="px-12 mt-6 text-center text-[#1e1e1e] text-lg font-medium leading-relaxed whitespace-pre-line sync-desc">
-                                ข้อความตัวอย่าง คำอธิบาย
+                                อบต.โนนอุดม ประชุม สมัยสามัญ สมัยที่ 3 ครั้งที่ 1 ประจำปี พ.ศ.2569
+                                พร้อมด้วยคณะผู้บริหาร สมาชิกสภาฯ บุคลากรและเจ้าหน้าที่
+                                เพื่อร่วมพิจารณาข้อราชการ
                             </div>
 
                             <!-- Footer ติดต่อ -->
@@ -375,7 +377,7 @@
         // ==========================================
         // 1. ตั้งค่าพื้นฐาน (URL ห้ามลืมเปลี่ยน!)
         // ==========================================
-        // 🔴🔴🔴 นำ URL ของ Google Apps Script มาวางในเครื่องหมายคำพูดด้านล่างนี้ 🔴🔴🔴
+        // ลิงก์ใหม่ฝังไว้ให้แล้ว!
         const gasWebhookUrl = "https://script.google.com/macros/s/AKfycbw6aXoB3SIKe9jrh-prj-2yM6-V8Endqr1gDRhYTHJTt_ibTk3YazC1N8Z83ZmKIZg7JQ/exec";
         
         let carHistory = JSON.parse(localStorage.getItem('prStudioCarHistory')) || [];
@@ -543,7 +545,7 @@
                     currentDate = c.date;
                 }
                 
-                // 🛠️ แก้บัคปุ่มแก้ไข: ลบ class "hidden group-hover:flex" ออก เปลี่ยนเป็น "flex" เลย เพื่อให้แสดงตลอดเวลา
+                // ปุ่มจัดการเป็น flex ไม่มีการซ่อน
                 html += `
                 <li class="px-4 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-gray-50 transition border-b border-gray-50 last:border-0 relative">
                     <div class="flex items-start gap-4 flex-1">
@@ -557,7 +559,6 @@
                         </div>
                     </div>
                     
-                    <!-- ปุ่มจัดการ: แสดงผลค้างไว้เลย (flex ตลอดเวลา ไม่รอ hover) -->
                     <div class="flex items-center space-x-2 md:justify-end mt-2 md:mt-0">
                         <button onclick="editCarBooking(${c.id})" class="text-blue-500 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded text-sm transition" title="แก้ไข">
                             <i class="fa-solid fa-pen-to-square"></i> แก้ไข
@@ -655,7 +656,7 @@
             container.style.height = `${1123 * scale + 40}px`;
         });
 
-        // 🛠️ บันทึกรูปภาพ (แก้บัคจอแหว่ง 100%)
+        // บันทึกรูปภาพ (แก้บัคจอแหว่ง 100%)
         window.exportNewsletter = async function() {
             const btn = document.getElementById('btn-export');
             const btnText = document.getElementById('btn-text');
@@ -669,7 +670,7 @@
             const origScroll = previewContainer.scrollTop;
             const windowScroll = window.scrollY;
             
-            // เคลียร์ Scale และเลื่อนหน้าจอกลับบนสุด
+            // เคลียร์ Scale และเลื่อนหน้าจอกลับบนสุด (สำคัญมากในการแก้บัคจอแหว่ง)
             activeTemp.style.transform = 'none'; 
             previewContainer.scrollTop = 0;
             window.scrollTo(0, 0);
