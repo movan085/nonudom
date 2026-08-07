@@ -25,7 +25,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Kanit', sans-serif; background-color: #f3f4f6; }
+        body { font-family: 'Kanit', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .text-shadow-md { text-shadow: 2px 2px 5px rgba(0,0,0,0.15); }
@@ -41,54 +41,124 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
         
         /* สไตล์สำหรับเทมเพลต 3 */
         .shape-t3-purple { background-color: #6a5996; }
         .shape-t3-lightpurple { background-color: #a8a0c2; }
+        
+        /* Liquid Glass พื้นหลังแบบ Fluid */
+        .glass-bg {
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 20%, #eff6ff 40%, #fdf4ff 60%, #fffbeb 80%, #fef3c7 100%);
+            background-size: 200% 200%;
+            animation: gradientMove 15s ease infinite;
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Blob เคลื่อนไหวเป็น Background (ลบความคมของขอบ) */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #bae6fd; animation: float1 20s infinite ease-in-out alternate; }
+        .blob-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: #e9d5ff; animation: float2 25s infinite ease-in-out alternate; }
+        .blob-3 { top: 30%; left: 40%; width: 40vw; height: 40vw; background: #fde68a; animation: float3 22s infinite ease-in-out alternate; }
+
+        @keyframes float1 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(100px, 50px) scale(1.1); } }
+        @keyframes float2 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-100px, -50px) scale(1.2); } }
+        @keyframes float3 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-50px, 100px) scale(0.9); } }
+
+        /* การ์ดแบบ Liquid Glass */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        
+        .glass-card-inner {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+
+        /* ปุ่มแบบ Liquid Glass */
+        .glass-btn {
+            background: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.8);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .glass-btn:hover {
+            background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Input แบบ Liquid Glass */
+        .glass-input {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: all 0.3s;
+        }
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            outline: none;
+        }
+
+        /* ปรับสีให้กลืนไปกับ Glass */
+        .text-glass-primary { color: #1e3a8a; } /* dark blue */
+        .text-glass-secondary { color: #475569; } /* gray */
+
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between relative overflow-x-hidden text-gray-800">
+<body class="glass-bg min-h-screen flex flex-col justify-between relative overflow-x-hidden text-gray-800">
     
+    <!-- Animated Background Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
     <!-- Toast Notification -->
-    <div id="toast-message" class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full shadow-2xl z-50 flex items-center gap-2 transition-all duration-300 opacity-0 pointer-events-none -translate-y-10">
+    <div id="toast-message" class="fixed top-5 left-1/2 transform -translate-x-1/2 bg-gray-900/80 backdrop-blur-md text-white px-6 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.2)] border border-white/20 z-50 flex items-center gap-2 transition-all duration-300 opacity-0 pointer-events-none -translate-y-10">
         <span>✅</span> <span id="toast-text">แจ้งเตือน!</span>
     </div>
 
-    <!-- Custom Confirm Modal (ลบข้อมูล) -->
-    <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-6 transform scale-95 transition-transform duration-300 flex flex-col" id="confirm-modal-content">
-            <div class="flex justify-center mb-4 text-4xl">⚠️</div>
-            <h3 class="text-xl font-bold text-gray-800 text-center mb-2" id="confirm-title">ยืนยันการดำเนินการ</h3>
-            <p class="text-gray-600 text-center mb-6" id="confirm-message">คุณแน่ใจหรือไม่ที่จะลบข้อมูลนี้?</p>
-            <div class="flex justify-center gap-3 w-full">
-                <button id="btn-confirm-cancel" class="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold rounded-xl transition-colors">ยกเลิก</button>
-                <button id="btn-confirm-ok" class="flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition-colors shadow-md border border-red-400">ยืนยัน</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Pop-up ยืนยันการจองรถ (ดีไซน์ใหม่) -->
-    <div id="booking-confirm-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6 transform scale-95 transition-transform duration-300 flex flex-col" id="booking-confirm-content">
-            <div class="flex justify-between items-center mb-4 border-b pb-3">
-                <h3 class="text-xl font-bold text-[#0071BA] flex items-center gap-2"><span>📋</span> ตรวจสอบข้อมูลก่อนบันทึก</h3>
-                <button onclick="window.closeBookingConfirm()" class="text-gray-400 hover:text-gray-600 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition">✕</button>
+    <!-- Pop-up ยืนยันจองรถ (Liquid Glass) -->
+    <div id="booking-confirm-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 bg-gray-900/30 backdrop-blur-md opacity-0 transition-opacity duration-300">
+        <div class="glass-card rounded-3xl w-full max-w-md p-6 transform scale-95 transition-transform duration-300 flex flex-col border-t border-l border-white/80" id="booking-confirm-content">
+            <div class="flex justify-between items-center mb-4 border-b border-gray-200/50 pb-3">
+                <h3 class="text-xl font-bold text-glass-primary flex items-center gap-2"><span>📋</span> ยืนยันข้อมูลก่อนบันทึก</h3>
+                <button onclick="window.closeBookingConfirm()" class="text-gray-400 hover:text-gray-700 w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/50 transition">✕</button>
             </div>
             
             <div class="space-y-3 mb-6 text-sm">
-                <div class="flex flex-col bg-gray-50 p-3 rounded-xl border border-gray-100">
+                <div class="flex flex-col glass-card-inner p-3 rounded-xl">
                     <span class="text-gray-500 font-bold mb-1 text-xs">🚘 รถที่เลือก:</span>
                     <span id="confirm-detail-car" class="font-bold text-gray-800 text-base"></span>
                 </div>
-                <div class="flex flex-col bg-gray-50 p-3 rounded-xl border border-gray-100">
+                <div class="flex flex-col glass-card-inner p-3 rounded-xl">
                     <span class="text-gray-500 font-bold mb-1 text-xs">👤 ผู้ขอใช้ / สถานที่:</span>
                     <span id="confirm-detail-name" class="font-bold text-[#0071BA]"></span>
                     <span id="confirm-detail-dest" class="text-gray-700 mt-1 font-medium"></span>
                 </div>
-                <div class="flex flex-col bg-blue-50 p-3 rounded-xl border border-blue-100">
+                <div class="flex flex-col bg-blue-50/60 backdrop-blur-md border border-blue-200/50 p-3 rounded-xl">
                     <span class="text-blue-700 font-bold mb-1 text-xs">📅 วันและเวลา:</span>
                     <span id="confirm-detail-datetime" class="font-bold text-gray-800"></span>
                 </div>
@@ -98,10 +168,23 @@
             </div>
             
             <div class="flex gap-3 w-full">
-                <button onclick="window.closeBookingConfirm()" class="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors">กลับไปแก้ไข</button>
-                <button onclick="window.executeSaveBooking()" id="btn-final-confirm" class="flex-[1.5] px-4 py-3 bg-gradient-to-r from-[#0071BA] to-blue-500 hover:from-[#005a95] hover:to-[#0071BA] text-white font-bold rounded-xl transition-colors shadow-md flex justify-center items-center gap-2">
+                <button onclick="window.closeBookingConfirm()" class="flex-1 px-4 py-3 glass-btn text-gray-700 font-bold rounded-xl">กลับไปแก้ไข</button>
+                <button onclick="window.executeSaveBooking()" id="btn-final-confirm" class="flex-[1.5] px-4 py-3 bg-gradient-to-r from-blue-500/90 to-cyan-500/90 hover:from-blue-600/90 hover:to-cyan-600/90 backdrop-blur-md text-white border border-white/30 font-bold rounded-xl transition-all shadow-[0_8px_20px_rgba(59,130,246,0.3)] hover:-translate-y-0.5 flex justify-center items-center gap-2">
                     ยืนยันการจอง 🚀
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal (ลบข้อมูล) -->
+    <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/30 backdrop-blur-md opacity-0 transition-opacity duration-300">
+        <div class="glass-card rounded-3xl w-full max-w-sm p-6 transform scale-95 transition-transform duration-300 flex flex-col border-t border-l border-white/80" id="confirm-modal-content">
+            <div class="flex justify-center mb-4 text-4xl">⚠️</div>
+            <h3 class="text-xl font-bold text-gray-800 text-center mb-2" id="confirm-title">ยืนยันการดำเนินการ</h3>
+            <p class="text-gray-600 text-center mb-6" id="confirm-message">คุณแน่ใจหรือไม่ที่จะลบข้อมูลนี้?</p>
+            <div class="flex justify-center gap-3 w-full">
+                <button id="btn-confirm-cancel" class="flex-1 px-4 py-3 glass-btn text-gray-800 font-bold rounded-xl">ยกเลิก</button>
+                <button id="btn-confirm-ok" class="flex-1 px-4 py-3 bg-red-500/80 backdrop-blur-md hover:bg-red-600/90 border border-white/30 text-white font-bold rounded-xl transition-all shadow-md">ยืนยัน</button>
             </div>
         </div>
     </div>
@@ -109,55 +192,64 @@
     <!-- ========================================== -->
     <!-- VIEW: DASHBOARD (หน้าแรก) -->
     <!-- ========================================== -->
-    <div id="view-dashboard" class="flex flex-col items-center justify-start p-4 md:p-8 flex-1 fade-in w-full max-w-[1400px] mx-auto">
-        <div class="w-full bg-white rounded-3xl overflow-hidden shadow-xl border border-gray-200">
-            <div class="bg-gradient-to-r from-[#0071BA] to-[#00AEEF] p-8 text-center relative overflow-hidden border-b border-blue-400">
-                <div class="absolute top-0 left-0 w-64 h-64 bg-white opacity-10 rounded-full -ml-20 -mt-20 blur-3xl"></div>
-                <div class="absolute bottom-0 right-0 w-64 h-64 bg-yellow-300 opacity-20 rounded-full -mr-20 -mb-20 blur-3xl"></div>
+    <div id="view-dashboard" class="flex flex-col items-center justify-start p-4 md:p-8 flex-1 fade-in w-full max-w-[1400px] mx-auto z-10">
+        <!-- Main Card Container -->
+        <div class="w-full glass-card rounded-[2.5rem] overflow-hidden border-t-2 border-l-2 border-white/80">
+            <!-- Header Section (Glassy gradient) -->
+            <div class="relative p-8 md:p-12 text-center border-b border-white/30 bg-gradient-to-r from-blue-500/30 to-cyan-400/30 backdrop-blur-md">
+                <div class="absolute inset-0 bg-white/10"></div>
                 
                 <div class="relative z-10 flex flex-col items-center">
-                    <div class="w-20 h-20 bg-white rounded-full p-1 border-4 border-[#FDBE15] shadow-xl mb-4">
-                        <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
+                    <div class="w-24 h-24 bg-white/80 backdrop-blur-sm rounded-full p-1.5 border border-white/50 shadow-xl mb-5">
+                        <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover shadow-inner" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
                     </div>
-                    <h1 class="text-2xl md:text-3xl font-bold text-white mb-1 text-shadow-md">ฝ่ายประชาสัมพันธ์ - อบต.โนนอุดม</h1>
-                    <p class="text-blue-50 text-sm md:text-base font-medium bg-black/10 px-4 py-1 rounded-full mt-2">ระบบสารสนเทศเพื่อการสร้างสื่อและจัดการทรัพยากร</p>
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2 tracking-tight">ฝ่ายประชาสัมพันธ์ <span class="text-blue-700/80">-</span> อบต.โนนอุดม</h1>
+                    <p class="text-gray-700 text-sm md:text-base font-medium px-4 py-1.5 glass-card-inner rounded-full inline-block border border-white/40">ระบบสารสนเทศเพื่อการสร้างสื่อและจัดการทรัพยากร (Liquid Glass UI)</p>
                 </div>
             </div>
 
-            <div class="p-6 md:p-8">
-                <!-- ปุ่มเมนูหลัก -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
-                    <button onclick="window.switchView('view-newsletter')" class="group text-left bg-gray-50 hover:bg-white border-2 border-gray-100 hover:border-blue-300 rounded-3xl p-6 relative overflow-hidden transition-all shadow-sm hover:shadow-md">
-                        <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform shadow-inner">📰</div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-1">จดหมายข่าว</h3>
-                        <p class="text-sm font-medium text-gray-500">สร้างภาพข่าวประชาสัมพันธ์ 4K</p>
+            <div class="p-6 md:p-10">
+                <!-- ปุ่มเมนูหลัก 3 ปุ่ม (Liquid Glass Buttons) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                    <button onclick="window.switchView('view-newsletter')" class="group text-left glass-btn rounded-[2rem] p-6 relative overflow-hidden flex flex-col h-full border-t border-l border-white/80">
+                        <div class="absolute inset-0 bg-gradient-to-br from-blue-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="w-14 h-14 bg-white/60 backdrop-blur-sm border border-white/50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm relative z-10">📰</div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2 relative z-10">จดหมายข่าว</h3>
+                        <p class="text-sm font-medium text-gray-500 relative z-10">สร้างภาพข่าวประชาสัมพันธ์ 4K ด้วยเทมเพลตอัตโนมัติ</p>
                     </button>
 
-                    <button onclick="window.switchView('view-vehicle')" class="group text-left bg-gray-50 hover:bg-white border-2 border-gray-100 hover:border-indigo-300 rounded-3xl p-6 relative overflow-hidden transition-all shadow-sm hover:shadow-md">
-                        <div class="absolute top-4 right-4 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-sm animate-pulse">เพิ่มจองรถ</div>
-                        <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform shadow-inner">🚙</div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-1">ระบบจองรถส่วนกลาง</h3>
-                        <p class="text-sm font-medium text-gray-500">บันทึกคิวและแจ้งเตือนเข้ากลุ่ม</p>
+                    <button onclick="window.switchView('view-vehicle')" class="group text-left glass-btn rounded-[2rem] p-6 relative overflow-hidden flex flex-col h-full border-t border-l border-white/80">
+                        <div class="absolute top-4 right-4 bg-yellow-400/80 backdrop-blur-md border border-white/50 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-sm animate-pulse z-20">เพิ่มคิวจองรถ</div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-indigo-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="w-14 h-14 bg-white/60 backdrop-blur-sm border border-white/50 text-indigo-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm relative z-10">🚙</div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2 relative z-10">ระบบจองรถส่วนกลาง</h3>
+                        <p class="text-sm font-medium text-gray-500 relative z-10">บันทึกคิวการใช้งานและแจ้งเตือนเข้ากลุ่ม LINE</p>
                     </button>
 
-                    <button onclick="window.switchView('view-calendar')" class="group text-left bg-gray-50 hover:bg-white border-2 border-gray-100 hover:border-pink-300 rounded-3xl p-6 relative overflow-hidden transition-all shadow-sm hover:shadow-md">
-                        <div class="w-14 h-14 bg-pink-100 text-pink-600 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform shadow-inner">📅</div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-1">คลังอินโฟกราฟิก</h3>
-                        <p class="text-sm font-medium text-gray-500">คลังสื่อภาพวันสำคัญต่างๆ</p>
+                    <button onclick="window.switchView('view-calendar')" class="group text-left glass-btn rounded-[2rem] p-6 relative overflow-hidden flex flex-col h-full border-t border-l border-white/80">
+                        <div class="absolute inset-0 bg-gradient-to-br from-pink-400/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="w-14 h-14 bg-white/60 backdrop-blur-sm border border-white/50 text-pink-500 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform duration-300 shadow-sm relative z-10">📅</div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2 relative z-10">คลังอินโฟกราฟิก</h3>
+                        <p class="text-sm font-medium text-gray-500 relative z-10">ปฏิทินรวบรวมสื่อภาพวันสำคัญต่างๆ ตลอดปี</p>
                     </button>
                 </div>
 
-                <!-- แสดง Widget กระดานคิวรถ -->
-                <div class="w-full mt-10">
-                    <div class="flex items-center justify-between mb-4 pl-2 border-l-4 border-[#0071BA]">
-                        <h2 class="text-lg md:text-xl font-bold text-gray-800 pl-2">กระดานคิวรถส่วนกลาง</h2>
-                        <span id="dash-cloud-status" class="text-xs font-bold text-gray-500 bg-gray-100 px-3 py-1 rounded-full border border-gray-200">ตรวจสอบสถานะ...</span>
+                <!-- กระดานคิวรถ -->
+                <div class="w-full mt-6">
+                    <div class="flex items-center justify-between mb-5 px-2">
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-3">
+                            <span class="text-blue-500">📌</span> กระดานคิวรถส่วนกลาง 
+                            <span class="text-sm font-normal text-gray-500 bg-white/50 px-3 py-1 rounded-full border border-white/40 hidden md:inline-block">15 วันล่าสุด</span>
+                        </h2>
+                        <span id="dash-cloud-status" class="text-xs font-bold text-gray-500 glass-card-inner px-3 py-1.5 rounded-full shadow-sm">ตรวจสอบสถานะ...</span>
                     </div>
-                    <!-- ตารางคิวรถ -->
-                    <div id="dashboard-timeline" class="w-full bg-gray-50 rounded-3xl border border-gray-200 overflow-hidden max-h-[600px] overflow-y-auto custom-scroll p-4 md:p-6">
+                    
+                    <!-- Timeline Container -->
+                    <div id="dashboard-timeline" class="w-full glass-card-inner rounded-[2rem] border-t border-l border-white/70 overflow-hidden max-h-[500px] overflow-y-auto custom-scroll p-2 md:p-6 shadow-inner">
                         <!-- Timeline จะถูกดึงมาใส่ตรงนี้ -->
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -165,30 +257,32 @@
     <!-- ========================================== -->
     <!-- VIEW: VEHICLE BOOKING (ระบบจองรถ และ แก้ไขข้อมูล) -->
     <!-- ========================================== -->
-    <div id="view-vehicle" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in relative">
-        <div class="flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
-            <button onclick="window.switchView('view-dashboard')" class="flex items-center gap-2 text-[#0071BA] font-bold hover:bg-blue-50 px-4 py-2 rounded-xl transition-colors">
+    <div id="view-vehicle" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in relative z-10">
+        <!-- Top Nav -->
+        <div class="flex items-center justify-between glass-card p-4 rounded-2xl border-t border-l border-white/80">
+            <button onclick="window.switchView('view-dashboard')" class="flex items-center gap-2 text-glass-primary font-bold hover:bg-white/40 px-4 py-2 rounded-xl transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
                 กลับหน้าหลัก
             </button>
-            <h2 class="font-bold text-gray-800 md:text-lg">🚙 ระบบจัดการและจองรถส่วนกลาง</h2>
+            <h2 class="font-bold text-gray-800 md:text-lg tracking-wide">🚙 จัดการและจองรถส่วนกลาง</h2>
         </div>
 
         <div class="flex flex-col xl:flex-row gap-6 w-full items-start">
             <!-- ซ้าย: ฟอร์มกรอกข้อมูล -->
-            <div class="w-full xl:w-4/12 bg-white rounded-3xl flex flex-col shrink-0 overflow-hidden shadow-xl border border-gray-200 border-t-4 border-t-[#0071BA]">
-                <div class="p-6 bg-blue-50 border-b border-blue-100 flex justify-between items-center">
-                    <h3 class="text-lg font-bold text-blue-900 flex items-center gap-2" id="vb-form-title">
+            <div class="w-full xl:w-4/12 glass-card rounded-[2rem] flex flex-col shrink-0 overflow-hidden border-t-2 border-l-2 border-white/80">
+                <div class="p-6 bg-white/30 border-b border-white/50 flex justify-between items-center backdrop-blur-sm">
+                    <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2 drop-shadow-sm" id="vb-form-title">
                         <span>📝</span> บันทึกการจองรถใหม่
                     </h3>
-                    <button id="btn-cancel-edit" type="button" onclick="window.cancelEditBooking()" class="hidden text-sm bg-white border border-gray-300 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition shadow-sm font-bold">ยกเลิกแก้ไข</button>
+                    <button id="btn-cancel-edit" type="button" onclick="window.cancelEditBooking()" class="hidden text-xs glass-btn text-gray-700 px-3 py-1.5 rounded-lg font-bold">ยกเลิกแก้ไข</button>
                 </div>
                 
-                <form id="vehicle-booking-form" class="p-6 space-y-5" onsubmit="window.previewVehicleBooking(event)">
+                <form id="vehicle-booking-form" class="p-6 space-y-5 relative z-10" onsubmit="window.previewVehicleBooking(event)">
                     <input type="hidden" id="vb-id" value=""> 
+                    
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2">เลือกรถ <span class="text-red-500">*</span></label>
-                        <select id="vb-car" required class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl font-bold text-gray-700 cursor-pointer outline-none focus:ring-2 focus:ring-blue-500">
+                        <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">เลือกรถ <span class="text-red-500">*</span></label>
+                        <select id="vb-car" required class="w-full p-3 glass-input rounded-xl font-bold text-gray-800 cursor-pointer">
                             <option value="รถบรรทุกน้ำ (ผอ 6919)">💦 รถบรรทุกน้ำอเนกประสงค์ (ผอ 6919)</option>
                             <option value="รถส่วนกลาง (จก 8337) (รถขาว)">🚗 รถส่วนกลาง (จก 8337) (รถขาว)</option>
                             <option value="รถส่วนกลาง (กพ 7743) (รถดำ)">🚗 รถส่วนกลาง (กพ 7743) (รถดำ)</option>
@@ -197,48 +291,51 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2">ผู้ขอใช้รถ / คนขับ <span class="text-red-500">*</span></label>
-                        <input type="text" id="vb-name" required placeholder="ชื่อพนักงาน" class="w-full p-3 bg-white border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
+                        <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">ผู้ขอใช้รถ / คนขับ <span class="text-red-500">*</span></label>
+                        <input type="text" id="vb-name" required placeholder="ชื่อพนักงาน" class="w-full p-3 glass-input rounded-xl text-sm font-medium placeholder-gray-400">
                     </div>
 
                     <div>
-                        <label class="block text-sm font-bold text-gray-700 mb-2">สถานที่ไป / ภารกิจ <span class="text-red-500">*</span></label>
-                        <input type="text" id="vb-dest" required placeholder="เช่น ส่งเอกสารอำเภอ" class="w-full p-3 bg-white border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium">
+                        <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">สถานที่ไป / ภารกิจ <span class="text-red-500">*</span></label>
+                        <input type="text" id="vb-dest" required placeholder="เช่น ส่งเอกสารอำเภอ" class="w-full p-3 glass-input rounded-xl text-sm font-medium placeholder-gray-400">
                     </div>
 
-                    <div class="bg-blue-50/50 p-4 rounded-2xl border border-blue-100">
-                        <label class="block text-sm font-bold text-blue-900 mb-2">วันและเวลาที่จอง <span class="text-red-500">*</span></label>
-                        <input type="text" id="vb-date" required class="w-full p-3 bg-white border border-blue-200 rounded-xl text-sm mb-3 font-bold text-gray-700 text-center cursor-pointer outline-none focus:ring-2 focus:ring-blue-400">
+                    <!-- Glass box for Datetime -->
+                    <div class="glass-card-inner p-4 rounded-2xl border border-white/60">
+                        <label class="block text-sm font-bold text-blue-900 mb-2 ml-1">วันและเวลาที่จอง <span class="text-red-500">*</span></label>
+                        <input type="text" id="vb-date" required class="w-full p-3 bg-white/70 backdrop-blur-sm border border-white/80 rounded-xl text-sm mb-3 font-bold text-gray-800 text-center cursor-pointer transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-300">
                         <div class="flex items-center gap-2">
-                            <input type="text" id="vb-start" required class="w-full p-3 bg-white border border-blue-200 rounded-xl text-sm font-bold text-gray-700 text-center cursor-pointer outline-none focus:ring-2 focus:ring-blue-400">
-                            <span class="font-bold text-gray-500">ถึง</span>
-                            <input type="text" id="vb-end" required class="w-full p-3 bg-white border border-blue-200 rounded-xl text-sm font-bold text-gray-700 text-center cursor-pointer outline-none focus:ring-2 focus:ring-blue-400">
+                            <input type="text" id="vb-start" required class="w-full p-3 bg-white/70 backdrop-blur-sm border border-white/80 rounded-xl text-sm font-bold text-gray-800 text-center cursor-pointer transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-300">
+                            <span class="font-bold text-gray-500 drop-shadow-sm">ถึง</span>
+                            <input type="text" id="vb-end" required class="w-full p-3 bg-white/70 backdrop-blur-sm border border-white/80 rounded-xl text-sm font-bold text-gray-800 text-center cursor-pointer transition focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-300">
                         </div>
                     </div>
 
-                    <div class="flex items-center bg-green-50 border border-green-200 p-4 rounded-2xl">
-                        <input type="checkbox" id="vb-notify-line" checked class="w-5 h-5 text-green-600 bg-white border-gray-300 rounded focus:ring-green-500 cursor-pointer">
-                        <label for="vb-notify-line" class="ml-3 block text-sm font-bold text-green-800 cursor-pointer">
+                    <!-- Notify Toggle -->
+                    <div class="flex items-center bg-green-50/50 backdrop-blur-md border border-green-200/50 p-4 rounded-2xl shadow-sm">
+                        <input type="checkbox" id="vb-notify-line" checked class="w-5 h-5 text-green-500 bg-white/80 border-white/80 rounded focus:ring-green-400 cursor-pointer">
+                        <label for="vb-notify-line" class="ml-3 block text-sm font-bold text-green-800 cursor-pointer drop-shadow-sm">
                             ส่งแจ้งเตือนเข้า LINE กลุ่มทันที
                         </label>
                     </div>
 
-                    <button type="submit" id="btn-submit-booking" class="w-full bg-gradient-to-r from-[#0071BA] to-blue-500 hover:from-[#005a95] hover:to-[#0071BA] text-white font-bold py-4 rounded-2xl shadow-[0_10px_20px_rgba(0,113,186,0.3)] transition-all transform hover:-translate-y-1 mt-2 flex justify-center items-center gap-2 text-lg">
+                    <!-- Glass Button Submit -->
+                    <button type="submit" id="btn-submit-booking" class="w-full bg-gradient-to-r from-blue-500/80 to-cyan-500/80 hover:from-blue-600/90 hover:to-cyan-600/90 backdrop-blur-md text-white border border-white/40 font-bold py-4 rounded-2xl transition-all shadow-[0_8px_32px_rgba(59,130,246,0.3)] hover:-translate-y-1 mt-2 flex justify-center items-center gap-2 text-lg">
                         <span>📋</span> ตรวจสอบข้อมูล
                     </button>
                 </form>
             </div>
 
             <!-- ขวา: ตาราง 15 วัน -->
-            <div class="w-full xl:w-8/12 bg-white rounded-3xl flex flex-col h-auto xl:h-[750px] overflow-hidden shadow-xl border border-gray-200">
-                <div class="p-5 md:p-6 bg-gray-800 text-white flex justify-between items-center shrink-0">
+            <div class="w-full xl:w-8/12 glass-card rounded-[2rem] flex flex-col h-auto xl:h-[750px] overflow-hidden border-t-2 border-l-2 border-white/80">
+                <div class="p-5 md:p-6 bg-gray-900/60 backdrop-blur-md text-white flex justify-between items-center shrink-0 border-b border-white/20">
                     <h3 class="text-xl font-bold flex items-center gap-2">
                         <span>🗓️</span> ประวัติการใช้รถ (15 วันล่าสุด)
                     </h3>
-                    <button onclick="window.loadBookings()" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-xl transition border border-gray-600" title="รีเฟรช">🔄</button>
+                    <button onclick="window.loadBookings()" class="p-2 bg-white/10 hover:bg-white/20 rounded-xl transition border border-white/20" title="รีเฟรช">🔄</button>
                 </div>
                 
-                <div id="vehicle-timeline" class="flex-1 overflow-y-auto custom-scroll p-4 md:p-6 bg-gray-50 space-y-6">
+                <div id="vehicle-timeline" class="flex-1 overflow-y-auto custom-scroll p-4 md:p-6 bg-white/20 space-y-6">
                     <div class="text-center py-10 text-gray-500 font-medium">กำลังโหลดข้อมูลตาราง...</div>
                 </div>
             </div>
@@ -248,15 +345,15 @@
     <!-- ========================================== -->
     <!-- VIEW: NEWSLETTER EDITOR (ระบบจดหมายข่าว 4K) -->
     <!-- ========================================== -->
-    <div id="view-newsletter" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in relative">
-        <div class="flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
-            <button onclick="window.switchView('view-dashboard')" class="flex items-center gap-2 text-[#0071BA] font-bold hover:bg-blue-50 px-4 py-2 rounded-xl transition-colors">
+    <div id="view-newsletter" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in relative z-10">
+        <div class="flex items-center justify-between glass-card p-4 rounded-2xl border-t border-l border-white/80">
+            <button onclick="window.switchView('view-dashboard')" class="flex items-center gap-2 text-glass-primary font-bold hover:bg-white/40 px-4 py-2 rounded-xl transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
                 กลับหน้าหลัก
             </button>
             <div class="flex items-center gap-4">
-                <h2 class="font-bold text-gray-800 hidden md:block">📰 ระบบสร้างจดหมายข่าว 4K</h2>
-                <button onclick="window.showHistoryModal()" class="flex items-center gap-1.5 bg-indigo-50 text-indigo-700 border border-indigo-200 px-4 py-2 rounded-xl hover:bg-indigo-100 text-sm font-bold transition">
+                <h2 class="font-bold text-gray-800 hidden md:block tracking-wide">📰 ระบบสร้างจดหมายข่าว 4K</h2>
+                <button onclick="window.showHistoryModal()" class="flex items-center gap-1.5 glass-btn text-indigo-700 px-4 py-2 rounded-xl text-sm font-bold transition">
                     <span>📜</span> ประวัติ
                 </button>
             </div>
@@ -264,77 +361,77 @@
 
         <div class="flex flex-col xl:flex-row gap-6 w-full">
             <!-- แถบเครื่องมือซ้าย -->
-            <div class="w-full xl:w-4/12 bg-white p-0 rounded-3xl overflow-hidden h-fit flex flex-col shrink-0 relative z-20 shadow-xl border border-gray-200">
-                <div class="bg-gradient-to-r from-[#0071BA] to-[#00AEEF] p-6 text-white shadow-md z-10 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-10 -mt-10 blur-2xl"></div>
-                    <h2 class="text-2xl font-bold flex items-center gap-2 relative z-10">
+            <div class="w-full xl:w-4/12 glass-card p-0 rounded-[2rem] overflow-hidden h-fit flex flex-col shrink-0 relative z-20 border-t-2 border-l-2 border-white/80">
+                <div class="bg-gradient-to-r from-blue-500/50 to-cyan-500/50 backdrop-blur-md p-6 text-white shadow-sm z-10 relative overflow-hidden border-b border-white/30">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-20 rounded-full -mr-10 -mt-10 blur-2xl"></div>
+                    <h2 class="text-2xl font-bold flex items-center gap-2 relative z-10 drop-shadow-md">
                         <span class="text-yellow-300">✨</span> เครื่องมือสร้างข่าว
                     </h2>
                 </div>
                 
-                <div class="p-4 md:p-6 space-y-5">
+                <div class="p-4 md:p-6 space-y-5 bg-white/20">
                     
-                    <div class="bg-purple-50 p-4 rounded-2xl border border-purple-100">
-                        <label class="block text-sm font-bold text-purple-900 mb-2 flex items-center gap-2">
+                    <div class="glass-card-inner p-4 rounded-2xl border-white/60 shadow-sm">
+                        <label class="block text-sm font-bold text-purple-900 mb-2 flex items-center gap-2 ml-1">
                             <span class="text-lg">🏢</span> เลือกหน่วยงาน
                         </label>
-                        <select id="select-agency" onchange="window.updateAgencyTheme()" class="w-full p-3 bg-white border border-purple-200 rounded-xl font-bold text-purple-900 cursor-pointer outline-none focus:ring-2 focus:ring-purple-400">
+                        <select id="select-agency" onchange="window.updateAgencyTheme()" class="w-full p-3 glass-input rounded-xl font-bold text-purple-900 cursor-pointer">
                             <option value="obt">องค์การบริหารส่วนตำบลโนนอุดม</option>
                             <option value="cdc">ศูนย์พัฒนาเด็กเล็ก อบต.โนนอุดม</option>
                         </select>
                     </div>
 
-                    <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100">
-                        <label class="block text-sm font-bold text-indigo-900 mb-2 flex items-center gap-2">
+                    <div class="glass-card-inner p-4 rounded-2xl border-white/60 shadow-sm">
+                        <label class="block text-sm font-bold text-indigo-900 mb-2 flex items-center gap-2 ml-1">
                             <span class="text-lg">🎨</span> รูปแบบเทมเพลต
                         </label>
-                        <select id="select-template" class="w-full p-3 bg-white border border-indigo-200 rounded-xl font-bold text-indigo-900 cursor-pointer outline-none focus:ring-2 focus:ring-indigo-400">
+                        <select id="select-template" class="w-full p-3 glass-input rounded-xl font-bold text-indigo-900 cursor-pointer">
                             <option value="1">รูปแบบที่ 1 : ทางการ (หรูหรา)</option>
                             <option value="2">รูปแบบที่ 2 : ทันสมัย (แถบสีฟ้า)</option>
-                            <option value="3" selected>รูปแบบที่ 3 : ร่วมสมัย (มีรูปหน้าปกใหญ่)</option>
+                            <option value="3" selected>รูปแบบที่ 3 : ร่วมสมัย (รูปหน้าปกใหญ่)</option>
                         </select>
                     </div>
 
-                    <div class="bg-blue-50 p-4 rounded-2xl border border-blue-100">
-                        <label class="block text-sm font-bold text-blue-900 mb-2 flex items-center gap-2">
+                    <div class="glass-card-inner p-4 rounded-2xl border-white/60 shadow-sm">
+                        <label class="block text-sm font-bold text-blue-900 mb-2 flex items-center gap-2 ml-1">
                             <span class="text-lg">📝</span> หัวข้อเรื่อง (Topic)
                         </label>
-                        <textarea id="input-topic" placeholder="เช่น ประชุมสภาฯ..." class="w-full p-3 bg-white border border-blue-200 rounded-xl font-medium text-gray-800 custom-scroll outline-none focus:ring-2 focus:ring-blue-400" rows="2"></textarea>
+                        <textarea id="input-topic" placeholder="เช่น ประชุมสภาฯ..." class="w-full p-3 glass-input rounded-xl font-medium text-gray-800 custom-scroll" rows="2"></textarea>
                     </div>
                     
-                    <div class="bg-sky-50 p-4 rounded-2xl border border-sky-100">
-                        <label class="block text-sm font-bold text-sky-900 mb-2 flex items-center gap-2">
+                    <div class="glass-card-inner p-4 rounded-2xl border-white/60 shadow-sm">
+                        <label class="block text-sm font-bold text-sky-900 mb-2 flex items-center gap-2 ml-1">
                             <span class="text-lg">📅</span> วันที่ (Date)
                         </label>
                         <div class="grid grid-cols-3 gap-2">
-                            <select id="select-day" class="w-full p-2.5 bg-white border border-sky-200 rounded-xl text-sm font-bold cursor-pointer text-center outline-none focus:ring-2 focus:ring-sky-400"></select>
-                            <select id="select-month" class="w-full p-2.5 bg-white border border-sky-200 rounded-xl text-sm font-bold cursor-pointer text-center outline-none focus:ring-2 focus:ring-sky-400">
+                            <select id="select-day" class="w-full p-2.5 glass-input rounded-xl text-sm font-bold cursor-pointer text-center"></select>
+                            <select id="select-month" class="w-full p-2.5 glass-input rounded-xl text-sm font-bold cursor-pointer text-center">
                                 <option value="มกราคม">มกราคม</option><option value="กุมภาพันธ์">กุมภาพันธ์</option><option value="มีนาคม">มีนาคม</option>
                                 <option value="เมษายน">เมษายน</option><option value="พฤษภาคม">พฤษภาคม</option><option value="มิถุนายน">มิถุนายน</option>
                                 <option value="กรกฎาคม">กรกฎาคม</option><option value="สิงหาคม">สิงหาคม</option><option value="กันยายน">กันยายน</option>
                                 <option value="ตุลาคม">ตุลาคม</option><option value="พฤศจิกายน">พฤศจิกายน</option><option value="ธันวาคม">ธันวาคม</option>
                             </select>
-                            <select id="select-year" class="w-full p-2.5 bg-white border border-sky-200 rounded-xl text-sm font-bold cursor-pointer text-center outline-none focus:ring-2 focus:ring-sky-400"></select>
+                            <select id="select-year" class="w-full p-2.5 glass-input rounded-xl text-sm font-bold cursor-pointer text-center"></select>
                         </div>
                     </div>
 
-                    <div class="bg-green-50 p-4 rounded-2xl border border-green-100">
-                        <label class="block text-sm font-bold text-green-900 flex items-center gap-2 mb-2">
+                    <div class="glass-card-inner p-4 rounded-2xl border-white/60 shadow-sm">
+                        <label class="block text-sm font-bold text-green-900 flex items-center gap-2 mb-2 ml-1">
                             <span class="text-lg">💬</span> รายละเอียด
                         </label>
                         
-                        <div class="flex flex-wrap items-center gap-2 mb-3 bg-white p-2 rounded-xl border border-green-200">
+                        <div class="flex flex-wrap items-center gap-2 mb-3 bg-white/60 backdrop-blur-sm p-2 rounded-xl border border-white/80">
                             <span class="text-xs font-bold text-green-800">ขนาดอักษร:</span>
-                            <button type="button" onclick="window.changeFontSize('sync-description', 'fontSize-desc', -1)" class="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold">-</button>
+                            <button type="button" onclick="window.changeFontSize('sync-description', 'fontSize-desc', -1)" class="flex items-center justify-center w-8 h-8 rounded-lg bg-white/50 hover:bg-white text-gray-700 font-bold shadow-sm">-</button>
                             <input type="number" id="fontSize-desc" value="18" class="w-10 text-center bg-transparent text-sm font-bold outline-none pointer-events-none text-green-900" readonly>
-                            <button type="button" onclick="window.changeFontSize('sync-description', 'fontSize-desc', 1)" class="flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold">+</button>
+                            <button type="button" onclick="window.changeFontSize('sync-description', 'fontSize-desc', 1)" class="flex items-center justify-center w-8 h-8 rounded-lg bg-white/50 hover:bg-white text-gray-700 font-bold shadow-sm">+</button>
                         </div>
 
-                        <textarea id="input-description" placeholder="พิมพ์รายละเอียดกิจกรรม..." class="w-full p-3 bg-white border border-green-200 rounded-xl font-medium text-gray-800 custom-scroll outline-none focus:ring-2 focus:ring-green-400" rows="5"></textarea>
+                        <textarea id="input-description" placeholder="พิมพ์รายละเอียดกิจกรรม..." class="w-full p-3 glass-input rounded-xl font-medium text-gray-800 custom-scroll" rows="5"></textarea>
                     </div>
 
-                    <div class="bg-yellow-50 p-4 rounded-2xl border border-yellow-100">
-                        <label class="block text-sm font-bold text-yellow-900 mb-3 flex items-center gap-2">
+                    <div class="glass-card-inner p-4 rounded-2xl border-white/60 shadow-sm">
+                        <label class="block text-sm font-bold text-yellow-900 mb-3 flex items-center gap-2 ml-1">
                             <span class="text-lg">🖼️</span> อัปโหลดรูปภาพ
                         </label>
                         
@@ -342,18 +439,18 @@
                             <p class="text-xs font-bold text-purple-700 mb-2">รูปหน้าปก (Cover Image - แนวนอน)</p>
                             <div class="relative">
                                 <input type="file" accept="image/*" class="hidden" id="upload-img-cover"/>
-                                <label for="upload-img-cover" id="label-img-cover" class="flex flex-col items-center justify-center w-full h-24 bg-white border-2 border-dashed border-purple-300 rounded-xl cursor-pointer hover:bg-purple-50 transition-all overflow-hidden relative">
+                                <label for="upload-img-cover" id="label-img-cover" class="flex flex-col items-center justify-center w-full h-24 bg-white/50 backdrop-blur-sm border-2 border-dashed border-purple-300/80 rounded-xl cursor-pointer hover:bg-white/80 transition-all overflow-hidden relative">
                                     <div id="icon-img-cover" class="flex flex-col items-center justify-center pointer-events-none"><span class="text-xl text-purple-500 leading-none">+</span></div>
                                     <img id="thumb-img-cover" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
                                 </label>
                             </div>
                         </div>
                         
-                        <p class="text-xs font-bold text-yellow-800 mb-2">รูปแกลเลอรี (6 รูป ขนาดเท่ากัน)</p>
+                        <p class="text-xs font-bold text-yellow-800 mb-2 drop-shadow-sm">รูปแกลเลอรี (6 รูป ขนาดเท่ากัน)</p>
                         <div class="grid grid-cols-3 gap-2" id="upload-buttons-container"></div>
                     </div>
 
-                    <button id="btn-export" onclick="window.exportNewsletter()" class="w-full text-white font-bold py-4 rounded-2xl shadow-[0_10px_20px_rgba(0,113,186,0.3)] transition-all transform hover:-translate-y-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 flex justify-center items-center gap-2 mt-4 text-lg border border-teal-600">
+                    <button id="btn-export" onclick="window.exportNewsletter()" class="w-full text-white font-bold py-4 rounded-2xl shadow-[0_8px_30px_rgba(16,185,129,0.3)] transition-all transform hover:-translate-y-1 bg-gradient-to-r from-emerald-500/90 to-teal-500/90 hover:from-emerald-600/90 hover:to-teal-600/90 backdrop-blur-md border border-white/30 flex justify-center items-center gap-2 mt-4 text-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                         <span id="btn-text">บันทึกเป็นรูปภาพ (4K)</span>
                     </button>
@@ -361,7 +458,7 @@
             </div>
 
             <!-- พื้นที่พรีวิว ขวา -->
-            <div id="preview-container" class="w-full xl:w-8/12 flex items-start justify-center bg-white p-4 md:p-8 rounded-3xl shadow-xl border border-gray-200 overflow-hidden relative z-10 min-h-[600px] xl:h-auto custom-scroll overflow-y-auto">
+            <div id="preview-container" class="w-full xl:w-8/12 flex items-start justify-center glass-card p-4 md:p-8 rounded-[2rem] border-t-2 border-l-2 border-white/80 overflow-hidden relative z-10 min-h-[600px] xl:h-auto custom-scroll overflow-y-auto">
                 
                 <!-- TEMPLATE 3 : ร่วมสมัย (Default) -->
                 <div id="template-3" class="w-[800px] h-[1131px] bg-[#fdfaf6] relative shadow-2xl shrink-0 overflow-hidden origin-top mx-auto flex flex-col border border-gray-200">
@@ -484,15 +581,15 @@
         <!-- ========================================== -->
         <!-- MODAL: ประวัติจดหมายข่าว -->
         <!-- ========================================== -->
-        <div id="history-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm opacity-0 transition-opacity duration-300">
-            <div class="bg-white rounded-3xl shadow-2xl w-full max-w-xl max-h-[80vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300" id="history-modal-content">
-                <div class="bg-indigo-50 px-6 py-4 border-b border-indigo-100 flex justify-between items-center shrink-0">
+        <div id="history-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/30 backdrop-blur-md opacity-0 transition-opacity duration-300">
+            <div class="glass-card rounded-3xl w-full max-w-xl max-h-[80vh] flex flex-col overflow-hidden transform scale-95 transition-transform duration-300 border-t border-l border-white/80" id="history-modal-content">
+                <div class="bg-indigo-50/50 backdrop-blur-sm px-6 py-4 border-b border-white/50 flex justify-between items-center shrink-0">
                     <h3 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
                         <span>📜</span> ประวัติจดหมายข่าว
                     </h3>
-                    <button onclick="window.closeHistoryModal()" class="text-gray-400 hover:text-gray-600 bg-white hover:bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center transition shadow-sm border border-gray-200">✕</button>
+                    <button onclick="window.closeHistoryModal()" class="text-gray-400 hover:text-gray-600 bg-white/50 hover:bg-white rounded-full w-8 h-8 flex items-center justify-center transition shadow-sm border border-white/50">✕</button>
                 </div>
-                <div id="history-list-container" class="flex-1 overflow-y-auto custom-scroll p-4 space-y-3 bg-white">
+                <div id="history-list-container" class="flex-1 overflow-y-auto custom-scroll p-4 space-y-3 bg-white/30 backdrop-blur-sm">
                     <!-- ประวัติจะถูกโหลดมาใส่ตรงนี้ -->
                 </div>
             </div>
@@ -500,24 +597,24 @@
     </div>
 
     <!-- (ส่วน view-calendar และ view-asset-manager ใส่โครงสร้างไว้ให้ครบเพื่อไม่ให้ระบบรวน) -->
-    <div id="view-calendar" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in">
-        <div class="flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
-            <button onclick="window.switchView('view-dashboard')" class="flex items-center gap-2 text-[#0071BA] font-bold hover:bg-blue-50 px-4 py-2 rounded-xl transition-colors">กลับหน้าหลัก</button>
+    <div id="view-calendar" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in z-10 relative">
+        <div class="flex items-center justify-between glass-card p-4 rounded-2xl border-t border-l border-white/80">
+            <button onclick="window.switchView('view-dashboard')" class="flex items-center gap-2 text-glass-primary font-bold hover:bg-white/40 px-4 py-2 rounded-xl transition-colors">กลับหน้าหลัก</button>
             <h2 class="font-bold text-gray-800">📅 คลังสื่อและปฏิทินวันสำคัญ</h2>
-            <button onclick="window.switchView('view-asset-manager')" class="bg-yellow-400 text-yellow-900 font-bold px-4 py-2 rounded-xl text-sm">เพิ่มข้อมูล</button>
+            <button onclick="window.switchView('view-asset-manager')" class="glass-btn text-yellow-900 bg-yellow-400/50 font-bold px-4 py-2 rounded-xl text-sm">เพิ่มข้อมูล</button>
         </div>
-        <div class="bg-white rounded-3xl p-8 shadow-xl border border-gray-200 text-center text-gray-500">
-            <p>(ระบบคลังสื่อพร้อมใช้งานเมื่อต่อ Firebase แล้ว)</p>
+        <div class="glass-card rounded-[2rem] p-8 border-t border-l border-white/80 text-center text-gray-500 backdrop-blur-md">
+            <p class="font-medium drop-shadow-sm">(ระบบคลังสื่อพร้อมใช้งานเมื่อต่อ Firebase แล้ว)</p>
         </div>
     </div>
-    <div id="view-asset-manager" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in">
-        <div class="flex items-center justify-between bg-white p-4 rounded-2xl shadow-sm border border-gray-200">
-            <button onclick="window.switchView('view-calendar')" class="flex items-center gap-2 text-gray-600 font-bold hover:bg-gray-100 px-4 py-2 rounded-xl transition-colors">กลับ</button>
+    <div id="view-asset-manager" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in z-10 relative">
+        <div class="flex items-center justify-between glass-card p-4 rounded-2xl border-t border-l border-white/80">
+            <button onclick="window.switchView('view-calendar')" class="flex items-center gap-2 text-gray-600 font-bold hover:bg-white/40 px-4 py-2 rounded-xl transition-colors">กลับ</button>
             <h2 class="font-bold text-yellow-600 text-xl">จัดการข้อมูลอินโฟกราฟิก</h2>
-            <span id="cloud-status-text" class="text-sm font-bold text-gray-500 bg-gray-100 px-3 py-1 rounded-full border border-gray-200">กำลังเชื่อมต่อ...</span>
+            <span id="cloud-status-text" class="text-sm font-bold text-gray-500 glass-card-inner px-3 py-1 rounded-full">กำลังเชื่อมต่อ...</span>
         </div>
-        <div class="bg-white rounded-3xl p-8 shadow-xl border border-gray-200 text-center text-gray-500">
-             <p>(หน้านี้สงวนไว้จัดการข้อมูลขึ้นคลาวด์)</p>
+        <div class="glass-card rounded-[2rem] p-8 border-t border-l border-white/80 text-center text-gray-500 backdrop-blur-md">
+             <p class="font-medium drop-shadow-sm">(หน้านี้สงวนไว้จัดการข้อมูลขึ้นคลาวด์)</p>
         </div>
     </div>
 
@@ -553,8 +650,8 @@
 
         const updateCloudStatus = (text, isError = false) => {
             const dashStatus = document.getElementById('dash-cloud-status');
-            const cls = isError ? "bg-red-50 text-red-600 border-red-200" : "bg-green-50 text-green-700 border-green-200";
-            if(dashStatus) { dashStatus.innerText = text; dashStatus.className = `text-xs font-bold px-3 py-1 rounded-full border ${cls}`; }
+            const cls = isError ? "bg-red-50/50 text-red-600 border-red-200/50" : "bg-green-50/50 text-green-700 border-green-200/50";
+            if(dashStatus) { dashStatus.innerText = text; dashStatus.className = `text-xs font-bold px-3 py-1.5 rounded-full border backdrop-blur-sm ${cls}`; }
         }
 
         try {
@@ -568,13 +665,13 @@
 
             const initAuth = async () => {
                 try { await signInAnonymously(auth); } 
-                catch (err) { console.error("Auth Error:", err); updateCloudStatus("ระบบคลาวด์ล็อกการเข้าถึง ⚠️", true); window.loadBookings(); }
+                catch (err) { console.error("Auth Error:", err); updateCloudStatus("ระบบคลาวด์ล็อก ⚠️", true); window.loadBookings(); }
             };
             initAuth();
 
             onAuthStateChanged(auth, (user) => {
                 if (user) {
-                    updateCloudStatus("เชื่อมต่อคลาวด์แล้ว ☁️");
+                    updateCloudStatus("ซิงค์คลาวด์แล้ว ☁️");
                     onSnapshot(bookingRef, (snapshot) => {
                         bookingData = [];
                         snapshot.forEach((doc) => bookingData.push(doc.data()));
@@ -592,7 +689,7 @@
             });
         } catch(e) {
             console.warn("ไม่สามารถเชื่อมต่อ Firebase ได้ สลับไปใช้ LocalStorage", e);
-            updateCloudStatus("โหมดออฟไลน์ (Local) ⚠️", true);
+            updateCloudStatus("โหมดออฟไลน์ ⚠️", true);
             window.loadBookings();
         }
 
@@ -668,7 +765,7 @@
             
             const btn = document.getElementById('btn-submit-booking');
             btn.innerHTML = '<span>📋</span> ตรวจสอบข้อมูล';
-            btn.className = "w-full bg-gradient-to-r from-[#0071BA] to-blue-500 hover:from-[#005a95] hover:to-[#0071BA] text-white font-bold py-4 rounded-2xl shadow-[0_10px_20px_rgba(0,113,186,0.3)] transition-all transform hover:-translate-y-1 mt-2 flex justify-center items-center gap-2 text-lg";
+            btn.className = "w-full bg-gradient-to-r from-blue-500/80 to-cyan-500/80 hover:from-blue-600/90 hover:to-cyan-600/90 backdrop-blur-md text-white border border-white/40 font-bold py-4 rounded-2xl transition-all shadow-[0_8px_32px_rgba(59,130,246,0.3)] hover:-translate-y-1 mt-2 flex justify-center items-center gap-2 text-lg";
             
             document.getElementById('vb-form-title').innerHTML = '<span>📝</span> บันทึกการจองรถใหม่';
             
@@ -693,11 +790,11 @@
             if (fpEnd) fpEnd.setDate(booking.end);
             
             document.getElementById('btn-cancel-edit').classList.remove('hidden');
-            document.getElementById('vb-form-title').innerHTML = '<span class="text-orange-600">✏️ โหมดแก้ไขข้อมูล</span>';
+            document.getElementById('vb-form-title').innerHTML = '<span class="text-orange-600 drop-shadow-sm">✏️ โหมดแก้ไขข้อมูล</span>';
             
             const btn = document.getElementById('btn-submit-booking');
             btn.innerHTML = '<span>📋</span> ตรวจสอบข้อมูลแก้ไข';
-            btn.className = "w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-4 rounded-2xl shadow-md transition-all transform hover:-translate-y-1 mt-2 flex justify-center items-center gap-2 text-lg";
+            btn.className = "w-full bg-gradient-to-r from-orange-400/80 to-amber-500/80 hover:from-orange-500/90 hover:to-amber-600/90 backdrop-blur-md text-white border border-white/40 font-bold py-4 rounded-2xl shadow-md transition-all transform hover:-translate-y-1 mt-2 flex justify-center items-center gap-2 text-lg";
             
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -729,20 +826,20 @@
             
             const notifyEl = document.getElementById('confirm-detail-notify');
             if (pendingBooking.notify) {
-                notifyEl.className = "flex items-center gap-2 p-3 rounded-xl font-bold bg-green-50 text-green-700 border border-green-200 mt-2";
+                notifyEl.className = "flex items-center gap-2 p-3 rounded-xl font-bold bg-green-50/70 text-green-700 border border-green-200/50 mt-2 backdrop-blur-sm";
                 notifyEl.innerHTML = `<span>🔔</span> ส่งแจ้งเตือนเข้า LINE กลุ่มทันที`;
             } else {
-                notifyEl.className = "flex items-center gap-2 p-3 rounded-xl font-bold bg-gray-50 text-gray-500 border border-gray-200 mt-2";
+                notifyEl.className = "flex items-center gap-2 p-3 rounded-xl font-bold bg-gray-50/70 text-gray-500 border border-gray-200/50 mt-2 backdrop-blur-sm";
                 notifyEl.innerHTML = `<span>🔕</span> ไม่ส่งแจ้งเตือน LINE (บันทึกเข้าระบบเงียบๆ)`;
             }
             
             const btnFinal = document.getElementById('btn-final-confirm');
             if(isEditing) {
                 btnFinal.innerHTML = 'บันทึกการแก้ไข 💾';
-                btnFinal.className = "flex-[1.5] px-4 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold rounded-xl transition-colors shadow-md flex justify-center items-center gap-2";
+                btnFinal.className = "flex-[1.5] px-4 py-3 bg-gradient-to-r from-orange-400/90 to-amber-500/90 hover:from-orange-500/90 hover:to-amber-600/90 backdrop-blur-md text-white border border-white/30 font-bold rounded-xl transition-all shadow-md flex justify-center items-center gap-2";
             } else {
                 btnFinal.innerHTML = 'ยืนยันการจอง 🚀';
-                btnFinal.className = "flex-[1.5] px-4 py-3 bg-gradient-to-r from-[#0071BA] to-blue-500 text-white font-bold rounded-xl transition-colors shadow-md flex justify-center items-center gap-2";
+                btnFinal.className = "flex-[1.5] px-4 py-3 bg-gradient-to-r from-blue-500/90 to-cyan-500/90 hover:from-blue-600/90 hover:to-cyan-600/90 backdrop-blur-md text-white border border-white/30 font-bold rounded-xl transition-all shadow-md flex justify-center items-center gap-2";
             }
 
             const modal = document.getElementById('booking-confirm-modal');
@@ -782,7 +879,6 @@
                 catch (err) { 
                     console.error("Firebase save error:", err); 
                     window.showToast("บันทึกลงคลาวด์ล้มเหลว ระบบจะบันทึกลงเครื่องแทน");
-                    // Fallback to local if cloud fails halfway
                     if (isEditing) {
                         const idx = bookingData.findIndex(b => b.id === newBooking.id);
                         if(idx !== -1) bookingData[idx] = newBooking;
@@ -840,7 +936,7 @@
             const containers = [document.getElementById('dashboard-timeline'), document.getElementById('vehicle-timeline')];
 
             if (bookingData.length === 0) {
-                const emptyMsg = '<div class="text-center py-10 text-gray-400 font-medium bg-white rounded-2xl border border-gray-100">ยังไม่มีประวัติการจองรถในระบบ</div>';
+                const emptyMsg = '<div class="text-center py-10 text-gray-500/80 font-medium glass-card-inner rounded-[2rem] border border-white/50">ยังไม่มีประวัติการจองรถในระบบ</div>';
                 containers.forEach(c => { if(c) c.innerHTML = emptyMsg; });
                 return;
             }
@@ -851,7 +947,7 @@
             const filteredBookings = bookingData.filter(b => { return new Date(b.date) >= past15Days; });
 
             if (filteredBookings.length === 0) {
-                const emptyMsg = '<div class="text-center py-10 text-gray-400 font-medium bg-white rounded-2xl border border-gray-100">ไม่มีประวัติการจองรถในช่วง 15 วันที่ผ่านมา</div>';
+                const emptyMsg = '<div class="text-center py-10 text-gray-500/80 font-medium glass-card-inner rounded-[2rem] border border-white/50">ไม่มีประวัติการจองรถในช่วง 15 วันที่ผ่านมา</div>';
                 containers.forEach(c => { if(c) c.innerHTML = emptyMsg; });
                 return;
             }
@@ -868,8 +964,8 @@
                 const d = new Date(dateStr);
                 const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
                 
-                let dayBlock = `<div class="bg-white rounded-2xl overflow-hidden mb-6 shadow-sm border border-gray-200">
-                    <div class="bg-blue-50/80 text-blue-900 font-bold px-5 py-3 border-b border-blue-100 flex items-center gap-2">
+                let dayBlock = `<div class="glass-card-inner rounded-[1.5rem] overflow-hidden mb-6 shadow-sm border border-white/60">
+                    <div class="bg-blue-50/40 text-glass-primary font-bold px-5 py-3 border-b border-white/40 flex items-center gap-2 backdrop-blur-sm">
                         📅 วันที่ ${thaiDate}
                     </div>
                     <div class="p-4 space-y-4">`;
@@ -877,27 +973,27 @@
                 const bookingsOnDate = groupedByDate[dateStr].sort((a, b) => a.start.localeCompare(b.start));
 
                 bookingsOnDate.forEach(b => {
-                    let carColor = "bg-gray-50 border-gray-200 text-gray-800";
-                    if(b.car.includes("น้ำ")) carColor = "bg-blue-50/50 border-blue-200 text-blue-900";
-                    if(b.car.includes("ดำ")) carColor = "bg-slate-800 border-slate-700 text-white";
-                    if(b.car.includes("กู้ภัย")) carColor = "bg-red-50/50 border-red-200 text-red-900";
+                    let carColor = "bg-white/40 border-white/50 text-gray-800";
+                    if(b.car.includes("น้ำ")) carColor = "bg-blue-50/60 border-blue-200/50 text-blue-900";
+                    if(b.car.includes("ดำ")) carColor = "bg-slate-800/80 border-slate-700/50 text-white backdrop-blur-md";
+                    if(b.car.includes("กู้ภัย")) carColor = "bg-red-50/60 border-red-200/50 text-red-900";
 
-                    let btnActionColor = carColor.includes("slate-800") ? "text-slate-300 bg-slate-700 hover:bg-slate-600 hover:text-white" : "text-gray-600 bg-white hover:bg-gray-100 border border-gray-200";
-                    let btnDeleteColor = carColor.includes("slate-800") ? "text-red-400 bg-slate-700 hover:bg-red-500 hover:text-white" : "text-red-500 bg-red-50 hover:bg-red-100 border border-red-100";
-                    let dividerColor = carColor.includes("slate-800") ? "border-slate-600" : "border-gray-200";
+                    let btnActionColor = carColor.includes("slate-800") ? "text-slate-200 bg-white/10 hover:bg-white/20 border-white/20" : "text-gray-600 bg-white/50 hover:bg-white border border-white/60";
+                    let btnDeleteColor = carColor.includes("slate-800") ? "text-red-400 bg-red-900/40 hover:bg-red-900/60 border-red-500/30" : "text-red-500 bg-red-50/80 hover:bg-red-100 border border-red-100/50";
+                    let dividerColor = carColor.includes("slate-800") ? "border-slate-600" : "border-white/50";
 
                     dayBlock += `
-                        <div class="flex flex-col md:flex-row md:items-center gap-4 p-4 rounded-xl border ${carColor} relative shadow-sm">
-                            <div class="font-bold text-lg min-w-[130px] shrink-0 border-b md:border-b-0 md:border-r ${dividerColor} pb-2 md:pb-0 md:pr-4">
+                        <div class="flex flex-col md:flex-row md:items-center gap-4 p-4 rounded-xl border ${carColor} relative shadow-sm hover:shadow-md transition-all">
+                            <div class="font-bold text-lg min-w-[130px] shrink-0 border-b md:border-b-0 md:border-r ${dividerColor} pb-2 md:pb-0 md:pr-4 drop-shadow-sm">
                                 ⏰ ${b.start} - ${b.end}
                             </div>
                             <div class="flex-1 pr-16">
-                                <p class="font-bold text-base mb-1">${b.car}</p>
-                                <p class="text-sm font-medium opacity-90">📍 ${b.dest} (โดย: ${b.name})</p>
+                                <p class="font-bold text-base mb-1 drop-shadow-sm">${b.car}</p>
+                                <p class="text-sm font-medium opacity-90 drop-shadow-sm">📍 ${b.dest} (โดย: ${b.name})</p>
                             </div>
                             <div class="absolute top-3 right-3 flex gap-2">
-                                <button onclick="window.editBooking(${b.id})" class="p-2 ${btnActionColor} rounded-lg transition font-bold text-xs flex items-center gap-1 shadow-sm">✏️ แก้ไข</button>
-                                <button onclick="window.deleteBooking(${b.id})" class="p-2 ${btnDeleteColor} rounded-lg transition font-bold text-xs shadow-sm">🗑️</button>
+                                <button onclick="window.editBooking(${b.id})" class="p-2 ${btnActionColor} rounded-lg transition font-bold text-xs flex items-center gap-1 shadow-sm backdrop-blur-sm">✏️ <span class="hidden md:inline">แก้ไข</span></button>
+                                <button onclick="window.deleteBooking(${b.id})" class="p-2 ${btnDeleteColor} rounded-lg transition font-bold text-xs shadow-sm backdrop-blur-sm">🗑️</button>
                             </div>
                         </div>`;
                 });
@@ -1002,7 +1098,7 @@
             uploadHtml += `
                 <div class="relative group">
                     <input type="file" accept="image/*" class="hidden" id="upload-img-${i}"/>
-                    <label for="upload-img-${i}" id="label-img-${i}" class="flex flex-col items-center justify-center w-full h-16 bg-white border-2 border-dashed border-yellow-400 rounded-xl cursor-pointer hover:bg-yellow-50 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm">
+                    <label for="upload-img-${i}" id="label-img-${i}" class="flex flex-col items-center justify-center w-full h-16 bg-white/50 backdrop-blur-sm border-2 border-dashed border-yellow-400/80 rounded-xl cursor-pointer hover:bg-white/80 hover:border-yellow-500 transition-all overflow-hidden relative shadow-sm">
                         <div id="icon-img-${i}" class="flex flex-col items-center justify-center pointer-events-none"><span class="text-[10px] font-bold text-yellow-700">รูปที่ ${i+1}</span></div>
                         <img id="thumb-img-${i}" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
                     </label>
@@ -1018,8 +1114,8 @@
                     document.getElementById(`icon-${idStr}`).classList.add('hidden');
                     document.getElementById(`thumb-${idStr}`).src = url; 
                     document.getElementById(`thumb-${idStr}`).classList.remove('hidden');
-                    document.getElementById(`label-${idStr}`).classList.replace('border-yellow-400', 'border-blue-500');
-                    document.getElementById(`label-${idStr}`).classList.replace('border-purple-400', 'border-blue-500');
+                    document.getElementById(`label-${idStr}`).classList.replace('border-yellow-400/80', 'border-blue-400');
+                    document.getElementById(`label-${idStr}`).classList.replace('border-purple-300/80', 'border-blue-400');
                     
                     document.querySelectorAll(`.show-${targetClassPrefix}`).forEach(el => { el.style.backgroundImage = `url('${url}')`; el.classList.remove('hidden'); });
                     document.querySelectorAll(`.ph-${targetClassPrefix}`).forEach(el => el.classList.add('hidden'));
@@ -1111,7 +1207,7 @@
             }
             historyData.forEach(h => {
                 const div = document.createElement('div');
-                div.className = "p-4 bg-gray-50 border border-gray-100 hover:bg-indigo-50 hover:border-indigo-200 transition cursor-pointer flex flex-col gap-2 rounded-xl group";
+                div.className = "p-4 glass-card-inner border-white/60 hover:bg-white/60 transition cursor-pointer flex flex-col gap-2 rounded-xl group";
                 div.onclick = () => {
                     document.getElementById('select-agency').value = h.agency || 'obt';
                     document.getElementById('input-topic').value = h.topic || '';
@@ -1131,10 +1227,10 @@
                 };
                 div.innerHTML = `
                     <div class="flex justify-between items-start">
-                        <h4 class="font-bold text-gray-800 group-hover:text-indigo-700 line-clamp-1">${h.topic || '(ไม่มีหัวข้อ)'}</h4>
-                        <span class="text-[10px] bg-white border border-gray-200 text-gray-600 px-2 py-0.5 rounded-md font-bold shrink-0 ml-2">${new Date(h.timestamp).toLocaleDateString('th-TH')}</span>
+                        <h4 class="font-bold text-gray-800 group-hover:text-indigo-700 line-clamp-1 drop-shadow-sm">${h.topic || '(ไม่มีหัวข้อ)'}</h4>
+                        <span class="text-[10px] bg-white/50 border border-white/60 text-gray-600 px-2 py-0.5 rounded-md font-bold shrink-0 ml-2 shadow-sm">${new Date(h.timestamp).toLocaleDateString('th-TH')}</span>
                     </div>
-                    <p class="text-sm text-gray-500 font-medium line-clamp-2">${h.desc || '(ไม่มีคำบรรยาย)'}</p>
+                    <p class="text-sm text-gray-600 font-medium line-clamp-2">${h.desc || '(ไม่มีคำบรรยาย)'}</p>
                 `;
                 container.appendChild(div);
             });
