@@ -1273,14 +1273,27 @@
             }
         });
 
+       <!-- ... existing code ... -->
         window.exportNewsletter = async function() {
             const btn = document.getElementById('btn-export');
             const btnText = document.getElementById('btn-text');
             btn.disabled = true; btn.classList.add('opacity-70'); btnText.textContent = 'กำลังสร้างเอกสาร...'; 
             
             const activeTemp = document.getElementById(activeTemplateId); 
+            const previewContainer = document.getElementById('preview-container');
+            
+            // แบ็คอัปสไตล์และการเลื่อนจอเดิม
             const currentTransform = activeTemp.style.transform; 
+            const origScroll = previewContainer.scrollTop;
+            const windowScroll = window.scrollY;
+            
+            // 🛠️ แก้บัคภาพแหว่ง/เลื่อน: ปิด Scale และบังคับเลื่อนหน้าจอกลับไปบนสุด
             activeTemp.style.transform = 'none'; 
+            previewContainer.scrollTop = 0;
+            window.scrollTo(0, 0);
+
+            // ⏳ สำคัญมาก: รอ 150ms ให้บราวเซอร์จัดเรียง Layout ใหม่ให้เสร็จก่อนแคปภาพ
+            await new Promise(resolve => setTimeout(resolve, 150));
 
             try {
                 let bgColor = '#fdfcf8';
@@ -1288,7 +1301,13 @@
                 if(activeTemplateId === 'template-3') bgColor = '#fdfaf6';
                 
                 // ปรับเป็น 4K (Scale 4) เพื่อความคมชัดสูงสุด
-                const canvas = await html2canvas(activeTemp, { scale: 4, useCORS: true, backgroundColor: bgColor, scrollY: 0, scrollX: 0 });
+                const canvas = await html2canvas(activeTemp, { 
+                    scale: 4, 
+                    useCORS: true, 
+                    backgroundColor: bgColor, 
+                    scrollY: 0, 
+                    scrollX: 0 
+                });
                 const topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
                 
                 await new Promise((resolve) => {
@@ -1327,7 +1346,11 @@
             } catch (error) { 
                 window.showToast("เกิดข้อผิดพลาดในการสร้างเอกสาร"); 
             } finally {
+                // คืนค่าการเลื่อนหน้าจอและสเกลกลับมาเหมือนเดิม (ผู้ใช้จะได้ไม่รู้สึกว่าจอกระตุก)
                 activeTemp.style.transform = currentTransform; 
+                previewContainer.scrollTop = origScroll;
+                window.scrollTo(0, windowScroll);
+                
                 btn.disabled = false; btn.classList.remove('opacity-70'); btnText.textContent = '💾 บันทึกเป็นรูปภาพ (4K)';
             }
         }
