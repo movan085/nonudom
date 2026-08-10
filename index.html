@@ -22,9 +22,11 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/th.js"></script>
     
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- ⭐️ แก้ไขฟอนต์: เพิ่ม preconnect และ crossorigin เพื่อให้ Android อนุญาตให้ฝังฟอนต์ลงในรูปภาพได้ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
     
-    <!-- STREAMING_CHUNK: Defining clean and lightweight custom CSS... -->
     <style>
         body { font-family: 'Kanit', sans-serif; background-color: #f1f5f9; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -52,7 +54,6 @@
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
-<!-- STREAMING_CHUNK: Building application structure and global modals... -->
 <body class="min-h-screen flex flex-col justify-between relative overflow-x-hidden text-gray-800">
     
     <!-- Toast Notification -->
@@ -105,7 +106,7 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK: Setting up the Dashboard View... -->
+    <!-- STREAMING_CHUNK: Main Interface... -->
     <!-- ========================================== -->
     <!-- VIEW: DASHBOARD (หน้าแรก) -->
     <!-- ========================================== -->
@@ -122,7 +123,6 @@
             </div>
 
             <div class="p-6 md:p-10 bg-white">
-                <!-- เมนูหลัก 2 ปุ่ม -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10 max-w-4xl mx-auto">
                     <button onclick="window.switchView('view-newsletter')" class="group text-left bg-white hover:bg-gray-50 border border-gray-200 rounded-[2rem] p-6 md:p-8 relative overflow-hidden flex flex-col h-full shadow-sm transition">
                         <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-5 group-hover:scale-110 transition-transform duration-300">📰</div>
@@ -137,7 +137,6 @@
                     </button>
                 </div>
 
-                <!-- กระดานคิวรถ -->
                 <div class="w-full mt-6">
                     <div class="flex items-center justify-between mb-5 px-2 border-l-4 border-blue-500 pl-4">
                         <h2 class="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-3">
@@ -151,9 +150,9 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK: Setting up the Vehicle Booking View... -->
+    <!-- STREAMING_CHUNK: Setting up the Vehicle Booking Form... -->
     <!-- ========================================== -->
-    <!-- VIEW: VEHICLE BOOKING (ระบบจองรถ) -->
+    <!-- VIEW: VEHICLE BOOKING -->
     <!-- ========================================== -->
     <div id="view-vehicle" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in relative z-10">
         <div class="flex items-center justify-between bg-white p-4 rounded-[1.5rem] border border-gray-200 shadow-sm">
@@ -225,9 +224,9 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK: Setting up the Newsletter Editor View... -->
+    <!-- STREAMING_CHUNK: Setting up Newsletter Layout... -->
     <!-- ========================================== -->
-    <!-- VIEW: NEWSLETTER EDITOR (ระบบจดหมายข่าว) -->
+    <!-- VIEW: NEWSLETTER EDITOR -->
     <!-- ========================================== -->
     <div id="view-newsletter" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-8 flex flex-col gap-6 fade-in relative z-10">
         <div class="flex items-center justify-between bg-white p-4 rounded-[1.5rem] border border-gray-200 shadow-sm">
@@ -242,7 +241,6 @@
         </div>
 
         <div class="flex flex-col xl:flex-row gap-6 w-full">
-            <!-- แผงซ้าย (เครื่องมือ) -->
             <div class="w-full xl:w-4/12 bg-white rounded-[2rem] overflow-hidden h-fit flex flex-col shrink-0 relative z-20 border border-gray-200 shadow-lg">
                 <div class="bg-blue-600 p-6 text-white relative">
                     <h2 class="text-2xl font-bold flex items-center gap-2 relative z-10"><span class="text-yellow-300">✨</span> เครื่องมือแก้ไข</h2>
@@ -313,20 +311,15 @@
             </div>
 
             <!-- STREAMING_CHUNK: Setting up the Live Preview Canvas... -->
-            <!-- แผงขวา (พรีวิว) -->
             <div class="w-full xl:w-8/12 flex items-start justify-center bg-gray-200 p-4 md:p-8 rounded-[2rem] border border-gray-300 shadow-inner overflow-hidden relative z-10 min-h-[600px] xl:h-auto custom-scroll overflow-y-auto">
                 <div id="preview-wrapper">
                     <div id="preview-scaler">
-                        
-                        <!-- เทมเพลตจดหมายข่าว (ขนาดคงที่ 800x1131 px) -->
                         <div id="template-3" class="bg-[#fdfaf6] relative shadow-2xl shrink-0 overflow-hidden flex flex-col border border-gray-200">
                             
-                            <!-- โลโก้ มุมขวาบนสุด (ซ้อนทับรูปปก) -->
                             <div class="absolute top-4 right-4 z-30 w-[100px] h-[100px] bg-white rounded-full p-1.5 shadow-[0_4px_15px_rgba(0,0,0,0.15)]">
                                 <img src="./IMG_0350.JPG" class="agency-logo-img w-full h-full rounded-full object-cover shadow-inner" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
                             </div>
 
-                            <!-- รูปหน้าปก -->
                             <div class="w-full h-[230px] bg-gray-200 relative overflow-hidden z-0">
                                 <div class="ph-gallery-cover img-placeholder w-full h-full bg-[#e2e8f0]">
                                     <div class="text-gray-400 text-center font-medium">รูปภาพปก (ถ้ามี)</div>
@@ -334,20 +327,17 @@
                                 <div class="show-gallery-cover hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div>
                             </div>
 
-                            <!-- แถบสีม่วง ขยับตำแหน่งโดยใช้ inline style absolute เพื่อกันตำแหน่งเพี้ยน -->
                             <div style="position: absolute; top: 190px; left: 0; width: 100%; z-index: 10;">
                                 <div class="shape-t3-lightpurple text-[#4b3e70] font-bold text-[56px] px-10 pt-2 pb-1 shadow-sm w-fit pr-16 leading-none tracking-tight" style="border-radius: 0 40px 0 0;">
                                     จดหมายข่าว
                                 </div>
                             </div>
                             
-                            <!-- แถบคำว่าประชาสัมพันธ์ และ ชื่อหน่วยงาน (ล็อกตำแหน่ง) -->
                             <div style="position: absolute; top: 255px; left: 0; width: 100%; z-index: 10; display: flex; align-items: flex-end;">
                                 <div class="bg-white text-[#8e85b0] font-bold text-[40px] px-10 pt-2 pb-1 shadow-sm rounded-tr-xl flex-shrink-0" style="min-width: 350px;">
                                     ประชาสัมพันธ์
                                 </div>
                                 
-                                <!-- แถบชื่อหน่วยงานที่ยืดหยุ่นรองรับข้อความยาว -->
                                 <div class="shape-t3-purple text-white px-8 py-3 flex-1 flex flex-col items-end justify-center rounded-bl-3xl shadow-md relative" style="margin-left: -30px; clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%); padding-left: 60px; min-height: 75px;">
                                     <div class="agency-name-main text-right leading-tight drop-shadow-sm flex flex-col items-end w-full max-w-[400px]">
                                         <span class="text-[26px] font-bold whitespace-nowrap">องค์การบริหารส่วนตำบลโนนอุดม</span>
@@ -355,7 +345,6 @@
                                 </div>
                             </div>
 
-                            <!-- เนื้อหาหลัก -->
                             <div class="w-full flex-1 flex flex-col px-10 relative z-0" style="padding-top: 130px; padding-bottom: 100px;">
                                 <div class="flex justify-between items-start gap-4 mb-8">
                                     <div class="border-b-[4px] border-[#6a5996] pb-2 pt-2 whitespace-nowrap shrink-0">
@@ -366,7 +355,6 @@
                                     </div>
                                 </div>
 
-                                <!-- แกลเลอรีรูปภาพ -->
                                 <div class="w-full grid grid-cols-3 gap-3 mb-6">
                                     <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-0 img-placeholder w-full h-full bg-gray-100"></div><div class="show-gallery-0 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div></div>
                                     <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-1 img-placeholder w-full h-full bg-gray-100"></div><div class="show-gallery-1 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div></div>
@@ -376,13 +364,11 @@
                                     <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-5 img-placeholder w-full h-full bg-gray-100"></div><div class="show-gallery-5 hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div></div>
                                 </div>
 
-                                <!-- คำบรรยาย -->
                                 <div class="w-full flex-1 px-4 text-center flex flex-col justify-start">
                                     <p class="sync-description whitespace-pre-wrap text-[18px] font-bold text-[#1e293b] leading-relaxed break-words" style="font-size: 18px;">คำบรรยายกิจกรรมรายละเอียดต่างๆ</p>
                                 </div>
                             </div>
 
-                            <!-- Footer -->
                             <div class="absolute bottom-5 left-10 right-10 h-[60px] shape-t3-purple rounded-full px-10 flex items-center justify-center gap-8 z-10 shadow-lg text-white">
                                 <div class="flex items-center gap-2 shrink-0">
                                     <span class="text-[18px] font-bold">📞 โทร.044-077070</span>
@@ -393,7 +379,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -411,22 +396,19 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK: Initializing Firebase and Application Logic... -->
+    <!-- STREAMING_CHUNK: Initializing Firebase and Logic... -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // ตัวแปรส่วนกลาง
         let historyData = JSON.parse(localStorage.getItem('prStudioHistory')) || [];
         let bookingData = JSON.parse(localStorage.getItem('prStudioBookings')) || [];
         let fpDate, fpStart, fpEnd;
         let pendingBooking = null;
 
-        // *** Webhook LINE ***
         const gasWebhookUrl = "https://script.google.com/macros/s/AKfycbw6aXoB3SIKe9jrh-prj-2yM6-V8Endqr1gDRhYTHJTt_ibTk3YazC1N8Z83ZmKIZg7JQ/exec";
         
-        // ข้อมูล Firebase
         const myFirebaseConfig = {
           apiKey: "AIzaSyBysqombxqHciw4hWmUo5zSaOgAiguR8Ig",
           authDomain: "pr-nonudom.firebaseapp.com",
@@ -483,9 +465,6 @@
             window.loadBookings();
         }
 
-        // ==========================================
-        // 2. ฟังก์ชันส่วนกลาง
-        // ==========================================
         window.switchView = function(viewId) {
             document.querySelectorAll('div[id^="view-"]').forEach(el => el.classList.add('hidden'));
             const targetView = document.getElementById(viewId);
@@ -545,9 +524,6 @@
         const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
         const tDate = new Date();
 
-        // ==========================================
-        // 3. ระบบตารางจองรถ
-        // ==========================================
         window.cancelEditBooking = function() {
             document.getElementById('vehicle-booking-form').reset();
             document.getElementById('vb-id').value = '';
@@ -673,7 +649,7 @@
                 const d = new Date(newBooking.date);
                 const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
                 const prefix = isEditing ? "🚙 [แก้ไข] อัปเดตคิวจองรถ!\n" : "🚙 บันทึกคิวจองรถใหม่!\n";
-                const lineMessage = `\n${prefix}━━━━━━━━━━━━\n🚘 รถ: ${newBooking.car}\n👤 ผู้ใช้: ${newBooking.name}\n📍 ภารกิจ: ${newBooking.dest}\n📅 วันที่: ${thaiDate}\n⏰ เวลา: ${newBooking.start} น. - ${newBooking.end} น.`;
+                const lineMessage = `\n${prefix}━━━━━━━━━━━━\n🚘 รถ: ${newBooking.car}\n👤 ผู้ใช้: ${newBooking.name}\n📍 ภารกิจ: ${newBooking.dest}\n📅 วันที่: ${thaiDate}\n⏰ เวลา: ${newBooking.start} - ${newBooking.end} น.`;
 
                 try {
                     await fetch(gasWebhookUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ message: lineMessage }) });
@@ -781,9 +757,6 @@
             window.renderTimetable();
         }
 
-        // ==========================================
-        // 4. ระบบจดหมายข่าว 
-        // ==========================================
         window.changeFontSize = function(displayClass, inputId, delta) {
             const input = document.getElementById(inputId);
             let newVal = parseInt(input.value) + delta;
@@ -878,7 +851,7 @@
         for (let i = 0; i < 6; i++) handleImageUpload(`img-${i}`, `gallery-${i}`);
         handleImageUpload('img-cover', 'gallery-cover');
 
-        // ฟังก์ชัน Export แบบเบา ไม่กินเครื่อง
+        // STREAMING_CHUNK: Export Function with Font Preloading Logic...
         window.exportNewsletter = async function() {
             const btn = document.getElementById('btn-export');
             const btnText = document.getElementById('btn-text');
@@ -902,7 +875,10 @@
             previewContainer.scrollTop = 0;
             window.scrollTo(0, 0);
 
-            await new Promise(resolve => setTimeout(resolve, 800)); 
+            // ⭐️ หัวใจสำคัญ: บังคับให้เบราว์เซอร์ Android โหลดฟอนต์ให้เสร็จก่อนถ่ายรูป
+            try { await document.fonts.ready; } catch(e) {}
+            // เผื่อเวลาให้ Android ย่อยข้อมูลภาพซักนิด
+            await new Promise(resolve => setTimeout(resolve, 1000)); 
 
             try {
                 const dataUrl = await htmlToImage.toJpeg(activeTemp, {
@@ -916,7 +892,7 @@
                         transformOrigin: 'top left',
                         margin: '0'
                     },
-                    cacheBust: true 
+                    cacheBust: true // ⭐️ บังคับให้โหลดไฟล์ฟอนต์/รูปข้ามโดเมนซ้ำอีกรอบ กันแอนดรอยด์แอบตัดทิ้ง
                 });
                 
                 let agencyPrefix = 'อบต_';
