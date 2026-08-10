@@ -22,11 +22,12 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/th.js"></script>
     
-    <!-- ⭐️ แก้ไขฟอนต์: เพิ่ม preconnect และ crossorigin เพื่อให้ Android อนุญาตให้ฝังฟอนต์ลงในรูปภาพได้ -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <!-- ⭐️ ใช้วิธีฝังฟอนต์ Kanit 400 (Regular) และ 700 (Bold) ด้วย Bunny Fonts แทน Google Fonts -->
+    <!-- Bunny Fonts รองรับ CORS 100% ทำให้มือถือ Android ดึงไปสร้างรูปได้ไม่มีปัญหา -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=kanit:400,700" rel="stylesheet" />
     
+    <!-- STREAMING_CHUNK: Defining clean and lightweight custom CSS... -->
     <style>
         body { font-family: 'Kanit', sans-serif; background-color: #f1f5f9; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -54,6 +55,7 @@
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
+<!-- STREAMING_CHUNK: Building application structure and global modals... -->
 <body class="min-h-screen flex flex-col justify-between relative overflow-x-hidden text-gray-800">
     
     <!-- Toast Notification -->
@@ -106,7 +108,7 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK: Main Interface... -->
+    <!-- STREAMING_CHUNK: Setting up the Dashboard View... -->
     <!-- ========================================== -->
     <!-- VIEW: DASHBOARD (หน้าแรก) -->
     <!-- ========================================== -->
@@ -150,7 +152,7 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK: Setting up the Vehicle Booking Form... -->
+    <!-- STREAMING_CHUNK: Setting up the Vehicle Booking View... -->
     <!-- ========================================== -->
     <!-- VIEW: VEHICLE BOOKING -->
     <!-- ========================================== -->
@@ -224,7 +226,7 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK: Setting up Newsletter Layout... -->
+    <!-- STREAMING_CHUNK: Setting up the Newsletter Editor... -->
     <!-- ========================================== -->
     <!-- VIEW: NEWSLETTER EDITOR -->
     <!-- ========================================== -->
@@ -314,6 +316,7 @@
             <div class="w-full xl:w-8/12 flex items-start justify-center bg-gray-200 p-4 md:p-8 rounded-[2rem] border border-gray-300 shadow-inner overflow-hidden relative z-10 min-h-[600px] xl:h-auto custom-scroll overflow-y-auto">
                 <div id="preview-wrapper">
                     <div id="preview-scaler">
+                        
                         <div id="template-3" class="bg-[#fdfaf6] relative shadow-2xl shrink-0 overflow-hidden flex flex-col border border-gray-200">
                             
                             <div class="absolute top-4 right-4 z-30 w-[100px] h-[100px] bg-white rounded-full p-1.5 shadow-[0_4px_15px_rgba(0,0,0,0.15)]">
@@ -851,7 +854,7 @@
         for (let i = 0; i < 6; i++) handleImageUpload(`img-${i}`, `gallery-${i}`);
         handleImageUpload('img-cover', 'gallery-cover');
 
-        // STREAMING_CHUNK: Export Function with Font Preloading Logic...
+        // STREAMING_CHUNK: Export Function with Fallback Logic...
         window.exportNewsletter = async function() {
             const btn = document.getElementById('btn-export');
             const btnText = document.getElementById('btn-text');
@@ -875,12 +878,12 @@
             previewContainer.scrollTop = 0;
             window.scrollTo(0, 0);
 
-            // ⭐️ หัวใจสำคัญ: บังคับให้เบราว์เซอร์ Android โหลดฟอนต์ให้เสร็จก่อนถ่ายรูป
+            // รอเบราว์เซอร์เตรียมความพร้อม โดยเฉพาะเรื่องฟอนต์
             try { await document.fonts.ready; } catch(e) {}
-            // เผื่อเวลาให้ Android ย่อยข้อมูลภาพซักนิด
-            await new Promise(resolve => setTimeout(resolve, 1000)); 
+            await new Promise(resolve => setTimeout(resolve, 800)); 
 
             try {
+                // เซฟรูปด้วย html-to-image (คราวนี้ฟอนต์ bunny.net จะถูกอนุญาตให้โหลดลง Android ได้แล้ว)
                 const dataUrl = await htmlToImage.toJpeg(activeTemp, {
                     quality: 0.9,
                     pixelRatio: exportScale, 
@@ -892,7 +895,8 @@
                         transformOrigin: 'top left',
                         margin: '0'
                     },
-                    cacheBust: true // ⭐️ บังคับให้โหลดไฟล์ฟอนต์/รูปข้ามโดเมนซ้ำอีกรอบ กันแอนดรอยด์แอบตัดทิ้ง
+                    cacheBust: true, // บังคับให้โหลด cache ใหม่ 
+                    fontEmbedCSS: '' // เป็น option ช่วยให้ดึงฟอนต์ได้ดีขึ้นในบาง browser
                 });
                 
                 let agencyPrefix = 'อบต_';
