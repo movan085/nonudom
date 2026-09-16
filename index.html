@@ -22,12 +22,10 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/th.js"></script>
     
-    <!-- ⭐️ ใช้วิธีฝังฟอนต์ Kanit 400 (Regular) และ 700 (Bold) ด้วย Bunny Fonts แทน Google Fonts -->
-    <!-- Bunny Fonts รองรับ CORS 100% ทำให้มือถือ Android ดึงไปสร้างรูปได้ไม่มีปัญหา -->
+    <!-- ⭐️ ใช้วิธีฝังฟอนต์ Kanit ด้วย Bunny Fonts (รองรับการแคปจอข้ามโดเมนได้ดีกว่า Google Fonts 100%) -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=kanit:400,700" rel="stylesheet" />
     
-    <!-- STREAMING_CHUNK: Defining clean and lightweight custom CSS... -->
     <style>
         body { font-family: 'Kanit', sans-serif; background-color: #f1f5f9; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -49,13 +47,12 @@
         
         /* บังคับขนาดเทมเพลตเพื่อกันแคปเพี้ยน */
         #template-3 { width: 800px !important; height: 1131px !important; min-width: 800px !important; min-height: 1131px !important; max-width: 800px !important; max-height: 1131px !important; }
-        #preview-wrapper { width: 100%; display: flex; justify-content: center; overflow-x: auto; padding-bottom: 20px; }
+        #preview-wrapper { width: 100%; display: flex; justify-content: center; transform-origin: top center; overflow: hidden; }
         #preview-scaler { transform-origin: top center; }
 
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
-<!-- STREAMING_CHUNK: Building application structure and global modals... -->
 <body class="min-h-screen flex flex-col justify-between relative overflow-x-hidden text-gray-800">
     
     <!-- Toast Notification -->
@@ -108,7 +105,6 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK: Setting up the Dashboard View... -->
     <!-- ========================================== -->
     <!-- VIEW: DASHBOARD (หน้าแรก) -->
     <!-- ========================================== -->
@@ -152,7 +148,6 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK: Setting up the Vehicle Booking View... -->
     <!-- ========================================== -->
     <!-- VIEW: VEHICLE BOOKING -->
     <!-- ========================================== -->
@@ -226,7 +221,6 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK: Setting up the Newsletter Editor... -->
     <!-- ========================================== -->
     <!-- VIEW: NEWSLETTER EDITOR -->
     <!-- ========================================== -->
@@ -312,8 +306,8 @@
                 </div>
             </div>
 
-            <!-- STREAMING_CHUNK: Setting up the Live Preview Canvas... -->
-            <div class="w-full xl:w-8/12 flex items-start justify-center bg-gray-200 p-4 md:p-8 rounded-[2rem] border border-gray-300 shadow-inner overflow-hidden relative z-10 min-h-[600px] xl:h-auto custom-scroll overflow-y-auto">
+            <!-- แผงขวา (พรีวิว) ⭐️ แก้ไขให้กล่องนี้ล็อกความสูง และเอา overflow-y-auto ออกเพื่อกัน scroll ซ้อน -->
+            <div class="w-full xl:w-8/12 flex items-start justify-center bg-gray-200 p-4 md:p-8 rounded-[2rem] border border-gray-300 shadow-inner relative z-10 h-fit">
                 <div id="preview-wrapper">
                     <div id="preview-scaler">
                         
@@ -330,6 +324,7 @@
                                 <div class="show-gallery-cover hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div>
                             </div>
 
+                            <!-- ล็อกตำแหน่งหัวข้อด้วย Absolute ป้องกันการกระโดด -->
                             <div style="position: absolute; top: 190px; left: 0; width: 100%; z-index: 10;">
                                 <div class="shape-t3-lightpurple text-[#4b3e70] font-bold text-[56px] px-10 pt-2 pb-1 shadow-sm w-fit pr-16 leading-none tracking-tight" style="border-radius: 0 40px 0 0;">
                                     จดหมายข่าว
@@ -399,7 +394,7 @@
         </div>
     </div>
 
-    <!-- STREAMING_CHUNK: Initializing Firebase and Logic... -->
+    <!-- Script Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -854,7 +849,7 @@
         for (let i = 0; i < 6; i++) handleImageUpload(`img-${i}`, `gallery-${i}`);
         handleImageUpload('img-cover', 'gallery-cover');
 
-        // STREAMING_CHUNK: Export Function with Fallback Logic...
+        // ⭐️ ฟังก์ชันเซฟและแชร์ฉบับสมบูรณ์ (iOS/Android Native Share + Download Fallback)
         window.exportNewsletter = async function() {
             const btn = document.getElementById('btn-export');
             const btnText = document.getElementById('btn-text');
@@ -870,7 +865,11 @@
             
             const scaler = document.getElementById('preview-scaler');
             const originalTransform = scaler.style.transform;
+            const originalHeight = previewContainer.style.height;
+            
+            // ยกเลิกการซูมและกางขนาดเต็ม 100% เพื่อไม่ให้ html-to-image วาดตกขอบ
             scaler.style.transform = 'scale(1)'; 
+            previewContainer.style.height = '1131px';
             
             const origScroll = previewContainer.scrollTop;
             const winScrollX = window.scrollX;
@@ -878,25 +877,18 @@
             previewContainer.scrollTop = 0;
             window.scrollTo(0, 0);
 
-            // รอเบราว์เซอร์เตรียมความพร้อม โดยเฉพาะเรื่องฟอนต์
             try { await document.fonts.ready; } catch(e) {}
             await new Promise(resolve => setTimeout(resolve, 800)); 
 
             try {
-                // เซฟรูปด้วย html-to-image (คราวนี้ฟอนต์ bunny.net จะถูกอนุญาตให้โหลดลง Android ได้แล้ว)
                 const dataUrl = await htmlToImage.toJpeg(activeTemp, {
-                    quality: 0.9,
+                    quality: 0.95,
                     pixelRatio: exportScale, 
                     backgroundColor: '#fdfaf6',
                     width: 800,
                     height: 1131,
-                    style: {
-                        transform: 'scale(1)',
-                        transformOrigin: 'top left',
-                        margin: '0'
-                    },
-                    cacheBust: true, // บังคับให้โหลด cache ใหม่ 
-                    fontEmbedCSS: '' // เป็น option ช่วยให้ดึงฟอนต์ได้ดีขึ้นในบาง browser
+                    style: { transform: 'scale(1)', transformOrigin: 'top left', margin: '0' },
+                    cacheBust: true 
                 });
                 
                 let agencyPrefix = 'อบต_';
@@ -906,11 +898,37 @@
                 else if(agencyVal === 'sh3') agencyPrefix = 'ศพด_สระบัว_';
                 
                 const topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
-                
-                const link = document.createElement('a'); 
-                link.download = `${agencyPrefix}${topic}.jpg`; 
-                link.href = dataUrl;
-                link.click();
+                const fileName = `${agencyPrefix}${topic}.jpg`;
+
+                // แปลงไฟล์ให้พร้อมสำหรับเมนูแชร์ของมือถือ
+                const res = await fetch(dataUrl);
+                const blob = await res.blob();
+                const file = new File([blob], fileName, { type: 'image/jpeg' });
+
+                // ถ้ารองรับ Share API (มือถือ iOS/Android ทั่วไป) จะเด้งเมนูแชร์ขึ้นมา
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file],
+                            title: topic,
+                            text: 'จดหมายข่าวประชาสัมพันธ์'
+                        });
+                        window.showToast("บันทึก/แชร์ รูปภาพสำเร็จ!");
+                    } catch (err) {
+                        console.log("Share cancelled or failed", err);
+                    }
+                } else {
+                    // ถ้าแชร์ไม่ได้ (คอมพิวเตอร์) ให้ดาวน์โหลดลงเครื่องปกติ
+                    const link = document.createElement('a'); 
+                    const url = URL.createObjectURL(blob);
+                    link.href = url;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setTimeout(() => URL.revokeObjectURL(url), 100);
+                    window.showToast("ดาวน์โหลดรูปลงเครื่องสำเร็จ!");
+                }
 
                 const hId = Date.now();
                 const hData = {
@@ -929,14 +947,13 @@
                     historyData.sort((a, b) => b.timestamp - a.timestamp);
                     localStorage.setItem('prStudioHistory', JSON.stringify(historyData));
                 }
-                
-                window.showToast("บันทึกรูปสำเร็จ!");
 
             } catch (error) { 
                 console.error("Export Error:", error);
                 window.showToast("เกิดข้อผิดพลาดในการสร้างรูปภาพ"); 
             } finally {
                 scaler.style.transform = originalTransform; 
+                previewContainer.style.height = originalHeight; // คืนความสูงเดิม
                 previewContainer.scrollTop = origScroll;
                 window.scrollTo(winScrollX, winScrollY);
                 btn.disabled = false; btn.classList.remove('opacity-70'); btnText.textContent = 'บันทึกเป็นรูปภาพ';
@@ -987,23 +1004,26 @@
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        // ==========================================
-        // 5. Responsive Auto Scale 
-        // ==========================================
+        // ⭐️ ล็อกความสูงเป๊ะๆ เพื่อป้องกันการเกิด Scroll ซ้อนในกล่องพรีวิว
         function setScale() {
             const wrapper = document.getElementById('preview-wrapper');
             const scaler = document.getElementById('preview-scaler');
             const newsletterView = document.getElementById('view-newsletter');
             
             if(wrapper && scaler && !newsletterView.classList.contains('hidden')) {
-                const availableWidth = window.innerWidth <= 768 ? window.innerWidth - 32 : wrapper.clientWidth - 40; 
+                const container = wrapper.parentElement;
+                const style = window.getComputedStyle(container);
+                const paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+                
+                const availableWidth = container.clientWidth - paddingX; 
                 const targetWidth = 800; 
                 
                 let scale = availableWidth / targetWidth;
                 if (scale > 1) scale = 1; 
                 
                 scaler.style.transform = `scale(${scale})`;
-                wrapper.style.minHeight = (1131 * scale + 40) + "px";
+                // คำนวณความสูงให้ตรงกับขนาดที่ย่อพอดีเป๊ะ
+                wrapper.style.height = (1131 * scale) + "px"; 
             }
         }
         window.addEventListener('resize', setScale);
