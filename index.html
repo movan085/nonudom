@@ -15,8 +15,8 @@
     <!-- CSS/JS ไลบรารี -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- ⭐️ ใช้ html2canvas สูตรดั้งเดิม ที่เข้ากับมือถือได้ดีที่สุด (ไม่มีหน้าขาวโพลน) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- ⭐️ กลับมาใช้ html-to-image เพราะแม่นยำที่สุดเรื่องการจัด Layout บนมือถือ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
     
     <!-- Flatpickr สำหรับแก้ปัญหาวันที่/เวลา -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -24,10 +24,9 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/th.js"></script>
     
-    <!-- ฝังฟอนต์ผ่าน Google Fonts ธรรมดา เพื่อให้ html2canvas โหลดง่ายขึ้น -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- ⭐️ ใช้วิธีฝังฟอนต์ Kanit ด้วย Bunny Fonts (รองรับการแคปจอข้ามโดเมนได้ดีกว่า Google Fonts 100%) -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=kanit:400,700" rel="stylesheet" />
     
     <!-- STREAMING_CHUNK: Defining clean CSS for perfect layout... -->
     <style>
@@ -299,6 +298,7 @@
                                 <input type="file" accept="image/*" class="hidden" id="upload-img-cover"/>
                                 <label for="upload-img-cover" id="label-img-cover" class="flex flex-col items-center justify-center w-full h-24 bg-white border-2 border-dashed border-purple-300 rounded-xl cursor-pointer hover:bg-gray-50 transition overflow-hidden relative">
                                     <div id="icon-img-cover" class="flex flex-col items-center justify-center pointer-events-none"><span class="text-2xl text-purple-400 leading-none">+</span></div>
+                                    <!-- ⭐️ ใช้ img src แบบ Base64 เพื่อให้ html-to-image วาดได้ -->
                                     <img id="thumb-img-cover" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
                                 </label>
                             </div>
@@ -314,23 +314,25 @@
                 </div>
             </div>
 
-            <!-- แผงขวา (พรีวิว) -->
+            <!-- STREAMING_CHUNK: Setting up the Live Preview Canvas... -->
             <div class="w-full xl:w-8/12 flex items-start justify-center bg-gray-200 p-4 md:p-8 rounded-[2rem] border border-gray-300 shadow-inner relative z-10 h-fit">
                 <div id="preview-wrapper">
                     <div id="preview-scaler">
                         
                         <!-- เทมเพลตจดหมายข่าว -->
-                        <div id="template-3" class="bg-[#fdfaf6] relative shadow-2xl shrink-0 overflow-hidden flex flex-col border border-gray-200" style="font-family: 'Kanit', sans-serif;">
+                        <div id="template-3" class="bg-[#fdfaf6] relative shadow-2xl shrink-0 overflow-hidden flex flex-col border border-gray-200">
                             
+                            <!-- โลโก้ มุมขวาบนสุด (ซ้อนทับรูปปก) -->
                             <div class="absolute top-4 right-4 z-30 w-[100px] h-[100px] bg-white rounded-full p-1.5 shadow-[0_4px_15px_rgba(0,0,0,0.15)]">
-                                <img src="./IMG_0350.png" class="agency-logo-img w-full h-full rounded-full object-cover shadow-inner" crossorigin="anonymous" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
+                                <img src="./IMG_0350.png" class="agency-logo-img w-full h-full rounded-full object-cover shadow-inner" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
                             </div>
 
+                            <!-- รูปหน้าปก -->
                             <div class="w-full h-[230px] bg-gray-200 relative overflow-hidden z-0">
                                 <div class="ph-gallery-cover img-placeholder w-full h-full bg-[#e2e8f0]">
                                     <div class="text-gray-400 text-center font-medium">รูปภาพปก (ถ้ามี)</div>
                                 </div>
-                                <img id="final-img-cover" class="show-gallery-cover hidden w-full h-full object-cover absolute top-0 left-0" crossorigin="anonymous">
+                                <img id="final-img-cover" class="show-gallery-cover hidden w-full h-full object-cover absolute top-0 left-0">
                             </div>
 
                             <div style="position: absolute; top: 190px; left: 0; width: 100%; z-index: 10;">
@@ -357,21 +359,21 @@
                                         <span class="sync-date text-[#1f2937] font-bold text-[22px]">วันศุกร์ที่ 7 สิงหาคม 2569</span>
                                     </div>
                                     <div class="shape-t3-lightpurple flex-1 py-4 px-8 shadow-sm flex items-center justify-center min-h-[85px] rounded-br-3xl rounded-tl-3xl">
-                                        <h3 class="sync-topic whitespace-pre-wrap text-[20px] font-bold text-white text-center leading-snug break-words drop-shadow-sm" style="line-height: 1.3;">หัวเรื่องกิจกรรมการประชุมสภาฯ</h3>
+                                        <h3 class="sync-topic whitespace-pre-wrap text-[20px] font-bold text-white text-center leading-snug break-words drop-shadow-sm">หัวเรื่องกิจกรรมการประชุมสภาฯ</h3>
                                     </div>
                                 </div>
 
                                 <div class="w-full grid grid-cols-3 gap-3 mb-6">
-                                    <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-0 img-placeholder w-full h-full bg-gray-100"></div><img id="final-img-0" class="show-gallery-0 hidden w-full h-full object-cover absolute top-0 left-0" crossorigin="anonymous"></div>
-                                    <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-1 img-placeholder w-full h-full bg-gray-100"></div><img id="final-img-1" class="show-gallery-1 hidden w-full h-full object-cover absolute top-0 left-0" crossorigin="anonymous"></div>
-                                    <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-2 img-placeholder w-full h-full bg-gray-100"></div><img id="final-img-2" class="show-gallery-2 hidden w-full h-full object-cover absolute top-0 left-0" crossorigin="anonymous"></div>
-                                    <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-3 img-placeholder w-full h-full bg-gray-100"></div><img id="final-img-3" class="show-gallery-3 hidden w-full h-full object-cover absolute top-0 left-0" crossorigin="anonymous"></div>
-                                    <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-4 img-placeholder w-full h-full bg-gray-100"></div><img id="final-img-4" class="show-gallery-4 hidden w-full h-full object-cover absolute top-0 left-0" crossorigin="anonymous"></div>
-                                    <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-5 img-placeholder w-full h-full bg-gray-100"></div><img id="final-img-5" class="show-gallery-5 hidden w-full h-full object-cover absolute top-0 left-0" crossorigin="anonymous"></div>
+                                    <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-0 img-placeholder w-full h-full bg-gray-100"></div><img id="final-img-0" class="show-gallery-0 hidden w-full h-full object-cover absolute top-0 left-0"></div>
+                                    <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-1 img-placeholder w-full h-full bg-gray-100"></div><img id="final-img-1" class="show-gallery-1 hidden w-full h-full object-cover absolute top-0 left-0"></div>
+                                    <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-2 img-placeholder w-full h-full bg-gray-100"></div><img id="final-img-2" class="show-gallery-2 hidden w-full h-full object-cover absolute top-0 left-0"></div>
+                                    <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-3 img-placeholder w-full h-full bg-gray-100"></div><img id="final-img-3" class="show-gallery-3 hidden w-full h-full object-cover absolute top-0 left-0"></div>
+                                    <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-4 img-placeholder w-full h-full bg-gray-100"></div><img id="final-img-4" class="show-gallery-4 hidden w-full h-full object-cover absolute top-0 left-0"></div>
+                                    <div class="w-full aspect-[4/3] bg-white shadow-sm relative overflow-hidden rounded-md border border-gray-100"><div class="ph-gallery-5 img-placeholder w-full h-full bg-gray-100"></div><img id="final-img-5" class="show-gallery-5 hidden w-full h-full object-cover absolute top-0 left-0"></div>
                                 </div>
 
                                 <div class="w-full flex-1 px-4 text-center flex flex-col justify-start">
-                                    <p class="sync-description whitespace-pre-wrap text-[18px] font-bold text-[#1e293b] leading-relaxed break-words" style="font-size: 18px; line-height: 1.6;">คำบรรยายกิจกรรมรายละเอียดต่างๆ</p>
+                                    <p class="sync-description whitespace-pre-wrap text-[18px] font-bold text-[#1e293b] leading-relaxed break-words" style="font-size: 18px;">คำบรรยายกิจกรรมรายละเอียดต่างๆ</p>
                                 </div>
                             </div>
 
@@ -835,7 +837,7 @@
         }
         document.getElementById('upload-buttons-container').innerHTML = uploadHtml;
         
-        // ⭐️ เปลี่ยนระบบ Image Loader เป็นการโหลดออกแบบ src ของแท็ก img จริงๆ เพื่อให้ html2canvas วาดได้ 100%
+        // ⭐️ ระบบโหลดรูปภาพเป็น Base64 โดยตรง เพื่อแก้ปัญหารูปขาวโพลนบน iOS
         const handleImageUpload = (idStr, targetClassPrefix) => {
             document.getElementById(`upload-${idStr}`).addEventListener('change', (e) => {
                 const file = e.target.files[0];
@@ -847,14 +849,10 @@
                         document.getElementById(`icon-${idStr}`).classList.add('hidden');
                         
                         const labelEl = document.getElementById(`label-${idStr}`);
-                        labelEl.style.backgroundImage = `url('${base64Url}')`;
-                        labelEl.style.backgroundSize = 'cover';
-                        labelEl.style.backgroundPosition = 'center';
-                        
                         if(labelEl.classList.contains('border-yellow-400')) labelEl.classList.replace('border-yellow-400', 'border-blue-400');
                         if(labelEl.classList.contains('border-purple-300')) labelEl.classList.replace('border-purple-300', 'border-blue-400');
                         
-                        // เอารูปใส่แท็ก img จริงๆ
+                        // เอารูปไปใส่ที่ preview
                         const targetImg = document.getElementById(`final-${idStr}`);
                         if(targetImg) {
                             targetImg.src = base64Url;
@@ -871,14 +869,15 @@
         for (let i = 0; i < 6; i++) handleImageUpload(`img-${i}`, `gallery-${i}`);
         handleImageUpload('img-cover', 'gallery-cover');
 
-        // STREAMING_CHUNK: Setting up final perfectly tuned export function for all platforms...
+        // STREAMING_CHUNK: The Final Export Function (Native Share + Direct Download)...
         window.exportNewsletter = async function() {
             const btn = document.getElementById('btn-export');
             const btnText = document.getElementById('btn-text');
             btn.disabled = true; btn.classList.add('opacity-70'); 
             
-            const isMobile = window.innerWidth <= 768;
-            const exportScale = isMobile ? 1.5 : 2.5; 
+            // ใช้ความคมชัดที่ลดลงเล็กน้อยในมือถือ เพื่อป้องกันแอปเด้ง
+            const isMobile = window.innerWidth <= 768 || /Mobi|Android|iPhone/i.test(navigator.userAgent);
+            const exportScale = isMobile ? 1.5 : 2; 
             
             btnText.textContent = 'กำลังสร้างรูปภาพ...'; 
             
@@ -889,7 +888,7 @@
             const originalTransform = scaler.style.transform;
             const originalHeight = previewContainer.style.height;
             
-            // ยกเลิกการซูมและจัดจอให้ตรง
+            // ล็อกหน้าจอให้ตรง 100% ก่อนแคป
             scaler.style.transform = 'scale(1)'; 
             previewContainer.style.height = '1131px';
             
@@ -899,23 +898,20 @@
             previewContainer.scrollTop = 0;
             window.scrollTo(0, 0);
 
-            // รอ 1 วินาที ให้เบราว์เซอร์เตรียมพิกัด
+            // รอ 1 วิเพื่อให้ iOS โหลดฟอนต์และรูปเข้ากระดูก
+            try { await document.fonts.ready; } catch(e) {}
             await new Promise(resolve => setTimeout(resolve, 1000)); 
 
             try {
-                // ⭐️ ใช้ html2canvas กลับมาอีกครั้ง แต่ปรับแต่งให้เพอร์เฟกต์
-                const canvas = await html2canvas(activeTemp, { 
-                    scale: exportScale, 
-                    useCORS: true, 
-                    allowTaint: true,
-                    backgroundColor: '#fdfaf6', 
+                // ⭐️ ใช้ html-to-image (แบบที่เข้ากันได้ดีที่สุด)
+                const dataUrl = await htmlToImage.toJpeg(activeTemp, {
+                    quality: 0.95,
+                    pixelRatio: exportScale, 
+                    backgroundColor: '#fdfaf6',
                     width: 800,
                     height: 1131,
-                    windowWidth: 800,
-                    windowHeight: 1131,
-                    scrollY: 0,
-                    scrollX: 0,
-                    logging: false
+                    style: { transform: 'scale(1)', transformOrigin: 'top left', margin: '0' },
+                    cacheBust: true 
                 });
                 
                 let agencyPrefix = 'อบต_';
@@ -927,22 +923,39 @@
                 const topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
                 const fileName = `${agencyPrefix}${topic}.jpg`;
 
-                // เปลี่ยน canvas เป็น blob เพื่อเซฟ
-                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.95));
+                // แปลงไฟล์เพื่อให้ iPhone แชร์ได้
+                const res = await fetch(dataUrl);
+                const blob = await res.blob();
+                const file = new File([blob], fileName, { type: 'image/jpeg' });
 
-                // ⭐️ ระบบบังคับเซฟลงเครื่องโดยตรงเท่านั้น ไม่ใช้ Share Sheet
-                const link = document.createElement('a'); 
-                const url = URL.createObjectURL(blob);
-                link.href = url;
-                link.download = fileName;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                setTimeout(() => URL.revokeObjectURL(url), 100);
-                
-                window.showToast("ดาวน์โหลดรูปลงเครื่องสำเร็จ!");
+                // ⭐️ ระบบแยกวิธีเซฟ
+                // ถ้าเป็นมือถือ iOS/Android -> ใช้ Share Sheet เพื่อเซฟลงอัลบั้ม
+                if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file],
+                            title: topic,
+                            text: 'จดหมายข่าวประชาสัมพันธ์'
+                        });
+                        window.showToast("บันทึก/แชร์ รูปภาพสำเร็จ!");
+                    } catch (err) {
+                        console.log("Share cancelled or failed");
+                        // ถ้าแชร์ล้มเหลว (ผู้ใช้กดยกเลิก) ก็ไม่ต้องทำอะไรต่อ
+                    }
+                } else {
+                    // ถ้าเป็นคอมพิวเตอร์ (Windows/Mac) -> ใช้การดาวน์โหลดแบบ Direct โหลดลงเครื่องตรงๆ
+                    const link = document.createElement('a'); 
+                    const url = URL.createObjectURL(blob);
+                    link.href = url;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setTimeout(() => URL.revokeObjectURL(url), 100);
+                    window.showToast("ดาวน์โหลดรูปลงเครื่องสำเร็จ!");
+                }
 
-                // เซฟประวัติ
+                // บันทึกประวัติ
                 const hId = Date.now();
                 const hData = {
                     id: hId, timestamp: hId,
@@ -965,7 +978,6 @@
                 console.error("Export Error:", error);
                 window.showToast("เกิดข้อผิดพลาดในการสร้างรูปภาพ"); 
             } finally {
-                // คืนค่าหน้าจอกลับมา
                 scaler.style.transform = originalTransform; 
                 previewContainer.style.height = originalHeight; 
                 previewContainer.scrollTop = origScroll;
