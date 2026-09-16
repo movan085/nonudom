@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบสารสนเทศเพื่อการประชาสัมพันธ์ - อบต.โนนอุดม</title>
     
-    <link rel="icon" type="image/jpeg" href="./IMG_0350.JPG">
-    <link rel="apple-touch-icon" href="./IMG_0350.JPG">
+    <link rel="icon" type="image/png" href="./IMG_0350.png">
+    <link rel="apple-touch-icon" href="./IMG_0350.png">
     <meta name="theme-color" content="#0071BA">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -113,7 +113,7 @@
             <div class="relative p-8 md:p-12 text-center border-b border-blue-100 bg-blue-50">
                 <div class="relative z-10 flex flex-col items-center">
                     <div class="w-24 h-24 bg-white rounded-full p-1.5 shadow-md border border-gray-100 mb-5">
-                        <img src="./IMG_0350.JPG" class="w-full h-full rounded-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
+                        <img src="./IMG_0350.png" class="agency-logo-img w-full h-full rounded-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
                     </div>
                     <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2 tracking-tight">ฝ่ายประชาสัมพันธ์ <span class="text-blue-600">-</span> อบต.โนนอุดม</h1>
                     <p class="text-gray-600 text-sm md:text-base font-medium px-5 py-2 bg-white rounded-full inline-block border border-gray-200 mt-2">ระบบสารสนเทศเพื่อการสร้างสื่อและจัดการทรัพยากร</p>
@@ -314,7 +314,7 @@
                         <div id="template-3" class="bg-[#fdfaf6] relative shadow-2xl shrink-0 overflow-hidden flex flex-col border border-gray-200">
                             
                             <div class="absolute top-4 right-4 z-30 w-[100px] h-[100px] bg-white rounded-full p-1.5 shadow-[0_4px_15px_rgba(0,0,0,0.15)]">
-                                <img src="./IMG_0350.JPG" class="agency-logo-img w-full h-full rounded-full object-cover shadow-inner" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
+                                <img src="./IMG_0350.png" class="agency-logo-img w-full h-full rounded-full object-cover shadow-inner" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
                             </div>
 
                             <div class="w-full h-[230px] bg-gray-200 relative overflow-hidden z-0">
@@ -394,7 +394,6 @@
         </div>
     </div>
 
-    <!-- Script Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -783,7 +782,7 @@
                 nameMainElements.forEach(el => el.innerHTML = '<span class="text-[22px] font-bold whitespace-nowrap">ศูนย์พัฒนาเด็กเล็กชุมชนวัดสระบัว</span><span class="text-[14px] font-medium opacity-90 mt-0.5">องค์การบริหารส่วนตำบลโนนอุดม</span>');
                 nameFooterElements.forEach(el => el.innerHTML = 'ศูนย์พัฒนาเด็กเล็กชุมชนวัดสระบัว');
             } else {
-                logoElements.forEach(el => el.src = './IMG_0350.JPG');
+                logoElements.forEach(el => el.src = './IMG_0350.png');
                 nameMainElements.forEach(el => el.innerHTML = '<span class="text-[26px] font-bold whitespace-nowrap">องค์การบริหารส่วนตำบลโนนอุดม</span>');
                 nameFooterElements.forEach(el => el.innerHTML = 'องค์การบริหารส่วนตำบลโนนอุดม');
             }
@@ -849,7 +848,6 @@
         for (let i = 0; i < 6; i++) handleImageUpload(`img-${i}`, `gallery-${i}`);
         handleImageUpload('img-cover', 'gallery-cover');
 
-        // ⭐️ ฟังก์ชันเซฟและแชร์ฉบับสมบูรณ์ (iOS/Android Native Share + Download Fallback)
         window.exportNewsletter = async function() {
             const btn = document.getElementById('btn-export');
             const btnText = document.getElementById('btn-text');
@@ -867,7 +865,7 @@
             const originalTransform = scaler.style.transform;
             const originalHeight = previewContainer.style.height;
             
-            // ยกเลิกการซูมและกางขนาดเต็ม 100% เพื่อไม่ให้ html-to-image วาดตกขอบ
+            // ยกเลิกการซูมและกางขนาดเต็ม 100% เพื่อแคปหน้าจอ
             scaler.style.transform = 'scale(1)'; 
             previewContainer.style.height = '1131px';
             
@@ -900,12 +898,11 @@
                 const topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
                 const fileName = `${agencyPrefix}${topic}.jpg`;
 
-                // แปลงไฟล์ให้พร้อมสำหรับเมนูแชร์ของมือถือ
                 const res = await fetch(dataUrl);
                 const blob = await res.blob();
                 const file = new File([blob], fileName, { type: 'image/jpeg' });
 
-                // ถ้ารองรับ Share API (มือถือ iOS/Android ทั่วไป) จะเด้งเมนูแชร์ขึ้นมา
+                // ใช้ Share Sheet ของ iOS/Android
                 if (navigator.canShare && navigator.canShare({ files: [file] })) {
                     try {
                         await navigator.share({
@@ -915,10 +912,9 @@
                         });
                         window.showToast("บันทึก/แชร์ รูปภาพสำเร็จ!");
                     } catch (err) {
-                        console.log("Share cancelled or failed", err);
+                        console.log("Share cancelled", err);
                     }
                 } else {
-                    // ถ้าแชร์ไม่ได้ (คอมพิวเตอร์) ให้ดาวน์โหลดลงเครื่องปกติ
                     const link = document.createElement('a'); 
                     const url = URL.createObjectURL(blob);
                     link.href = url;
@@ -953,7 +949,7 @@
                 window.showToast("เกิดข้อผิดพลาดในการสร้างรูปภาพ"); 
             } finally {
                 scaler.style.transform = originalTransform; 
-                previewContainer.style.height = originalHeight; // คืนความสูงเดิม
+                previewContainer.style.height = originalHeight; 
                 previewContainer.scrollTop = origScroll;
                 window.scrollTo(winScrollX, winScrollY);
                 btn.disabled = false; btn.classList.remove('opacity-70'); btnText.textContent = 'บันทึกเป็นรูปภาพ';
@@ -1022,7 +1018,6 @@
                 if (scale > 1) scale = 1; 
                 
                 scaler.style.transform = `scale(${scale})`;
-                // คำนวณความสูงให้ตรงกับขนาดที่ย่อพอดีเป๊ะ
                 wrapper.style.height = (1131 * scale) + "px"; 
             }
         }
@@ -1038,4 +1033,3 @@
     </script>
 </body>
 </html>
-```eof
