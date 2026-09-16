@@ -831,16 +831,21 @@
             document.getElementById(`upload-${idStr}`).addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    const url = URL.createObjectURL(file);
-                    document.getElementById(`icon-${idStr}`).classList.add('hidden');
-                    document.getElementById(`thumb-${idStr}`).src = url; 
-                    document.getElementById(`thumb-${idStr}`).classList.remove('hidden');
-                    const labelEl = document.getElementById(`label-${idStr}`);
-                    if(labelEl.classList.contains('border-yellow-400')) labelEl.classList.replace('border-yellow-400', 'border-blue-400');
-                    if(labelEl.classList.contains('border-purple-300')) labelEl.classList.replace('border-purple-300', 'border-blue-400');
-                    
-                    document.querySelectorAll(`.show-${targetClassPrefix}`).forEach(el => { el.style.backgroundImage = `url('${url}')`; el.classList.remove('hidden'); });
-                    document.querySelectorAll(`.ph-${targetClassPrefix}`).forEach(el => el.classList.add('hidden'));
+                    // ใช้วิธี FileReader เพื่อแปลงรูปเป็น Data URL แทน Blob ช่วยแก้ปัญหาภาพขาวบน iOS
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const dataUrl = event.target.result;
+                        document.getElementById(`icon-${idStr}`).classList.add('hidden');
+                        document.getElementById(`thumb-${idStr}`).src = dataUrl; 
+                        document.getElementById(`thumb-${idStr}`).classList.remove('hidden');
+                        const labelEl = document.getElementById(`label-${idStr}`);
+                        if(labelEl.classList.contains('border-yellow-400')) labelEl.classList.replace('border-yellow-400', 'border-blue-400');
+                        if(labelEl.classList.contains('border-purple-300')) labelEl.classList.replace('border-purple-300', 'border-blue-400');
+                        
+                        document.querySelectorAll(`.show-${targetClassPrefix}`).forEach(el => { el.style.backgroundImage = `url('${dataUrl}')`; el.classList.remove('hidden'); });
+                        document.querySelectorAll(`.ph-${targetClassPrefix}`).forEach(el => el.classList.add('hidden'));
+                    };
+                    reader.readAsDataURL(file);
                 }
             });
         };
@@ -885,8 +890,7 @@
                     backgroundColor: '#fdfaf6',
                     width: 800,
                     height: 1131,
-                    style: { transform: 'scale(1)', transformOrigin: 'top left', margin: '0' },
-                    cacheBust: true 
+                    style: { transform: 'scale(1)', transformOrigin: 'top left', margin: '0' }
                 });
                 
                 let agencyPrefix = 'อบต_';
