@@ -306,7 +306,7 @@
                 </div>
             </div>
 
-            <!-- แผงขวา (พรีวิว) ⭐️ แก้ไขให้กล่องนี้ล็อกความสูง และเอา overflow-y-auto ออกเพื่อกัน scroll ซ้อน -->
+            <!-- แผงขวา (พรีวิว) -->
             <div class="w-full xl:w-8/12 flex items-start justify-center bg-gray-200 p-4 md:p-8 rounded-[2rem] border border-gray-300 shadow-inner relative z-10 h-fit">
                 <div id="preview-wrapper">
                     <div id="preview-scaler">
@@ -324,7 +324,7 @@
                                 <div class="show-gallery-cover hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div>
                             </div>
 
-                            <!-- ล็อกตำแหน่งหัวข้อด้วย Absolute ป้องกันการกระโดด -->
+                            <!-- ล็อกตำแหน่งหัวข้อด้วย Absolute เพื่อป้องกันการตกบรรทัด -->
                             <div style="position: absolute; top: 190px; left: 0; width: 100%; z-index: 10;">
                                 <div class="shape-t3-lightpurple text-[#4b3e70] font-bold text-[56px] px-10 pt-2 pb-1 shadow-sm w-fit pr-16 leading-none tracking-tight" style="border-radius: 0 40px 0 0;">
                                     จดหมายข่าว
@@ -827,25 +827,30 @@
         }
         document.getElementById('upload-buttons-container').innerHTML = uploadHtml;
         
+        // ⭐️ แก้ไขให้โหลดรูปเป็น Base64 ป้องกันปัญหาภาพขาวโพลนใน iOS/Android 100%
         const handleImageUpload = (idStr, targetClassPrefix) => {
             document.getElementById(`upload-${idStr}`).addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    // ใช้วิธี FileReader เพื่อแปลงรูปเป็น Data URL แทน Blob ช่วยแก้ปัญหาภาพขาวบน iOS
                     const reader = new FileReader();
                     reader.onload = function(event) {
-                        const dataUrl = event.target.result;
+                        const base64Url = event.target.result;
+                        
                         document.getElementById(`icon-${idStr}`).classList.add('hidden');
-                        document.getElementById(`thumb-${idStr}`).src = dataUrl; 
+                        document.getElementById(`thumb-${idStr}`).src = base64Url; 
                         document.getElementById(`thumb-${idStr}`).classList.remove('hidden');
+                        
                         const labelEl = document.getElementById(`label-${idStr}`);
                         if(labelEl.classList.contains('border-yellow-400')) labelEl.classList.replace('border-yellow-400', 'border-blue-400');
                         if(labelEl.classList.contains('border-purple-300')) labelEl.classList.replace('border-purple-300', 'border-blue-400');
                         
-                        document.querySelectorAll(`.show-${targetClassPrefix}`).forEach(el => { el.style.backgroundImage = `url('${dataUrl}')`; el.classList.remove('hidden'); });
+                        document.querySelectorAll(`.show-${targetClassPrefix}`).forEach(el => { 
+                            el.style.backgroundImage = `url('${base64Url}')`; 
+                            el.classList.remove('hidden'); 
+                        });
                         document.querySelectorAll(`.ph-${targetClassPrefix}`).forEach(el => el.classList.add('hidden'));
                     };
-                    reader.readAsDataURL(file);
+                    reader.readAsDataURL(file); // อ่านไฟล์เป็นข้อมูลดิบ Base64
                 }
             });
         };
@@ -853,11 +858,13 @@
         for (let i = 0; i < 6; i++) handleImageUpload(`img-${i}`, `gallery-${i}`);
         handleImageUpload('img-cover', 'gallery-cover');
 
+        // ⭐️ เปลี่ยนระบบดาวน์โหลดให้เบาเครื่อง ลดภาระ และกลับมาโหลดปกติ ไม่ใช้การแชร์
         window.exportNewsletter = async function() {
             const btn = document.getElementById('btn-export');
             const btnText = document.getElementById('btn-text');
             btn.disabled = true; btn.classList.add('opacity-70'); 
             
+            // เช็คว่าเป็นมือถือหรือไม่ ถ้าใช่จะลดขนาดลงเหลือความชัด 1.5 เท่า (แก้เครื่องค้าง)
             const isMobile = window.innerWidth <= 768;
             const exportScale = isMobile ? 1.5 : 2; 
             
@@ -870,10 +877,11 @@
             const originalTransform = scaler.style.transform;
             const originalHeight = previewContainer.style.height;
             
-            // ยกเลิกการซูมและกางขนาดเต็ม 100% เพื่อแคปหน้าจอ
+            // ล็อกหน้าจอให้พอดีเป๊ะตอนเซฟ
             scaler.style.transform = 'scale(1)'; 
             previewContainer.style.height = '1131px';
             
+            // เลื่อนจอขึ้นบนสุด (แก้อาการรูปแหว่ง)
             const origScroll = previewContainer.scrollTop;
             const winScrollX = window.scrollX;
             const winScrollY = window.scrollY;
@@ -881,16 +889,19 @@
             window.scrollTo(0, 0);
 
             try { await document.fonts.ready; } catch(e) {}
-            await new Promise(resolve => setTimeout(resolve, 800)); 
+            // รอเบราว์เซอร์เตรียมตัวสักครู่
+            await new Promise(resolve => setTimeout(resolve, 500)); 
 
             try {
+                // เริ่มเซฟรูป
                 const dataUrl = await htmlToImage.toJpeg(activeTemp, {
                     quality: 0.95,
                     pixelRatio: exportScale, 
                     backgroundColor: '#fdfaf6',
                     width: 800,
                     height: 1131,
-                    style: { transform: 'scale(1)', transformOrigin: 'top left', margin: '0' }
+                    style: { transform: 'scale(1)', transformOrigin: 'top left', margin: '0' },
+                    cacheBust: true
                 });
                 
                 let agencyPrefix = 'อบต_';
@@ -902,34 +913,17 @@
                 const topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
                 const fileName = `${agencyPrefix}${topic}.jpg`;
 
-                const res = await fetch(dataUrl);
-                const blob = await res.blob();
-                const file = new File([blob], fileName, { type: 'image/jpeg' });
+                // วิธีการดาวน์โหลดไฟล์โดยตรง (ไม่ใช้ Share API ไม่เด้ง ทำให้เบาเครื่องกว่า)
+                const link = document.createElement('a'); 
+                link.download = fileName;
+                link.href = dataUrl;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                window.showToast("ดาวน์โหลดรูปลงเครื่องสำเร็จ!");
 
-                // ใช้ Share Sheet ของ iOS/Android
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    try {
-                        await navigator.share({
-                            files: [file],
-                            title: topic,
-                            text: 'จดหมายข่าวประชาสัมพันธ์'
-                        });
-                        window.showToast("บันทึก/แชร์ รูปภาพสำเร็จ!");
-                    } catch (err) {
-                        console.log("Share cancelled", err);
-                    }
-                } else {
-                    const link = document.createElement('a'); 
-                    const url = URL.createObjectURL(blob);
-                    link.href = url;
-                    link.download = fileName;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    setTimeout(() => URL.revokeObjectURL(url), 100);
-                    window.showToast("ดาวน์โหลดรูปลงเครื่องสำเร็จ!");
-                }
-
+                // บันทึกประวัติ
                 const hId = Date.now();
                 const hData = {
                     id: hId, timestamp: hId,
@@ -952,6 +946,7 @@
                 console.error("Export Error:", error);
                 window.showToast("เกิดข้อผิดพลาดในการสร้างรูปภาพ"); 
             } finally {
+                // คืนค่าหน้าจอกลับมาปกติ
                 scaler.style.transform = originalTransform; 
                 previewContainer.style.height = originalHeight; 
                 previewContainer.scrollTop = origScroll;
@@ -1004,7 +999,7 @@
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        // ⭐️ ล็อกความสูงเป๊ะๆ เพื่อป้องกันการเกิด Scroll ซ้อนในกล่องพรีวิว
+        // ⭐️ แก้ไขให้พรีวิวล็อกพอดีจอ และปิดการเลื่อนซ้อนกัน (แก้ตามที่คุณรีเควส)
         function setScale() {
             const wrapper = document.getElementById('preview-wrapper');
             const scaler = document.getElementById('preview-scaler');
@@ -1022,6 +1017,7 @@
                 if (scale > 1) scale = 1; 
                 
                 scaler.style.transform = `scale(${scale})`;
+                // คำนวณความสูงให้ล็อกตายตัวพอดีกับขนาดที่ย่อมา ป้องกันพรีวิวเลื่อนได้
                 wrapper.style.height = (1131 * scale) + "px"; 
             }
         }
