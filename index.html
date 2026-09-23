@@ -415,6 +415,63 @@
         let fpDate, fpStart, fpEnd;
         let pendingBooking = null;
 
+        // ⭐️ แก้ปัญหาฟอนต์/เลย์เอาต์เพี้ยนบน Android:
+        // แคชค่าฟอนต์ที่โหลดสำเร็จแล้ว และ CSS ที่ใช้ฝังฟอนต์ลงในภาพตอนแคป
+        let fontsPreloaded = false;
+        let cachedFontEmbedCSS = null;
+
+        // โหลดฟอนต์ Kanit ทุกน้ำหนักที่ใช้จริงในเทมเพลต ด้วย FontFace API ตรงๆ
+        // ไม่พึ่ง document.fonts.ready อย่างเดียว เพราะบาง WebView บน Android
+        // จะ resolve ค่านี้เร็วเกินไปก่อนฟอนต์จะโหลดเสร็จจริง
+        async function preloadFonts() {
+            const weights = ['400', '700'];
+            try {
+                await Promise.all(
+                    weights.map(w => document.fonts.load(`${w} 16px Kanit`))
+                );
+                // เช็คซ้ำอีกชั้นว่าฟอนต์พร้อมใช้งานจริงหรือยัง
+                const allReady = weights.every(w => document.fonts.check(`${w} 16px Kanit`));
+                if (!allReady) {
+                    // รอเพิ่มอีกนิดแล้วเช็คใหม่ (เผื่อเน็ตช้า)
+                    await new Promise(r => setTimeout(r, 500));
+                }
+                fontsPreloaded = true;
+            } catch (e) {
+                console.warn('Font preload failed, will retry before export:', e);
+            }
+        }
+
+        // ดึง CSS ที่ผูกฟอนต์เป็น base64 ไว้ล่วงหน้า (แคชไว้ใช้ซ้ำ) เพื่อส่งให้
+        // html-to-image ฝังฟอนต์ลงในรูปตรงๆ แทนที่จะให้ไลบรารีไปแกะ stylesheet เองตอนแคป
+        async function ensureFontEmbedCSS(node) {
+            if (cachedFontEmbedCSS) return cachedFontEmbedCSS;
+            try {
+                cachedFontEmbedCSS = await htmlToImage.getFontEmbedCSS(node);
+            } catch (e) {
+                console.warn('getFontEmbedCSS failed, falling back to auto-embed:', e);
+                cachedFontEmbedCSS = '';
+            }
+            return cachedFontEmbedCSS;
+        }
+
+        // รอให้ <img> ทุกตัวใน node นั้น decode เสร็จจริง (สำคัญมากบน Android
+        // ที่บางทีรูปยัง paint ไม่เสร็จตอนที่ html-to-image เริ่มแคป)
+        async function waitForImagesDecoded(node) {
+            const imgs = Array.from(node.querySelectorAll('img'));
+            await Promise.all(imgs.map(img => {
+                if (!img.src) return Promise.resolve();
+                if (img.complete && img.naturalWidth > 0) {
+                    return img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+                }
+                return new Promise(resolve => {
+                    img.addEventListener('load', () => {
+                        (img.decode ? img.decode().catch(() => {}) : Promise.resolve()).then(resolve);
+                    }, { once: true });
+                    img.addEventListener('error', resolve, { once: true });
+                });
+            }));
+        }
+
         const gasWebhookUrl = "https://script.google.com/macros/s/AKfycbw6aXoB3SIKe9jrh-prj-2yM6-V8Endqr1gDRhYTHJTt_ibTk3YazC1N8Z83ZmKIZg7JQ/exec";
         
         const myFirebaseConfig = {
@@ -898,21 +955,38 @@
             previewContainer.scrollTop = 0;
             window.scrollTo(0, 0);
 
-            // รอ 1 วิเพื่อให้ iOS โหลดฟอนต์และรูปเข้ากระดูก
+            // รอฟอนต์ให้พร้อมจริงๆ (ไม่พึ่ง fonts.ready อย่างเดียว) + รอรูปภาพ decode ครบ
+            if (!fontsPreloaded) { try { await preloadFonts(); } catch(e) {} }
             try { await document.fonts.ready; } catch(e) {}
+            try { await waitForImagesDecoded(activeTemp); } catch(e) {}
             await new Promise(resolve => setTimeout(resolve, 1000)); 
 
+            // เตรียม CSS ฝังฟอนต์ล่วงหน้า (ถ้ายังไม่มีแคช จะไปดึงตอนนี้)
+            const fontEmbedCSS = await ensureFontEmbedCSS(activeTemp);
+
+            // ฟังก์ชันแคปจริง แยกออกมาเพื่อให้ retry ได้ถ้ารอบแรกพัง (มักเจอบน Android)
+            const captureOnce = () => htmlToImage.toJpeg(activeTemp, {
+                quality: 0.95,
+                pixelRatio: exportScale, 
+                backgroundColor: '#fdfaf6',
+                width: 800,
+                height: 1131,
+                style: { transform: 'scale(1)', transformOrigin: 'top left', margin: '0' },
+                cacheBust: true,
+                // ⭐️ ฝังฟอนต์เป็น base64 ลงในภาพโดยตรง แทนที่จะให้ไลบรารีไปแกะเองตอนแคป
+                fontEmbedCSS: fontEmbedCSS || undefined
+            });
+
             try {
-                // ⭐️ ใช้ html-to-image (แบบที่เข้ากันได้ดีที่สุด)
-                const dataUrl = await htmlToImage.toJpeg(activeTemp, {
-                    quality: 0.95,
-                    pixelRatio: exportScale, 
-                    backgroundColor: '#fdfaf6',
-                    width: 800,
-                    height: 1131,
-                    style: { transform: 'scale(1)', transformOrigin: 'top left', margin: '0' },
-                    cacheBust: true 
-                });
+                // ⭐️ ใช้ html-to-image (แบบที่เข้ากันได้ดีที่สุด) พร้อม retry 1 ครั้งถ้ารอบแรกพัง
+                let dataUrl;
+                try {
+                    dataUrl = await captureOnce();
+                } catch (firstErr) {
+                    console.warn('Capture attempt 1 failed, retrying...', firstErr);
+                    await new Promise(r => setTimeout(r, 400));
+                    dataUrl = await captureOnce();
+                }
                 
                 let agencyPrefix = 'อบต_';
                 const agencyVal = document.getElementById('select-agency').value;
@@ -1056,10 +1130,16 @@
             fpDate = flatpickr("#vb-date", { locale: "th", altInput: true, altFormat: "d/m/Y", dateFormat: "Y-m-d", defaultDate: "today" });
             fpStart = flatpickr("#vb-start", { enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true, defaultDate: "08:30" });
             fpEnd = flatpickr("#vb-end", { enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true, defaultDate: "12:00" });
+
+            // ⭐️ เริ่มโหลดฟอนต์ + เตรียม fontEmbedCSS ล่วงหน้าตั้งแต่เปิดหน้าเว็บ
+            // จะได้ไม่ต้องรอตอนกดปุ่มบันทึกรูป (ลดโอกาสฟอนต์ไม่มาเวลากดแคป)
+            preloadFonts().then(() => {
+                const t3 = document.getElementById('template-3');
+                if (t3) ensureFontEmbedCSS(t3);
+            });
         });
 
         window.switchView('view-dashboard');
     </script>
 </body>
 </html>
-```eof
