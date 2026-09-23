@@ -415,10 +415,40 @@
         let fpDate, fpStart, fpEnd;
         let pendingBooking = null;
 
-        // ⭐️ แก้ปัญหาฟอนต์/เลย์เอาต์เพี้ยนบน Android:
-        // แคชค่าฟอนต์ที่โหลดสำเร็จแล้ว และ CSS ที่ใช้ฝังฟอนต์ลงในภาพตอนแคป
+        // ⭐️ แก้ปัญหาฟอนต์/เลย์เอาต์เพี้ยนบน Android (และกันปุ่มค้างบน iOS):
         let fontsPreloaded = false;
-        let cachedFontEmbedCSS = null;
+
+        // รอ promise แต่มี "เพดานเวลา" กันไม่ให้ค้างตลอดกาล ถ้าเกินเวลาที่กำหนด
+        // จะถือว่าผ่านขั้นตอนนั้นไปเลย (ไม่ reject) เพื่อให้ export ไปต่อได้เสมอ
+        function withTimeout(promise, ms, label) {
+            return new Promise((resolve) => {
+                let done = false;
+                const timer = setTimeout(() => {
+                    if (!done) { done = true; console.warn(`${label} timed out after ${ms}ms, continuing anyway`); resolve(); }
+                }, ms);
+                Promise.resolve(promise).then(() => {
+                    if (!done) { done = true; clearTimeout(timer); resolve(); }
+                }).catch((e) => {
+                    if (!done) { done = true; clearTimeout(timer); console.warn(`${label} failed:`, e); resolve(); }
+                });
+            });
+        }
+
+        // เหมือน withTimeout แต่ "reject" เมื่อหมดเวลา (ใช้ตอนที่พังแล้วต้องแจ้งผู้ใช้
+        // ไม่ใช่แค่ข้ามไปเฉยๆ เช่นตอนแคปภาพจริง ถ้าค้างเกิน 20 วิ ให้ถือว่าล้มเหลวไปเลย)
+        function withHardTimeout(promise, ms, label) {
+            return new Promise((resolve, reject) => {
+                let done = false;
+                const timer = setTimeout(() => {
+                    if (!done) { done = true; reject(new Error(`${label} timed out after ${ms}ms`)); }
+                }, ms);
+                Promise.resolve(promise).then((val) => {
+                    if (!done) { done = true; clearTimeout(timer); resolve(val); }
+                }).catch((e) => {
+                    if (!done) { done = true; clearTimeout(timer); reject(e); }
+                });
+            });
+        }
 
         // โหลดฟอนต์ Kanit ทุกน้ำหนักที่ใช้จริงในเทมเพลต ด้วย FontFace API ตรงๆ
         // ไม่พึ่ง document.fonts.ready อย่างเดียว เพราะบาง WebView บน Android
@@ -429,33 +459,16 @@
                 await Promise.all(
                     weights.map(w => document.fonts.load(`${w} 16px Kanit`))
                 );
-                // เช็คซ้ำอีกชั้นว่าฟอนต์พร้อมใช้งานจริงหรือยัง
-                const allReady = weights.every(w => document.fonts.check(`${w} 16px Kanit`));
-                if (!allReady) {
-                    // รอเพิ่มอีกนิดแล้วเช็คใหม่ (เผื่อเน็ตช้า)
-                    await new Promise(r => setTimeout(r, 500));
-                }
                 fontsPreloaded = true;
             } catch (e) {
                 console.warn('Font preload failed, will retry before export:', e);
             }
         }
 
-        // ดึง CSS ที่ผูกฟอนต์เป็น base64 ไว้ล่วงหน้า (แคชไว้ใช้ซ้ำ) เพื่อส่งให้
-        // html-to-image ฝังฟอนต์ลงในรูปตรงๆ แทนที่จะให้ไลบรารีไปแกะ stylesheet เองตอนแคป
-        async function ensureFontEmbedCSS(node) {
-            if (cachedFontEmbedCSS) return cachedFontEmbedCSS;
-            try {
-                cachedFontEmbedCSS = await htmlToImage.getFontEmbedCSS(node);
-            } catch (e) {
-                console.warn('getFontEmbedCSS failed, falling back to auto-embed:', e);
-                cachedFontEmbedCSS = '';
-            }
-            return cachedFontEmbedCSS;
-        }
-
         // รอให้ <img> ทุกตัวใน node นั้น decode เสร็จจริง (สำคัญมากบน Android
         // ที่บางทีรูปยัง paint ไม่เสร็จตอนที่ html-to-image เริ่มแคป)
+        // รูปทั้งหมดในเทมเพลตนี้เป็น base64 data URI อยู่แล้ว (ไม่มีการดึงจากเน็ต)
+        // จึงควรเสร็จเร็วมาก — ถ้าไม่เสร็จภายใน timeout ก็ไปต่อได้เลย
         async function waitForImagesDecoded(node) {
             const imgs = Array.from(node.querySelectorAll('img'));
             await Promise.all(imgs.map(img => {
@@ -955,14 +968,12 @@
             previewContainer.scrollTop = 0;
             window.scrollTo(0, 0);
 
-            // รอฟอนต์ให้พร้อมจริงๆ (ไม่พึ่ง fonts.ready อย่างเดียว) + รอรูปภาพ decode ครบ
-            if (!fontsPreloaded) { try { await preloadFonts(); } catch(e) {} }
-            try { await document.fonts.ready; } catch(e) {}
-            try { await waitForImagesDecoded(activeTemp); } catch(e) {}
-            await new Promise(resolve => setTimeout(resolve, 1000)); 
-
-            // เตรียม CSS ฝังฟอนต์ล่วงหน้า (ถ้ายังไม่มีแคช จะไปดึงตอนนี้)
-            const fontEmbedCSS = await ensureFontEmbedCSS(activeTemp);
+            // รอฟอนต์ให้พร้อมจริงๆ + รอรูปภาพ decode ครบ — ทุกจุดมี timeout กันค้าง
+            // ต่อให้ขั้นตอนไหนช้าผิดปกติ ปุ่มก็จะไม่ค้างค้างตลอดไปแบบเดิม
+            if (!fontsPreloaded) { await withTimeout(preloadFonts(), 2500, 'preloadFonts'); }
+            await withTimeout(document.fonts.ready, 1500, 'fonts.ready');
+            await withTimeout(waitForImagesDecoded(activeTemp), 3000, 'waitForImagesDecoded');
+            await new Promise(resolve => setTimeout(resolve, 600)); 
 
             // ฟังก์ชันแคปจริง แยกออกมาเพื่อให้ retry ได้ถ้ารอบแรกพัง (มักเจอบน Android)
             const captureOnce = () => htmlToImage.toJpeg(activeTemp, {
@@ -972,20 +983,19 @@
                 width: 800,
                 height: 1131,
                 style: { transform: 'scale(1)', transformOrigin: 'top left', margin: '0' },
-                cacheBust: true,
-                // ⭐️ ฝังฟอนต์เป็น base64 ลงในภาพโดยตรง แทนที่จะให้ไลบรารีไปแกะเองตอนแคป
-                fontEmbedCSS: fontEmbedCSS || undefined
+                cacheBust: true
             });
 
             try {
                 // ⭐️ ใช้ html-to-image (แบบที่เข้ากันได้ดีที่สุด) พร้อม retry 1 ครั้งถ้ารอบแรกพัง
+                // ครอบด้วย hard timeout 20 วิ กันปุ่มค้างตลอดกาลถ้าการวาดภาพเองไปค้าง
                 let dataUrl;
                 try {
-                    dataUrl = await captureOnce();
+                    dataUrl = await withHardTimeout(captureOnce(), 20000, 'capture attempt 1');
                 } catch (firstErr) {
                     console.warn('Capture attempt 1 failed, retrying...', firstErr);
                     await new Promise(r => setTimeout(r, 400));
-                    dataUrl = await captureOnce();
+                    dataUrl = await withHardTimeout(captureOnce(), 20000, 'capture attempt 2');
                 }
                 
                 let agencyPrefix = 'อบต_';
@@ -1131,12 +1141,8 @@
             fpStart = flatpickr("#vb-start", { enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true, defaultDate: "08:30" });
             fpEnd = flatpickr("#vb-end", { enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true, defaultDate: "12:00" });
 
-            // ⭐️ เริ่มโหลดฟอนต์ + เตรียม fontEmbedCSS ล่วงหน้าตั้งแต่เปิดหน้าเว็บ
-            // จะได้ไม่ต้องรอตอนกดปุ่มบันทึกรูป (ลดโอกาสฟอนต์ไม่มาเวลากดแคป)
-            preloadFonts().then(() => {
-                const t3 = document.getElementById('template-3');
-                if (t3) ensureFontEmbedCSS(t3);
-            });
+            // ⭐️ เริ่มโหลดฟอนต์ล่วงหน้าตั้งแต่เปิดหน้าเว็บ จะได้ไม่ต้องรอตอนกดปุ่มบันทึกรูป
+            preloadFonts();
         });
 
         window.switchView('view-dashboard');
