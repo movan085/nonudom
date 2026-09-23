@@ -463,12 +463,17 @@
             // <base> ทำให้รูปที่อ้างแบบ relative เช่น ./IMG_0350.png หรือ ./SH1.jpg
             // ถูก resolve เป็น URL เต็มของเว็บจริง ให้เซิร์ฟเวอร์โหลดรูปได้ถูกต้อง
             const baseHref = location.href.replace(/[^\/]*$/, '');
+            // ⚠️ ห้ามเขียนคำว่า "</script>" แบบเต็มๆ ตรงๆ ในสตริงนี้ เพราะ HTML parser
+            // ของเบราว์เซอร์จะมองว่ามันคือจุดปิดแท็ก <script> ของหน้าเว็บนี้เอง (ทำให้โค้ด
+            // ที่เหลือทั้งหมดหลุดออกมาโชว์เป็นข้อความเปล่าบนหน้าเว็บ) — ต้องตัดคำแยกด้วย
+            // string concatenation แทน เพื่อไม่ให้มี byte sequence "</script" ปรากฏตรงๆ
+            const scriptCloseTag = '<' + '/script>';
             return `<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <base href="${baseHref}">
-<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.tailwindcss.com">${scriptCloseTag}
 <link rel="preconnect" href="https://fonts.bunny.net">
 <link href="https://fonts.bunny.net/css?family=kanit:400,700" rel="stylesheet" />
 <style>${styleBlocks}</style>
