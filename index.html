@@ -450,6 +450,53 @@
             });
         }
 
+        // ⭐️ URL ของ Cloudflare Worker ที่ทำหน้าที่ render รูปแบบ server-side
+        // (ใส่ URL ที่ได้หลัง deploy Worker เช่น "https://pr-nonudom-render.xxx.workers.dev")
+        // ถ้าเว้นว่างไว้ ระบบจะข้ามขั้นตอนนี้และแคปในเครื่อง (แบบเดิม) โดยอัตโนมัติ
+        const RENDER_WORKER_URL = "https://pr-nonudom-render.rawinan9.workers.dev/";
+
+        // ประกอบ HTML แบบสมบูรณ์ในตัวเอง (มี Tailwind, ฟอนต์, CSS ของเทมเพลตครบ)
+        // เพื่อส่งไปให้ Worker เปิดในเบราว์เซอร์ฝั่งเซิร์ฟเวอร์แล้ว render ให้
+        function buildStandaloneHtml(node) {
+            const styleBlocks = Array.from(document.querySelectorAll('style'))
+                .map(s => s.textContent).join('\n');
+            // <base> ทำให้รูปที่อ้างแบบ relative เช่น ./IMG_0350.png หรือ ./SH1.jpg
+            // ถูก resolve เป็น URL เต็มของเว็บจริง ให้เซิร์ฟเวอร์โหลดรูปได้ถูกต้อง
+            const baseHref = location.href.replace(/[^\/]*$/, '');
+            return `<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<base href="${baseHref}">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=kanit:400,700" rel="stylesheet" />
+<style>${styleBlocks}</style>
+</head>
+<body style="margin:0;">${node.outerHTML}</body>
+</html>`;
+        }
+
+        // ส่ง HTML ไปให้ Worker แคปภาพให้ฝั่งเซิร์ฟเวอร์ (Chromium ตัวเดียวกันทุกครั้ง
+        // ไม่ว่าผู้ใช้จะเปิดจากอุปกรณ์ไหน) — ถ้า Worker ยังไม่พร้อมหรือพัง จะ throw
+        // ออกมาให้ exportNewsletter ไป fallback เป็นการแคปในเครื่องแทน
+        async function serverRenderScreenshot(node) {
+            if (!RENDER_WORKER_URL) throw new Error('RENDER_WORKER_URL not configured yet');
+            const html = buildStandaloneHtml(node);
+            const resp = await withHardTimeout(
+                fetch(RENDER_WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ html })
+                }),
+                25000,
+                'server render'
+            );
+            if (!resp.ok) throw new Error('Server render HTTP ' + resp.status);
+            const blob = await resp.blob();
+            return URL.createObjectURL(blob);
+        }
+
         // โหลดฟอนต์ Kanit ทุกน้ำหนักที่ใช้จริงในเทมเพลต ด้วย FontFace API ตรงๆ
         // ไม่พึ่ง document.fonts.ready อย่างเดียว เพราะบาง WebView บน Android
         // จะ resolve ค่านี้เร็วเกินไปก่อนฟอนต์จะโหลดเสร็จจริง
@@ -986,16 +1033,22 @@
                 cacheBust: true
             });
 
+            let dataUrl; // ประกาศไว้นอก try เพื่อให้ finally เข้าถึงได้ (สำหรับล้าง object URL)
+
             try {
-                // ⭐️ ใช้ html-to-image (แบบที่เข้ากันได้ดีที่สุด) พร้อม retry 1 ครั้งถ้ารอบแรกพัง
-                // ครอบด้วย hard timeout 20 วิ กันปุ่มค้างตลอดกาลถ้าการวาดภาพเองไปค้าง
-                let dataUrl;
+                // ⭐️ ลอง render ฝั่งเซิร์ฟเวอร์ก่อนเสมอ (แม่นยำ 100% ทุกอุปกรณ์)
+                // ถ้าพัง (Worker ยังไม่ตั้งค่า, เน็ตมีปัญหา, ฯลฯ) จะ fallback ไปแคปในเครื่องแทน
                 try {
-                    dataUrl = await withHardTimeout(captureOnce(), 20000, 'capture attempt 1');
-                } catch (firstErr) {
-                    console.warn('Capture attempt 1 failed, retrying...', firstErr);
-                    await new Promise(r => setTimeout(r, 400));
-                    dataUrl = await withHardTimeout(captureOnce(), 20000, 'capture attempt 2');
+                    dataUrl = await serverRenderScreenshot(activeTemp);
+                } catch (serverErr) {
+                    console.warn('Server-side render failed, falling back to local capture:', serverErr);
+                    try {
+                        dataUrl = await withHardTimeout(captureOnce(), 20000, 'capture attempt 1');
+                    } catch (firstErr) {
+                        console.warn('Capture attempt 1 failed, retrying...', firstErr);
+                        await new Promise(r => setTimeout(r, 400));
+                        dataUrl = await withHardTimeout(captureOnce(), 20000, 'capture attempt 2');
+                    }
                 }
                 
                 let agencyPrefix = 'อบต_';
@@ -1062,6 +1115,9 @@
                 console.error("Export Error:", error);
                 window.showToast("เกิดข้อผิดพลาดในการสร้างรูปภาพ"); 
             } finally {
+                if (typeof dataUrl === 'string' && dataUrl.startsWith('blob:')) {
+                    try { URL.revokeObjectURL(dataUrl); } catch(e) {}
+                }
                 scaler.style.transform = originalTransform; 
                 previewContainer.style.height = originalHeight; 
                 previewContainer.scrollTop = origScroll;
