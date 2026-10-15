@@ -3,224 +3,498 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>สร้างจดหมายข่าว</title>
+<meta name="theme-color" content="#f2f2f7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>จดหมายข่าว</title>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Kanit', sans-serif; background: #f2f2f7; color: #1c1c1e; padding: 16px 16px 60px; }
-h1 { font-size: 20px; margin-bottom: 12px; }
-.card { background: #fff; border-radius: 20px; padding: 16px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.05); }
-label { display: block; font-size: 13px; color: #636366; margin: 12px 0 6px; font-weight: 600; }
-label:first-child { margin-top: 0; }
-input, textarea { width: 100%; font: inherit; font-size: 16px; padding: 12px; border-radius: 12px; border: 1px solid #e5e5ea; background: #f9f9fb; }
-textarea { min-height: 120px; resize: vertical; }
+:root{--bg:#f2f2f7;--card:#fff;--sep:#d1d1d6;--blue:#007aff;--red:#ff3b30;--label:#8e8e93}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Kanit',-apple-system,system-ui,sans-serif;background:var(--bg);color:#000;-webkit-tap-highlight-color:transparent}
+.screen{display:none;min-height:100vh;padding-bottom:40px}
+.screen.on{display:block}
 
-.photos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-.slot { aspect-ratio: 1; border: 1.5px dashed #c7c7cc; border-radius: 12px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; cursor: pointer; background: #f9f9fb; font-size: 12px; color: #8e8e93; text-align: center; }
-.slot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.slot input { display: none; }
-.slot.cover { grid-column: span 2; grid-row: span 2; }
+/* ---------- iOS navigation ---------- */
+.nav{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;min-height:52px;padding:max(env(safe-area-inset-top),10px) 12px 10px;background:rgba(242,242,247,.97);border-bottom:.5px solid var(--sep)}
+.nav-title{font-weight:600;font-size:17px}
+.nav-btn{background:none;border:0;color:var(--blue);font:inherit;font-size:17px;padding:6px 8px;cursor:pointer}
+.nav-btn.strong{font-weight:600}
+.nav-btn:disabled{opacity:.4}
+.large{font-size:34px;font-weight:700;padding:16px 20px 8px;display:flex;justify-content:space-between;align-items:center}
+.plus{width:36px;height:36px;border-radius:50%;background:#e3e3e8;border:0;font-size:22px;color:var(--blue);display:flex;align-items:center;justify-content:center;cursor:pointer}
 
-.btn { width: 100%; padding: 16px; border: 0; border-radius: 14px; font: inherit; font-weight: 600; font-size: 17px; background: #007aff; color: #fff; margin-top: 4px; }
-.btn:disabled { opacity: .5; }
+/* ---------- home list ---------- */
+.list{padding:4px 16px}
+.item{display:flex;gap:12px;align-items:center;background:var(--card);border-radius:16px;padding:12px;margin-bottom:10px;cursor:pointer}
+.item:active{background:#e5e5ea}
+.thumb{width:72px;height:72px;border-radius:12px;overflow:hidden;background:#a8a0c2;flex-shrink:0}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.item .t{font-weight:600;font-size:16px;line-height:1.5}
+.item .s{color:var(--label);font-size:13px;margin-top:2px}
+.empty{text-align:center;color:var(--label);padding:70px 24px;font-size:15px;line-height:1.7}
 
-#previewWrap { width: 100%; overflow: hidden; display: flex; justify-content: center; border-radius: 12px; background: #e5e5ea; }
-#previewBox { width: 800px; flex-shrink: 0; transform-origin: top center; }
+/* ---------- editor ---------- */
+.preview-area{padding:14px 16px 0}
+#previewWrap{background:#e3e3e8;border-radius:14px;overflow:hidden;position:relative}
+#previewBox{width:800px;transform-origin:0 0;position:absolute;left:0;top:0}
+.seg{margin:14px 16px;display:flex;background:#e3e3e8;border-radius:9px;padding:2px}
+.seg button{flex:1;border:0;background:transparent;padding:8px 0;font:inherit;font-size:14px;border-radius:7px;cursor:pointer}
+.seg button.on{background:#fff;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.tab{padding:0 16px}
+.group{background:var(--card);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.field{padding:12px 16px;border-bottom:.5px solid var(--sep)}
+.field:last-child{border-bottom:0}
+.field label{display:block;font-size:13px;color:var(--label);margin-bottom:4px}
+.field input,.field textarea{width:100%;border:0;font:inherit;font-size:16px;background:transparent;outline:none;color:#000;padding:0}
+.field textarea{min-height:120px;resize:vertical;line-height:1.8}
 
-/* ===== แม่แบบจดหมายข่าว (กว้าง 800px ตายตัว ไม่ถูกย่อตอนเซฟ) ===== */
-#paper { width: 800px; background: #faf8f3; font-family: 'Kanit', sans-serif; color: #2b2540; padding-bottom: 44px; }
-#paper .org-band { background: #6a5996; color: #fff; padding: 28px 56px 22px; }
-#paper .org { font-size: 24px; font-weight: 600; line-height: 1.8; }
-#paper .hero { width: 100%; height: 400px; object-fit: cover; display: block; background: #d9d4e8; }
-#paper .title-band { background: #a8a0c2; padding: 22px 56px; }
-#paper .title { font-size: 42px; font-weight: 700; color: #fff; line-height: 1.7; }
-#paper .meta { display: flex; justify-content: space-between; align-items: center; padding: 22px 56px 0; font-size: 22px; font-weight: 600; color: #6a5996; line-height: 1.8; }
-#paper .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 22px 56px 0; }
-#paper .grid img { width: 100%; height: 170px; object-fit: cover; border-radius: 12px; display: block; background: #e5e5ea; }
-#paper .body { padding: 28px 56px 0; font-size: 24px; line-height: 2; white-space: pre-wrap; text-align: left; }
-#paper .foot { margin: 32px 56px 0; background: #6a5996; color: #fff; border-radius: 999px; padding: 18px 32px; display: flex; justify-content: space-between; align-items: center; font-size: 22px; font-weight: 600; line-height: 1.8; }
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tile{aspect-ratio:1;border-radius:12px;overflow:hidden;position:relative;background:#e5e5ea;cursor:pointer;border:2.5px solid transparent}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+.tile.sel{border-color:var(--blue)}
+.cov{position:absolute;left:6px;top:6px;background:var(--blue);color:#fff;font-size:11px;padding:2px 8px;border-radius:99px}
+.tile.add{display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:15px;background:#fff;border:1.5px dashed #c7c7cc;cursor:pointer}
+.tile input{display:none}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.acts button{background:#fff;border:0;border-radius:12px;padding:13px 8px;font:inherit;font-size:15px;color:var(--blue);cursor:pointer}
+.acts button.red{color:var(--red)}
+.acts button:disabled{opacity:.4}
+.hint{font-size:13px;color:var(--label);padding:0 4px 16px;line-height:1.6}
+.logo-box{background:#fff;border-radius:14px;padding:22px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.logo-prev{width:130px;height:130px;border-radius:50%;background:#f2f2f7;overflow:hidden;display:flex;align-items:center;justify-content:center;color:var(--label);font-size:14px}
+.logo-prev img{width:100%;height:100%;object-fit:cover}
+.btn-blue{background:var(--blue);color:#fff;border:0;border-radius:12px;padding:12px 20px;font:inherit;font-size:16px;font-weight:600;cursor:pointer}
+.btn-plain{background:#f2f2f7;color:var(--red);border:0;border-radius:12px;padding:12px 20px;font:inherit;font-size:16px;cursor:pointer}
+.btn-plain:disabled{opacity:.4}
+.danger{display:block;width:calc(100% - 32px);margin:24px 16px 0;background:#fff;color:var(--red);border:0;border-radius:14px;padding:14px;font:inherit;font-size:16px;cursor:pointer}
+
+.toast{position:fixed;left:50%;bottom:36px;transform:translateX(-50%);background:rgba(30,30,30,.92);color:#fff;padding:10px 18px;border-radius:99px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;z-index:50}
+.toast.on{opacity:1}
+
+/* ================= แม่แบบจดหมายข่าว (800px ตายตัว) ================= */
+.paper{width:800px;background:#faf8f3;color:#2b2540;font-family:'Kanit',sans-serif;padding-bottom:40px;position:relative}
+.paper .hero{position:relative;height:400px;background:#a8a0c2;overflow:hidden}
+.paper .hero img{width:100%;height:100%;object-fit:cover;display:block}
+.paper .logo{position:absolute;right:26px;top:24px;width:136px;height:136px;border-radius:50%;background:#fff;border:6px solid #fff;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#6a5996;font-size:18px;font-weight:600;box-shadow:0 2px 10px rgba(0,0,0,.18);z-index:2}
+.paper .logo img{width:100%;height:100%;object-fit:cover}
+.paper .tw{position:relative;margin-top:-88px;z-index:1}
+.paper .tw-top{width:70%;background:#a8a0c2;border-radius:0 60px 0 0;padding:24px 56px 6px;color:#fff;font-size:58px;font-weight:700;line-height:1.6}
+.paper .tw-bot{display:flex;background:#faf8f3;align-items:stretch}
+.paper .sub{flex:0 0 44%;padding:4px 56px 22px;font-size:46px;font-weight:700;color:#a8a0c2;line-height:1.6}
+.paper .org{flex:1;background:#6a5996;border-radius:60px 0 0 0;color:#fff;font-size:28px;font-weight:600;padding:22px 40px;display:flex;align-items:center;justify-content:flex-end;line-height:1.6;text-align:right}
+.paper .meta{display:flex;align-items:center;gap:22px;padding:40px 56px 0}
+.paper .date{flex:0 0 38%;font-size:30px;font-weight:700;line-height:1.7}
+.paper .date span{border-bottom:4px solid #6a5996;padding-bottom:2px}
+.paper .evt{flex:1;background:#a8a0c2;color:#fff;border-radius:30px;padding:22px 30px;font-size:30px;font-weight:600;text-align:center;line-height:1.6}
+.paper .grid{display:grid;gap:16px;padding:36px 56px 0}
+.paper .grid img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:14px;display:block;background:#ddd}
+.paper .body{padding:56px 60px 0;font-size:24px;line-height:2;text-align:center;white-space:pre-wrap}
+.paper .foot{margin:64px 56px 0;background:#6a5996;color:#fff;border-radius:40px;padding:24px 44px;display:flex;justify-content:space-between;align-items:center;font-size:26px;font-weight:600;line-height:1.7}
 </style>
 </head>
 <body>
 
-<h1>📰 สร้างจดหมายข่าว</h1>
+<!-- ===== หน้ารายการ ===== -->
+<section id="home" class="screen on">
+  <div class="large">จดหมายข่าว <button class="plus" id="newBtn" aria-label="สร้างใหม่">+</button></div>
+  <div class="list" id="list"></div>
+  <div class="empty" id="empty">ยังไม่มีจดหมายข่าว<br>กด + เพื่อเริ่มสร้างฉบับแรก</div>
+</section>
 
-<div class="card">
-  <label>1. เลือกรูป (ช่องใหญ่คือรูปปก ที่เหลือเป็นรูปกิจกรรม สูงสุด 7 รูป)</label>
-  <div class="photos" id="photos"></div>
-</div>
+<!-- ===== หน้าแก้ไข ===== -->
+<section id="editor" class="screen">
+  <div class="nav">
+    <button class="nav-btn" id="backBtn">‹ รายการ</button>
+    <div class="nav-title">แก้ไข</div>
+    <button class="nav-btn strong" id="exportBtn">ส่งออก</button>
+  </div>
 
-<div class="card">
-  <label>ชื่อหน่วยงาน</label>
-  <input id="inOrg" value="องค์การบริหารส่วนตำบลโนนอุดม">
-  <label>หัวข้อข่าว</label>
-  <input id="inTitle" placeholder="เช่น ประชุมประจำเดือนตำบลโนนอุดม">
-  <label>วันที่</label>
-  <input id="inDate" placeholder="เช่น วันพุธที่ 14 ตุลาคม 2569">
-  <label>เนื้อหา</label>
-  <textarea id="inBody" placeholder="พิมพ์เนื้อหาข่าวที่นี่ (กด Enter เพื่อขึ้นบรรทัดใหม่ได้)"></textarea>
-  <label>เบอร์ติดต่อ / ท้ายเอกสาร</label>
-  <input id="inPhone" placeholder="เช่น โทร.044-077070">
-</div>
-
-<div class="card">
-  <label>ตัวอย่าง</label>
-  <div id="previewWrap"><div id="previewBox">
-    <div id="paper">
-      <div class="org-band"><div class="org" data-f="org"></div></div>
-      <img class="hero" id="hero" alt="">
-      <div class="title-band"><div class="title" data-f="title"></div></div>
-      <div class="meta"><div data-f="date"></div></div>
-      <div class="grid" id="grid"></div>
-      <div class="body" data-f="body"></div>
-      <div class="foot"><div data-f="phone"></div><div data-f="org2"></div></div>
+  <div class="preview-area">
+    <div id="previewWrap">
+      <div id="previewBox">
+        <div class="paper" id="paper">
+          <div class="hero">
+            <img id="hero" alt="">
+            <div class="logo" id="logo"><span>ตรา</span></div>
+          </div>
+          <div class="tw">
+            <div class="tw-top">จดหมายข่าว</div>
+            <div class="tw-bot">
+              <div class="sub" data-f="subtitle"></div>
+              <div class="org" data-f="org"></div>
+            </div>
+          </div>
+          <div class="meta">
+            <div class="date"><span data-f="date"></span></div>
+            <div class="evt" data-f="event"></div>
+          </div>
+          <div class="grid" id="grid"></div>
+          <div class="body" data-f="body"></div>
+          <div class="foot"><span data-f="phone"></span><span data-f="org"></span></div>
+        </div>
+      </div>
     </div>
-  </div></div>
-</div>
+  </div>
 
-<button class="btn" id="saveBtn">💾 บันทึกเป็นรูปภาพ</button>
+  <div class="seg" id="seg">
+    <button data-tab="text" class="on">ข้อความ</button>
+    <button data-tab="photos">รูปภาพ</button>
+    <button data-tab="logo">โลโก้</button>
+  </div>
+
+  <!-- แท็บข้อความ -->
+  <div class="tab" id="tab-text">
+    <div class="group">
+      <div class="field"><label>ข้อความใต้จดหมายข่าว</label><input id="f-subtitle"></div>
+      <div class="field"><label>ชื่อหน่วยงาน</label><input id="f-org"></div>
+      <div class="field"><label>วันที่</label><input id="f-date" placeholder="เช่น วันพุธที่ 14 ตุลาคม 2569"></div>
+      <div class="field"><label>หัวข้อกิจกรรม</label><input id="f-event" placeholder="เช่น ประชุมประจำเดือนตำบลโนนอุดม (กต.)"></div>
+      <div class="field"><label>เนื้อหา</label><textarea id="f-body" placeholder="พิมพ์เนื้อหาข่าวที่นี่"></textarea></div>
+      <div class="field"><label>เบอร์ติดต่อ</label><input id="f-phone" placeholder="เช่น 📞 โทร.044-077070"></div>
+    </div>
+  </div>
+
+  <!-- แท็บรูปภาพ -->
+  <div class="tab" id="tab-photos" hidden>
+    <div class="thumbs" id="thumbs"></div>
+    <div class="acts">
+      <button id="a-cover">ตั้งเป็นปก</button>
+      <button id="a-del" class="red">ลบรูปนี้</button>
+      <button id="a-left">◀ เลื่อนซ้าย</button>
+      <button id="a-right">เลื่อนขวา ▶</button>
+    </div>
+    <div class="hint" id="photoHint"></div>
+  </div>
+
+  <!-- แท็บโลโก้ -->
+  <div class="tab" id="tab-logo" hidden>
+    <div class="logo-box">
+      <div class="logo-prev" id="logo-prev">ยังไม่มีโลโก้</div>
+      <label class="btn-blue">เลือกโลโก้
+        <input type="file" accept="image/*" id="logo-file" hidden>
+      </label>
+      <button class="btn-plain" id="rm-logo">ลบโลโก้</button>
+    </div>
+  </div>
+
+  <button class="danger" id="delBtn">ลบจดหมายฉบับนี้</button>
+</section>
+
+<div class="toast" id="toast"></div>
 
 <script>
-const MAX_PHOTOS = 7;
-const photos = new Array(MAX_PHOTOS).fill(null);
-const $ = (s, el = document) => el.querySelector(s);
-const paper = $('#paper');
+const MAX = 7;
+const FIELDS = ['subtitle','org','date','event','body','phone'];
+const PH = { subtitle:'ประชาสัมพันธ์', org:'ชื่อหน่วยงาน', date:'วันที่', event:'หัวข้อกิจกรรม', body:'เนื้อหาข่าว', phone:'เบอร์ติดต่อ' };
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-// ---------- ช่องอัปโหลดรูป ----------
-const photosBox = $('#photos');
-for (let i = 0; i < MAX_PHOTOS; i++) {
-  const slot = document.createElement('label');
-  slot.className = 'slot' + (i === 0 ? ' cover' : '');
-  slot.innerHTML = `<span>${i === 0 ? 'รูปปก' : '+ รูปที่ ' + (i + 1)}</span>
-    <input type="file" accept="image/*">`;
-  photosBox.appendChild(slot);
+let issues = [], cur = null, sel = 0, saveT = null;
 
-  slot.querySelector('input').addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    photos[i] = await compress(file);
-    let img = slot.querySelector('img');
-    if (!img) { img = document.createElement('img'); slot.appendChild(img); }
-    img.src = photos[i];
-    slot.querySelector('span').style.display = 'none';
-    render();
-  });
-}
+// ---------- ฐานข้อมูลในเครื่อง (IndexedDB) ----------
+const DB = {
+  _p: null,
+  db() {
+    return this._p ||= new Promise((res, rej) => {
+      const r = indexedDB.open('newsletter-studio', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('issues', { keyPath: 'id' });
+      r.onsuccess = () => res(r.result);
+      r.onerror = () => rej(r.error);
+    });
+  },
+  async run(mode, fn) {
+    const db = await this.db();
+    return new Promise((res, rej) => {
+      const t = db.transaction('issues', mode);
+      const req = fn(t.objectStore('issues'));
+      t.oncomplete = () => res(req && req.result);
+      t.onerror = () => rej(t.error);
+    });
+  },
+  all() { return this.run('readonly', s => s.getAll()); },
+  put(v) { return this.run('readwrite', s => s.put(v)); },
+  del(id) { return this.run('readwrite', s => s.delete(id)); }
+};
 
-// ย่อรูปก่อนใช้ เพื่อให้มือถือไม่หน่วงและไฟล์ PNG ไม่ใหญ่เกินไป
-function compress(file) {
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file);
-    const img = new Image();
-    img.onload = () => {
-      const r = Math.min(1, 1600 / Math.max(img.width, img.height));
+// ---------- ย่อรูปก่อนเก็บ (ประหยัดแรมและพื้นที่) ----------
+function compress(file, max = 1400, q = 0.85) {
+  return new Promise((res, rej) => {
+    const u = URL.createObjectURL(file);
+    const im = new Image();
+    im.onload = () => {
+      const r = Math.min(1, max / Math.max(im.width, im.height));
       const c = document.createElement('canvas');
-      c.width = Math.round(img.width * r);
-      c.height = Math.round(img.height * r);
-      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-      URL.revokeObjectURL(url);
-      resolve(c.toDataURL('image/jpeg', 0.9));
+      c.width = Math.round(im.width * r); c.height = Math.round(im.height * r);
+      c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(u);
+      res(c.toDataURL('image/jpeg', q));
     };
-    img.onerror = reject;
-    img.src = url;
+    im.onerror = () => { URL.revokeObjectURL(u); rej(new Error('bad image')); };
+    im.src = u;
   });
 }
 
-// ---------- ผูกข้อความกับแม่แบบ ----------
-const inputs = { org: '#inOrg', title: '#inTitle', date: '#inDate', body: '#inBody', phone: '#inPhone' };
-const placeholders = { org: 'ชื่อหน่วยงาน', title: 'หัวข้อข่าว', date: 'วันที่', body: 'เนื้อหาข่าว', phone: 'เบอร์ติดต่อ' };
+// ---------- หน้าจอ ----------
+function show(name) {
+  $$('.screen').forEach(s => s.classList.toggle('on', s.id === name));
+  window.scrollTo(0, 0);
+  if (name === 'home') renderHome();
+}
 
-async function render() {
-  const hero = $('#hero');
-  hero.src = photos[0] || '';
-  hero.style.display = photos[0] ? 'block' : 'none';
+function renderHome() {
+  issues.sort((a, b) => b.updated - a.updated);
+  const list = $('#list');
+  list.innerHTML = '';
+  $('#empty').style.display = issues.length ? 'none' : 'block';
+  for (const it of issues) {
+    const d = document.createElement('div');
+    d.className = 'item';
+    d.innerHTML = `
+      <div class="thumb">${it.photos[0] ? `<img src="${it.photos[0]}" alt="">` : ''}</div>
+      <div>
+        <div class="t">${esc(it.event || 'ยังไม่มีหัวข้อ')}</div>
+        <div class="s">${esc(it.date || 'ยังไม่ระบุวันที่')} · ${it.photos.length} รูป</div>
+      </div>`;
+    d.onclick = () => openIssue(it.id);
+    list.appendChild(d);
+  }
+}
 
-  $('#grid').innerHTML = photos.slice(1).filter(Boolean).map(s => `<img src="${s}" alt="">`).join('');
-  $('#grid').style.display = photos.slice(1).some(Boolean) ? 'grid' : 'none';
+async function newIssue() {
+  const it = { id: String(Date.now()), subtitle: 'ประชาสัมพันธ์', org: 'องค์การบริหารส่วนตำบลโนนอุดม', date: '', event: '', body: '', phone: '', photos: [], logo: null, updated: Date.now() };
+  issues.unshift(it);
+  await DB.put(it);
+  openIssue(it.id);
+}
 
-  const v = {};
-  for (const k in inputs) v[k] = $(inputs[k]).value.trim() || placeholders[k];
-  paper.querySelector('[data-f="org"]').textContent = v.org;
-  paper.querySelector('[data-f="org2"]').textContent = v.org;
-  paper.querySelector('[data-f="title"]').textContent = v.title;
-  paper.querySelector('[data-f="date"]').textContent = v.date;
-  paper.querySelector('[data-f="body"]').textContent = v.body;
-  paper.querySelector('[data-f="phone"]').textContent = v.phone;
+function openIssue(id) {
+  cur = issues.find(x => x.id === id);
+  sel = 0;
+  for (const f of FIELDS) $('#f-' + f).value = cur[f] || '';
+  setTab('text');
+  renderThumbs();
+  renderLogoTab();
+  paint();
+  show('editor');
+}
 
-  // รอให้รูปโหลดเสร็จก่อนคำนวณขนาดพรีวิวใหม่
-  await Promise.all([...paper.querySelectorAll('img')].map(i => i.decode ? i.decode().catch(() => {}) : null));
+// ---------- ข้อความ ----------
+FIELDS.forEach(f => $('#f-' + f).addEventListener('input', e => {
+  cur[f] = e.target.value;
+  paintText();
+  touch();
+}));
+
+function paintText() {
+  for (const f of FIELDS) {
+    const text = (cur[f] || '').trim() || PH[f];
+    $$(`[data-f="${f}"]`, $('#paper')).forEach(el => el.textContent = text);
+  }
   fit();
 }
 
-for (const k in inputs) $(inputs[k]).addEventListener('input', render);
+// ---------- รูป ----------
+function paintImages() {
+  const hero = $('#hero');
+  if (cur.photos[0]) { hero.src = cur.photos[0]; hero.style.display = 'block'; }
+  else { hero.removeAttribute('src'); hero.style.display = 'none'; }
 
-// ---------- ย่อหน้าจอพรีวิวให้พอดีมือถือ (แค่ตอนแสดงผล ไม่กระทบตอนเซฟ) ----------
+  const rest = cur.photos.slice(1, MAX);
+  const grid = $('#grid');
+  grid.style.gridTemplateColumns = `repeat(${Math.min(3, Math.max(rest.length, 1))},1fr)`;
+  grid.style.display = rest.length ? 'grid' : 'none';
+  grid.innerHTML = rest.map(s => `<img src="${s}" alt="">`).join('');
+
+  $('#logo').innerHTML = cur.logo ? `<img src="${cur.logo}" alt="">` : '<span>ตรา</span>';
+}
+
+function paint() {
+  paintText();
+  paintImages();
+  Promise.all($$('img', $('#paper')).map(i => i.decode ? i.decode().catch(() => {}) : 0)).then(fit);
+}
+
+function renderThumbs() {
+  const box = $('#thumbs');
+  box.innerHTML = '';
+  cur.photos.forEach((src, i) => {
+    const d = document.createElement('div');
+    d.className = 'tile' + (i === sel ? ' sel' : '');
+    d.innerHTML = `<img src="${src}" alt="">${i === 0 ? '<span class="cov">ปก</span>' : ''}`;
+    d.onclick = () => { sel = i; renderThumbs(); };
+    box.appendChild(d);
+  });
+  if (cur.photos.length < MAX) {
+    const a = document.createElement('label');
+    a.className = 'tile add';
+    a.innerHTML = '+ เพิ่มรูป<input type="file" accept="image/*" multiple>';
+    a.querySelector('input').onchange = addPhotos;
+    box.appendChild(a);
+  }
+  const n = cur.photos.length;
+  $('#a-cover').disabled = !n || sel === 0;
+  $('#a-left').disabled = !n || sel === 0;
+  $('#a-right').disabled = !n || sel >= n - 1;
+  $('#a-del').disabled = !n;
+  $('#photoHint').textContent = n
+    ? `${n}/${MAX} รูป · รูปแรกคือรูปปก กดรูปเพื่อเลือก แล้วใช้ปุ่มด้านบนจัดลำดับ`
+    : `เพิ่มได้สูงสุด ${MAX} รูป รูปแรกจะเป็นรูปปก`;
+}
+
+async function addPhotos(e) {
+  const files = [...e.target.files].slice(0, MAX - cur.photos.length);
+  e.target.value = '';
+  if (!files.length) return;
+  toast('กำลังเพิ่มรูป...');
+  for (const f of files) {
+    try { cur.photos.push(await compress(f)); } catch (_) {}
+  }
+  afterPhotos();
+  toast(`เพิ่มแล้ว ${files.length} รูป`);
+}
+
+function move(from, to) {
+  const [p] = cur.photos.splice(from, 1);
+  cur.photos.splice(to, 0, p);
+  sel = to;
+  afterPhotos();
+}
+
+$('#a-cover').onclick = () => move(sel, 0);
+$('#a-left').onclick = () => move(sel, sel - 1);
+$('#a-right').onclick = () => move(sel, sel + 1);
+$('#a-del').onclick = () => {
+  cur.photos.splice(sel, 1);
+  sel = Math.max(0, Math.min(sel, cur.photos.length - 1));
+  afterPhotos();
+};
+
+function afterPhotos() {
+  renderThumbs();
+  paint();
+  touch();
+}
+
+// ---------- โลโก้ ----------
+function renderLogoTab() {
+  $('#logo-prev').innerHTML = cur.logo ? `<img src="${cur.logo}" alt="">` : 'ยังไม่มีโลโก้';
+  $('#rm-logo').disabled = !cur.logo;
+}
+$('#logo-file').onchange = async e => {
+  const f = e.target.files[0];
+  e.target.value = '';
+  if (!f) return;
+  try { cur.logo = await compress(f, 500, 0.9); } catch (_) { toast('ไฟล์รูปนี้เปิดไม่ได้'); return; }
+  renderLogoTab(); paintImages(); touch();
+};
+$('#rm-logo').onclick = () => { cur.logo = null; renderLogoTab(); paintImages(); touch(); };
+
+// ---------- แท็บ ----------
+function setTab(t) {
+  $$('#seg button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
+  ['text', 'photos', 'logo'].forEach(x => $('#tab-' + x).hidden = x !== t);
+  if (t === 'photos') renderThumbs();
+}
+$$('#seg button').forEach(b => b.onclick = () => setTab(b.dataset.tab));
+
+// ---------- ย่อพรีวิวให้พอดีจอ ----------
 function fit() {
-  const wrap = $('#previewWrap');
-  const box = $('#previewBox');
-  const s = Math.min(1, (wrap.clientWidth - 16) / 800);
-  box.style.transform = `scale(${s})`;
-  wrap.style.height = (paper.offsetHeight * s) + 'px';
+  const w = $('#previewWrap'), b = $('#previewBox'), p = $('#paper');
+  const s = w.clientWidth / 800;
+  b.style.transform = `scale(${s})`;
+  w.style.height = (p.offsetHeight * s) + 'px';
 }
 window.addEventListener('resize', fit);
 
-// ---------- บันทึกเป็นรูป ----------
-$('#saveBtn').addEventListener('click', async () => {
-  const btn = $('#saveBtn');
-  btn.disabled = true;
-  btn.textContent = 'กำลังสร้างรูป...';
+// ---------- บันทึกข้อมูล ----------
+function touch() {
+  cur.updated = Date.now();
+  clearTimeout(saveT);
+  saveT = setTimeout(() => DB.put(cur).catch(() => toast('บันทึกไม่สำเร็จ พื้นที่เครื่องอาจเต็ม')), 400);
+}
+
+$('#backBtn').onclick = async () => {
+  clearTimeout(saveT);
+  await DB.put(cur).catch(() => {});
+  show('home');
+};
+$('#newBtn').onclick = newIssue;
+$('#delBtn').onclick = async () => {
+  if (!confirm('ลบจดหมายฉบับนี้ใช่ไหม')) return;
+  clearTimeout(saveT);
+  await DB.del(cur.id);
+  issues = issues.filter(x => x.id !== cur.id);
+  show('home');
+};
+
+// ---------- ส่งออกเป็นรูป ----------
+function loadH2C() {
+  if (window.html2canvas) return Promise.resolve();
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = res;
+    s.onerror = () => rej(new Error('load'));
+    document.head.appendChild(s);
+  });
+}
+
+$('#exportBtn').onclick = async () => {
+  const btn = $('#exportBtn');
+  btn.disabled = true; btn.textContent = 'กำลังสร้าง...';
+  let holder;
   try {
+    await loadH2C();
     await document.fonts.ready;
 
-    // โคลนแม่แบบไปวางนอกจอแบบไม่ย่อ แล้วถ่ายภาพจากตัวนี้
-    const holder = document.createElement('div');
-    holder.style.cssText = 'position:absolute;left:-10000px;top:0;width:800px;';
-    const clone = paper.cloneNode(true);
+    holder = document.createElement('div');
+    holder.style.cssText = 'position:absolute;left:-10000px;top:0;width:800px';
+    const clone = $('#paper').cloneNode(true);
     holder.appendChild(clone);
     document.body.appendChild(holder);
-
-    await Promise.all([...clone.querySelectorAll('img')].map(i => i.decode ? i.decode().catch(() => {}) : null));
+    await Promise.all($$('img', clone).map(i => i.decode ? i.decode().catch(() => {}) : 0));
 
     const canvas = await html2canvas(clone, {
-      scale: 2,
-      backgroundColor: '#faf8f3',
-      width: 800,
-      windowWidth: 800,
-      useCORS: true
+      scale: 2, width: 800, windowWidth: 800,
+      backgroundColor: '#faf8f3', useCORS: true, logging: false
     });
-    holder.remove();
-
     const blob = await new Promise(r => canvas.toBlob(r, 'image/png'));
-    const file = new File([blob], 'newsletter.png', { type: 'image/png' });
+    const base = (cur.event || 'newsletter').replace(/[\\/:*?"<>|]/g, '').slice(0, 40) || 'newsletter';
+    const file = new File([blob], base + '.png', { type: 'image/png' });
 
-    // บนมือถือ: เปิดหน้าแชร์ของระบบ แล้วเลือก "บันทึกรูปภาพ" เพื่อเก็บลงอัลบั้ม
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      try {
-        await navigator.share({ files: [file], title: 'จดหมายข่าว' });
-        return;
-      } catch (err) {
-        if (err.name === 'AbortError') return;
-      }
+      try { await navigator.share({ files: [file] }); return; }
+      catch (err) { if (err.name === 'AbortError') return; }
     }
-
-    // บนคอมหรือเบราว์เซอร์ที่ไม่รองรับการแชร์: ดาวน์โหลดตรง ๆ
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = file.name;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    toast('บันทึกรูปแล้ว');
   } catch (err) {
-    alert('สร้างรูปไม่สำเร็จ ลองลดจำนวนรูปหรือรีเฟรชหน้าใหม่อีกครั้ง');
     console.error(err);
+    toast('สร้างรูปไม่สำเร็จ ลองลดจำนวนรูปแล้วลองอีกครั้ง');
   } finally {
-    btn.disabled = false;
-    btn.textContent = '💾 บันทึกเป็นรูปภาพ';
+    if (holder) holder.remove();
+    btn.disabled = false; btn.textContent = 'ส่งออก';
   }
-});
+};
 
-render();
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove('on'), 2000);
+}
+
+// ---------- เริ่มต้น ----------
+(async () => {
+  try { issues = await DB.all(); } catch (e) { issues = []; toast('เปิดฐานข้อมูลไม่ได้'); }
+  renderHome();
+})();
 </script>
 </body>
 </html>
