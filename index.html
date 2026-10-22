@@ -14,8 +14,6 @@
 
     <!-- CSS/JS ไลบรารี -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- ใช้ html2canvas (โหมด Ghost Capture ไม่ทำให้หน้าเว็บค้าง) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <!-- Flatpickr -->
@@ -42,8 +40,8 @@
         .custom-scroll::-webkit-scrollbar-thumb { background: #d1d1d6; border-radius: 10px; }
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #aeaeb2; }
 
-        .fade-in { animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.25s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
         .ios-card {
             background-color: #FFFFFF;
@@ -66,15 +64,6 @@
             box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15);
             outline: none;
         }
-
-        .ios-btn {
-            background-color: #FFFFFF;
-            border-radius: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            transition: transform 0.1s, background-color 0.2s;
-        }
-        .ios-btn:active { transform: scale(0.97); background-color: #F2F2F7; }
 
         .ios-btn-primary {
             background-color: #007AFF; 
@@ -113,7 +102,7 @@
             
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-2xl font-bold text-gray-900 tracking-tight">ยืนยันการจอง</h3>
-                <button onclick="window.closeBookingConfirm()" class="w-8 h-8 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center font-bold hover:bg-gray-200">✕</button>
+                <button type="button" onclick="closeBookingConfirm()" class="w-8 h-8 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center font-bold hover:bg-gray-200">✕</button>
             </div>
             
             <div class="space-y-4 mb-8">
@@ -134,8 +123,8 @@
             </div>
             
             <div class="flex gap-3 w-full mt-auto">
-                <button onclick="window.closeBookingConfirm()" class="flex-1 py-4 bg-gray-100 text-gray-700 font-bold rounded-[16px] active:scale-95 transition-transform">แก้ไข</button>
-                <button onclick="window.executeSaveBooking()" id="btn-final-confirm" class="flex-[1.5] py-4 bg-[#007AFF] text-white font-bold rounded-[16px] active:scale-95 transition-transform shadow-md">ยืนยันการจอง</button>
+                <button type="button" onclick="closeBookingConfirm()" class="flex-1 py-4 bg-gray-100 text-gray-700 font-bold rounded-[16px] active:scale-95 transition-transform">แก้ไข</button>
+                <button type="button" onclick="executeSaveBooking()" id="btn-final-confirm" class="flex-[1.5] py-4 bg-[#007AFF] text-white font-bold rounded-[16px] active:scale-95 transition-transform shadow-md">ยืนยันการจอง</button>
             </div>
         </div>
     </div>
@@ -147,8 +136,8 @@
             <h3 class="text-xl font-bold text-gray-900 mb-2" id="confirm-title">ยืนยันการดำเนินการ</h3>
             <p class="text-gray-500 mb-8 font-medium" id="confirm-message">คุณแน่ใจหรือไม่ที่จะดำเนินการนี้?</p>
             <div class="flex gap-3 w-full">
-                <button id="btn-confirm-cancel" class="flex-1 py-3.5 bg-gray-100 text-gray-700 font-bold rounded-[14px] active:scale-95 transition-transform">ยกเลิก</button>
-                <button id="btn-confirm-ok" class="flex-1 py-3.5 bg-red-500 text-white font-bold rounded-[14px] active:scale-95 transition-transform shadow-sm">ยืนยันลบ</button>
+                <button type="button" id="btn-confirm-cancel" class="flex-1 py-3.5 bg-gray-100 text-gray-700 font-bold rounded-[14px] active:scale-95 transition-transform">ยกเลิก</button>
+                <button type="button" id="btn-confirm-ok" class="flex-1 py-3.5 bg-red-500 text-white font-bold rounded-[14px] active:scale-95 transition-transform shadow-sm">ยืนยันลบ</button>
             </div>
         </div>
     </div>
@@ -166,13 +155,13 @@
         </div>
 
         <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8">
-            <button onclick="window.switchView('view-newsletter')" class="ios-card p-6 md:p-8 text-left flex flex-col active:scale-[0.98] transition-transform group cursor-pointer">
+            <button type="button" onclick="switchView('view-newsletter')" class="ios-card p-6 md:p-8 text-left flex flex-col active:scale-[0.98] transition-transform group cursor-pointer w-full">
                 <div class="w-14 h-14 bg-blue-100 text-[#007AFF] rounded-full flex items-center justify-center text-2xl mb-4 group-hover:bg-[#007AFF] group-hover:text-white transition-colors">📰</div>
                 <h3 class="text-xl font-bold text-gray-900 mb-1 tracking-tight">สร้างจดหมายข่าว</h3>
                 <p class="text-sm text-gray-500 font-medium line-clamp-2">ระบบจัดทำภาพข่าวประชาสัมพันธ์</p>
             </button>
 
-            <button onclick="window.switchView('view-vehicle')" class="ios-card p-6 md:p-8 text-left flex flex-col active:scale-[0.98] transition-transform group cursor-pointer relative">
+            <button type="button" onclick="switchView('view-vehicle')" class="ios-card p-6 md:p-8 text-left flex flex-col active:scale-[0.98] transition-transform group cursor-pointer relative w-full">
                 <div class="absolute top-6 right-6 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wide animate-pulse">Hot</div>
                 <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-2xl mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">🚙</div>
                 <h3 class="text-xl font-bold text-gray-900 mb-1 tracking-tight">ระบบจองรถส่วนกลาง</h3>
@@ -194,7 +183,7 @@
     <!-- ========================================== -->
     <div id="view-vehicle" class="hidden max-w-[1200px] mx-auto w-full p-4 md:p-6 flex flex-col gap-6 fade-in z-10">
         <div class="flex items-center justify-between pb-2 border-b border-gray-200">
-            <button onclick="window.switchView('view-dashboard')" class="flex items-center gap-1 text-[#007AFF] font-semibold active:opacity-50 transition-opacity text-lg">
+            <button type="button" onclick="switchView('view-dashboard')" class="flex items-center gap-1 text-[#007AFF] font-semibold active:opacity-50 transition-opacity text-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
                 กลับ
             </button>
@@ -206,10 +195,10 @@
             <div class="w-full lg:w-5/12 shrink-0">
                 <div class="flex justify-between items-end mb-3 px-1">
                     <h3 class="text-[13px] font-bold text-gray-500 uppercase tracking-wider" id="vb-form-title">บันทึกข้อมูลการจอง</h3>
-                    <button id="btn-cancel-edit" type="button" onclick="window.cancelEditBooking()" class="hidden text-[11px] font-bold text-[#007AFF] bg-blue-50 px-2 py-1 rounded">ยกเลิกแก้ไข</button>
+                    <button id="btn-cancel-edit" type="button" onclick="cancelEditBooking()" class="hidden text-[11px] font-bold text-[#007AFF] bg-blue-50 px-2 py-1 rounded">ยกเลิกแก้ไข</button>
                 </div>
                 
-                <form id="vehicle-booking-form" class="space-y-6" onsubmit="window.previewVehicleBooking(event)">
+                <form id="vehicle-booking-form" class="space-y-6" onsubmit="previewVehicleBooking(event)">
                     <input type="hidden" id="vb-id" value=""> 
                     
                     <div class="ios-card overflow-hidden">
@@ -267,7 +256,7 @@
             <div class="w-full lg:w-7/12 flex flex-col h-[600px] lg:h-[800px]">
                 <div class="flex justify-between items-end mb-3 px-1">
                     <h3 class="text-[13px] font-bold text-gray-500 uppercase tracking-wider">ประวัติการใช้รถ</h3>
-                    <button onclick="window.loadBookings()" class="text-[11px] font-bold text-gray-500 hover:text-gray-800 transition-colors">🔄 รีเฟรช</button>
+                    <button type="button" onclick="loadBookings()" class="text-[11px] font-bold text-gray-500 hover:text-gray-800 transition-colors">🔄 รีเฟรช</button>
                 </div>
                 <div class="ios-card flex-1 flex flex-col overflow-hidden bg-white">
                     <div id="vehicle-timeline" class="flex-1 overflow-y-auto custom-scroll p-4 md:p-6 space-y-5 bg-[#F2F2F7]/50"></div>
@@ -282,12 +271,12 @@
     <div id="view-newsletter" class="hidden max-w-[1400px] mx-auto w-full p-4 md:p-6 flex flex-col gap-6 fade-in z-10">
         
         <div class="flex items-center justify-between pb-2 border-b border-gray-200">
-            <button onclick="window.switchView('view-dashboard')" class="flex items-center gap-1 text-[#007AFF] font-semibold active:opacity-50 transition-opacity text-lg">
+            <button type="button" onclick="switchView('view-dashboard')" class="flex items-center gap-1 text-[#007AFF] font-semibold active:opacity-50 transition-opacity text-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
                 กลับ
             </button>
             <h2 class="font-bold text-gray-900 text-lg tracking-tight">สร้างจดหมายข่าว</h2>
-            <button onclick="window.showHistoryModal()" class="text-[14px] font-bold text-[#007AFF] bg-blue-50 px-3 py-1.5 rounded-full active:bg-blue-100">ประวัติ</button>
+            <button type="button" onclick="showHistoryModal()" class="text-[14px] font-bold text-[#007AFF] bg-blue-50 px-3 py-1.5 rounded-full active:bg-blue-100">ประวัติ</button>
         </div>
 
         <div class="flex flex-col xl:flex-row gap-6 w-full">
@@ -298,7 +287,7 @@
                 <div class="ios-card overflow-hidden">
                     <div class="p-4 border-b border-gray-100 bg-gray-50/50">
                         <label class="text-[13px] font-bold text-gray-500 uppercase tracking-wider block mb-1">🏢 เลือกหน่วยงาน</label>
-                        <select id="select-agency" onchange="window.updateAgencyTheme()" class="w-full bg-transparent text-[#007AFF] font-bold text-[16px] focus:outline-none">
+                        <select id="select-agency" onchange="updateAgencyTheme()" class="w-full bg-transparent text-[#007AFF] font-bold text-[16px] focus:outline-none">
                             <option value="obt">องค์การบริหารส่วนตำบลโนนอุดม</option>
                             <option value="sh1">โรงเรียนบ้านโนนอุดมนภดลอุปถัมภ์</option>
                             <option value="sh2">ศูนย์พัฒนาเด็กเล็กวัดบ้านโนนขาม</option>
@@ -330,9 +319,9 @@
                     <div class="p-4 flex justify-between items-center border-b border-gray-100 bg-gray-50/50">
                         <label class="text-[13px] font-bold text-gray-500 uppercase tracking-wider">💬 คำบรรยาย</label>
                         <div class="flex items-center gap-1 bg-gray-200/60 rounded-lg p-0.5">
-                            <button type="button" onclick="window.changeFontSize('sync-description', 'fontSize-desc', -1)" class="w-7 h-7 flex items-center justify-center bg-white rounded shadow-sm text-gray-700 font-bold active:scale-95">-</button>
+                            <button type="button" onclick="changeFontSize('sync-description', 'fontSize-desc', -1)" class="w-7 h-7 flex items-center justify-center bg-white rounded shadow-sm text-gray-700 font-bold active:scale-95">-</button>
                             <input type="number" id="fontSize-desc" value="18" class="w-8 text-center bg-transparent text-[13px] font-bold outline-none pointer-events-none text-gray-700" readonly>
-                            <button type="button" onclick="window.changeFontSize('sync-description', 'fontSize-desc', 1)" class="w-7 h-7 flex items-center justify-center bg-white rounded shadow-sm text-gray-700 font-bold active:scale-95">+</button>
+                            <button type="button" onclick="changeFontSize('sync-description', 'fontSize-desc', 1)" class="w-7 h-7 flex items-center justify-center bg-white rounded shadow-sm text-gray-700 font-bold active:scale-95">+</button>
                         </div>
                     </div>
                     <div class="p-4">
@@ -357,7 +346,7 @@
                     <div class="grid grid-cols-3 gap-2" id="upload-buttons-container"></div>
                 </div>
 
-                <button id="btn-export" onclick="window.exportNewsletter()" class="ios-btn-primary w-full py-4 text-lg">
+                <button type="button" id="btn-export" onclick="exportNewsletter()" class="ios-btn-primary w-full py-4 text-lg">
                     บันทึกรูปภาพ
                 </button>
             </div>
@@ -367,7 +356,7 @@
                 <div id="preview-wrapper">
                     <div id="preview-scaler">
                         
-                        <!-- เทมเพลตจดหมายข่าว (ขนาดคงที่ 800x1131 px) ปรับระยะกันสระตกขอบให้แล้ว -->
+                        <!-- เทมเพลตจดหมายข่าว (ขนาดคงที่ 800x1131 px) -->
                         <div id="template-3" class="bg-[#fdfaf6] relative shadow-xl shrink-0 overflow-hidden flex flex-col">
                             
                             <!-- โลโก้ มุมขวาบนสุด -->
@@ -383,7 +372,7 @@
                                 <div class="show-gallery-cover hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div>
                             </div>
 
-                            <!-- แถบจดหมายข่าว (ปรับ padding และความสูงรับสระบนสำหรับ html2canvas) -->
+                            <!-- แถบจดหมายข่าว (เผื่อระยะสระบนไม่ให้แหว่ง) -->
                             <div style="position: absolute; top: 175px; left: 0; width: 100%; z-index: 10;">
                                 <div class="shape-t3-lightpurple text-[#4b3e70] font-bold text-[52px] px-10 shadow-sm w-fit pr-16 tracking-tight flex items-center" style="border-radius: 0 40px 0 0; height: 80px; padding-bottom: 12px;">
                                     จดหมายข่าว
@@ -428,7 +417,7 @@
                                 </div>
                             </div>
 
-                            <!-- Footer เบอร์โทร (ขยับขึ้นและจัดกึ่งกลางไม่ให้ตกขอบ) -->
+                            <!-- Footer เบอร์โทร -->
                             <div class="absolute left-10 right-10 h-[60px] shape-t3-purple rounded-full px-10 flex items-center justify-center gap-8 z-10 shadow-sm text-white" style="bottom: 35px; padding-bottom: 8px;">
                                 <div class="flex items-center gap-2 shrink-0">
                                     <span class="text-[18px] font-bold">📞 โทร.044-077070</span>
@@ -451,468 +440,212 @@
                 <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mt-4 mb-2 md:hidden"></div>
                 <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center shrink-0">
                     <h3 class="text-xl font-bold text-gray-900 tracking-tight">ประวัติย้อนหลัง</h3>
-                    <button onclick="window.closeHistoryModal()" class="w-8 h-8 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center font-bold hover:bg-gray-200">✕</button>
+                    <button type="button" onclick="closeHistoryModal()" class="w-8 h-8 bg-gray-100 text-gray-500 rounded-full flex items-center justify-center font-bold hover:bg-gray-200">✕</button>
                 </div>
                 <div id="history-list-container" class="flex-1 overflow-y-auto custom-scroll p-4 space-y-3 bg-[#F2F2F7]/50 pb-8"></div>
             </div>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    <!-- ========================================================================= -->
+    <!-- สคริปต์ส่วนที่ 1: ระบบปุ่มกด เปลี่ยนหน้า และสร้างรูปภาพ (ทำงานทันทีไม่ง้อเน็ต) -->
+    <!-- ========================================================================= -->
+    <script>
+        var historyData = [];
+        var bookingData = [];
+        try { historyData = JSON.parse(localStorage.getItem('prStudioHistory')) || []; } catch(e) {}
+        try { bookingData = JSON.parse(localStorage.getItem('prStudioBookings')) || []; } catch(e) {}
+        
+        var fpDate, fpStart, fpEnd;
+        var pendingBooking = null;
+        var gasWebhookUrl = "https://script.google.com/macros/s/AKfycbw6aXoB3SIKe9jrh-prj-2yM6-V8Endqr1gDRhYTHJTt_ibTk3YazC1N8Z83ZmKIZg7JQ/exec";
+        var thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+        var tDate = new Date();
 
-        // ==========================================
-        // 1. ฟังก์ชันสลับหน้าต่างและ UI
-        // ==========================================
-        window.switchView = function(viewId) {
-            document.querySelectorAll('div[id^="view-"]').forEach(el => el.classList.add('hidden'));
-            const targetView = document.getElementById(viewId);
+        // ตัวแปรเชื่อม Firebase (ถ้าโหลดเสร็จจะมาอัปเดตเอง)
+        window.cloudDB = { ready: false, saveBooking: null, deleteBooking: null, saveHistory: null };
+
+        function switchView(viewId) {
+            document.querySelectorAll('div[id^="view-"]').forEach(function(el) {
+                el.classList.add('hidden');
+            });
+            var targetView = document.getElementById(viewId);
             if(targetView) targetView.classList.remove('hidden');
 
             if(viewId === 'view-newsletter') {
-                setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
-                window.updateAgencyTheme(); 
+                setTimeout(setScale, 50);
+                setTimeout(setScale, 200);
+                updateAgencyTheme(); 
             } else if (viewId === 'view-dashboard' || viewId === 'view-vehicle') {
-                window.renderTimetable();
+                renderTimetable();
             }
             window.scrollTo(0, 0);
         }
 
-        window.showToast = function(text) {
-            const toast = document.getElementById("toast-message");
+        function showToast(text) {
+            var toast = document.getElementById("toast-message");
             document.getElementById("toast-text").innerText = text;
             toast.classList.remove("opacity-0", "pointer-events-none", "-translate-y-10");
             toast.classList.add("opacity-100", "translate-y-0");
-            setTimeout(() => {
+            setTimeout(function() {
                 toast.classList.remove("opacity-100", "translate-y-0");
                 toast.classList.add("opacity-0", "pointer-events-none", "-translate-y-10");
             }, 3000);
         }
 
-        window.showConfirm = function(title, message, okText, onConfirmCallback) {
-            const modal = document.getElementById('confirm-modal');
+        function showConfirm(title, message, okText, onConfirmCallback) {
+            var modal = document.getElementById('confirm-modal');
             document.getElementById('confirm-title').innerText = title;
             document.getElementById('confirm-message').innerText = message;
             
-            const btnOk = document.getElementById('btn-confirm-ok');
+            var btnOk = document.getElementById('btn-confirm-ok');
             btnOk.innerText = okText;
 
             modal.classList.remove('hidden');
-            setTimeout(() => { 
+            setTimeout(function() { 
                 modal.classList.remove('opacity-0'); 
                 document.getElementById('confirm-modal-content').classList.remove('scale-95'); 
             }, 10);
 
-            const btnCancel = document.getElementById('btn-confirm-cancel');
-            const newBtnOk = btnOk.cloneNode(true);
+            var btnCancel = document.getElementById('btn-confirm-cancel');
+            var newBtnOk = btnOk.cloneNode(true);
             btnOk.parentNode.replaceChild(newBtnOk, btnOk);
-            const newBtnCancel = btnCancel.cloneNode(true);
+            var newBtnCancel = btnCancel.cloneNode(true);
             btnCancel.parentNode.replaceChild(newBtnCancel, btnCancel);
 
-            const closeFunc = () => {
+            var closeFunc = function() {
                 modal.classList.add('opacity-0'); 
                 document.getElementById('confirm-modal-content').classList.add('scale-95');
-                setTimeout(() => modal.classList.add('hidden'), 300);
+                setTimeout(function() { modal.classList.add('hidden'); }, 300);
             };
 
-            newBtnOk.onclick = () => { closeFunc(); if(onConfirmCallback) onConfirmCallback(); };
+            newBtnOk.onclick = function() { closeFunc(); if(onConfirmCallback) onConfirmCallback(); };
             newBtnCancel.onclick = closeFunc;
         }
 
-        // ==========================================
-        // 2. ระบบจองรถ (Vehicle)
-        // ==========================================
-        window.cancelEditBooking = function() {
-            document.getElementById('vehicle-booking-form').reset();
-            document.getElementById('vb-id').value = '';
-            document.getElementById('btn-cancel-edit').classList.add('hidden');
+        function setScale() {
+            var wrapper = document.getElementById('preview-wrapper');
+            var scaler = document.getElementById('preview-scaler');
+            var newsletterView = document.getElementById('view-newsletter');
             
-            const btn = document.getElementById('btn-submit-booking');
-            btn.innerHTML = 'ตรวจสอบข้อมูล';
-            btn.className = "ios-btn-primary w-full py-4 text-lg mt-4";
-            
-            document.getElementById('vb-form-title').innerHTML = 'บันทึกข้อมูลการจอง';
-            
-            if (fpDate) fpDate.setDate(tDate.toISOString().split('T')[0]);
-            if (fpStart) fpStart.setDate("08:30");
-            if (fpEnd) fpEnd.setDate("12:00");
-        }
-
-        window.editBooking = function(id) {
-            const booking = bookingData.find(b => b.id === id);
-            if (!booking) return;
-            
-            window.switchView('view-vehicle');
-            
-            document.getElementById('vb-id').value = booking.id;
-            document.getElementById('vb-car').value = booking.car;
-            document.getElementById('vb-name').value = booking.name;
-            document.getElementById('vb-dest').value = booking.dest;
-            
-            if (fpDate) fpDate.setDate(booking.date);
-            if (fpStart) fpStart.setDate(booking.start);
-            if (fpEnd) fpEnd.setDate(booking.end);
-            
-            document.getElementById('btn-cancel-edit').classList.remove('hidden');
-            document.getElementById('vb-form-title').innerHTML = '<span class="text-[#007AFF]">แก้ไขข้อมูลการจอง</span>';
-            
-            const btn = document.getElementById('btn-submit-booking');
-            btn.innerHTML = 'ตรวจสอบข้อมูลแก้ไข';
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        window.previewVehicleBooking = function(e) {
-            e.preventDefault();
-            const isEditing = document.getElementById('vb-id').value !== '';
-            
-            pendingBooking = {
-                id: isEditing ? parseInt(document.getElementById('vb-id').value) : Date.now(),
-                car: document.getElementById('vb-car').value,
-                name: document.getElementById('vb-name').value,
-                dest: document.getElementById('vb-dest').value,
-                date: document.getElementById('vb-date').value,
-                start: document.getElementById('vb-start').value,
-                end: document.getElementById('vb-end').value,
-                notify: document.getElementById('vb-notify-line').checked,
-                isEditing: isEditing
-            };
-
-            document.getElementById('confirm-detail-car').innerText = pendingBooking.car;
-            document.getElementById('confirm-detail-name').innerText = pendingBooking.name;
-            document.getElementById('confirm-detail-dest').innerText = "📍 " + pendingBooking.dest;
-            
-            const d = new Date(pendingBooking.date);
-            const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]}${d.getFullYear() + 543}`;
-            document.getElementById('confirm-detail-datetime').innerText = `${thaiDate} (เวลา ${pendingBooking.start} -${pendingBooking.end} น.)`;
-            
-            const notifyEl = document.getElementById('confirm-detail-notify');
-            if (pendingBooking.notify) {
-                notifyEl.className = "flex items-center gap-3 p-4 rounded-[20px] font-bold text-sm bg-green-50 text-green-700 border border-green-100";
-                notifyEl.innerHTML = `<span>🔔</span> ส่งแจ้งเตือนเข้า LINE ทันที`;
-            } else {
-                notifyEl.className = "flex items-center gap-3 p-4 rounded-[20px] font-bold text-sm bg-gray-100 text-gray-500";
-                notifyEl.innerHTML = `<span>🔕</span> บันทึกเข้าระบบเงียบๆ (ไม่ส่ง LINE)`;
-            }
-            
-            const btnFinal = document.getElementById('btn-final-confirm');
-            btnFinal.innerHTML = isEditing ? 'บันทึกการแก้ไข' : 'ยืนยันการจอง';
-
-            const modal = document.getElementById('booking-confirm-modal');
-            const content = document.getElementById('booking-confirm-content');
-            modal.classList.remove('hidden');
-            setTimeout(() => { 
-                modal.classList.remove('opacity-0'); 
-                content.classList.remove('translate-y-full', 'scale-95'); 
-            }, 10);
-        }
-
-        window.closeBookingConfirm = function() {
-            const modal = document.getElementById('booking-confirm-modal');
-            const content = document.getElementById('booking-confirm-content');
-            modal.classList.add('opacity-0'); 
-            if(window.innerWidth < 768) {
-                content.classList.add('translate-y-full');
-            } else {
-                content.classList.add('scale-95');
-            }
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        window.executeSaveBooking = async function() {
-            if(!pendingBooking) return;
-            window.closeBookingConfirm();
-
-            const isEditing = pendingBooking.isEditing;
-            const newBooking = {
-                id: pendingBooking.id,
-                car: pendingBooking.car,
-                name: pendingBooking.name,
-                dest: pendingBooking.dest,
-                date: pendingBooking.date,
-                start: pendingBooking.start,
-                end: pendingBooking.end
-            };
-
-            if (isFirebaseReady && auth && auth.currentUser) {
-                try { await setDoc(doc(bookingRef, newBooking.id.toString()), newBooking); } 
-                catch (err) { window.showToast("บันทึกลงคลาวด์ล้มเหลว ระบบเซฟลงเครื่องแทน"); }
-            } else {
-                if (isEditing) {
-                    const idx = bookingData.findIndex(b => b.id === newBooking.id);
-                    if(idx !== -1) bookingData[idx] = newBooking;
-                } else { bookingData.push(newBooking); }
-                localStorage.setItem('prStudioBookings', JSON.stringify(bookingData));
-                window.renderTimetable();
-            }
-
-            if (pendingBooking.notify) {
-                const d = new Date(newBooking.date);
-                const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]}${d.getFullYear() + 543}`;
-                const prefix = isEditing ? "🚙 [แก้ไข] อัปเดตคิวจองรถ!\n" : "🚙 บันทึกคิวจองรถใหม่!\n";
-                const lineMessage = `\n${prefix}━━━━━━━━━━━━\n🚘 รถ: ${newBooking.car}\n👤 ผู้ใช้: ${newBooking.name}\n📍 ภารกิจ: ${newBooking.dest}\n📅 วันที่: ${thaiDate}\n⏰ เวลา: ${newBooking.start} น. - ${newBooking.end} น.`;
-
-                try {
-                    await fetch(gasWebhookUrl, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain" }, body: JSON.stringify({ message: lineMessage }) });
-                    window.showToast(isEditing ? "อัปเดตและแจ้งเตือน LINE แล้ว!" : "บันทึกและส่งแจ้งเตือน LINE เรียบร้อย!");
-                } catch (error) { window.showToast("บันทึกแล้ว แต่ส่ง LINE ล้มเหลว"); }
-            } else {
-                window.showToast(isEditing ? "อัปเดตข้อมูลเงียบๆ สำเร็จ" : "บันทึกข้อมูลเงียบๆ สำเร็จ");
-            }
-
-            pendingBooking = null;
-            window.cancelEditBooking(); 
-        }
-
-        window.deleteBooking = function(id) {
-            window.showConfirm("ลบคิวจองรถ", "แน่ใจหรือไม่ว่าต้องการลบการจองนี้?", "ลบทิ้ง", async () => {
-                if (isFirebaseReady && auth && auth.currentUser) {
-                    try { await deleteDoc(doc(bookingRef, id.toString())); window.showToast("ลบข้อมูลสำเร็จ!"); } 
-                    catch (error) { window.showToast("ลบข้อมูลไม่สำเร็จ"); }
-                } else {
-                    bookingData = bookingData.filter(b => b.id !== id);
-                    localStorage.setItem('prStudioBookings', JSON.stringify(bookingData));
-                    window.renderTimetable(); window.showToast("ลบข้อมูลสำเร็จ!");
-                }
-            });
-        }
-
-        window.renderTimetable = function() {
-            const containers = [document.getElementById('dashboard-timeline'), document.getElementById('vehicle-timeline')];
-
-            if (bookingData.length === 0) {
-                const emptyMsg = '<div class="text-center py-12 text-gray-400 font-medium">ยังไม่มีประวัติการจองรถในช่วงนี้</div>';
-                containers.forEach(c => { if(c) c.innerHTML = emptyMsg; });
-                return;
-            }
-
-            const today = new Date(); today.setHours(0,0,0,0);
-            const past15Days = new Date(today); past15Days.setDate(past15Days.getDate() - 15);
-
-            const filteredBookings = bookingData.filter(b => { return new Date(b.date) >= past15Days; });
-
-            if (filteredBookings.length === 0) {
-                const emptyMsg = '<div class="text-center py-12 text-gray-400 font-medium">ไม่มีประวัติการจองรถในช่วง 15 วันที่ผ่านมา</div>';
-                containers.forEach(c => { if(c) c.innerHTML = emptyMsg; });
-                return;
-            }
-
-            const groupedByDate = filteredBookings.reduce((acc, curr) => {
-                if (!acc[curr.date]) acc[curr.date] = [];
-                acc[curr.date].push(curr); return acc;
-            }, {});
-
-            const sortedDates = Object.keys(groupedByDate).sort((a, b) => new Date(b) - new Date(a));
-            let htmlContent = '';
-
-            sortedDates.forEach(dateStr => {
-                const d = new Date(dateStr);
-                const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]}${d.getFullYear() + 543}`;
+            if(wrapper && scaler && !newsletterView.classList.contains('hidden')) {
+                var container = wrapper.parentElement;
+                var style = window.getComputedStyle(container);
+                var paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
                 
-                let dayBlock = `<div class="mb-6">
-                    <div class="text-[#007AFF] font-bold text-sm mb-3 pl-1">📅 ${thaiDate}</div>
-                    <div class="space-y-3">`;
-
-                const bookingsOnDate = groupedByDate[dateStr].sort((a, b) => a.start.localeCompare(b.start));
-
-                bookingsOnDate.forEach(b => {
-                    let carBadge = "bg-gray-100 text-gray-600";
-                    if(b.car.includes("น้ำ")) carBadge = "bg-blue-100 text-blue-700";
-                    if(b.car.includes("ดำ")) carBadge = "bg-gray-800 text-white";
-                    if(b.car.includes("กู้ภัย")) carBadge = "bg-red-100 text-red-700";
-
-                    dayBlock += `
-                        <div class="ios-card p-4 relative group hover:border-[#007AFF] transition-colors">
-                            <div class="flex flex-col md:flex-row gap-3 md:items-center">
-                                <div class="font-bold text-lg text-gray-900 w-32 shrink-0">
-                                    ${b.start} -${b.end}
-                                </div>
-                                <div class="flex-1 pr-14">
-                                    <div class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold mb-1.5 ${carBadge}">${b.car}</div>
-                                    <p class="text-sm text-gray-600 font-medium line-clamp-1">📍 ${b.dest} <span class="text-gray-400">(${b.name})</span></p>
-                                </div>
-                            </div>
-                            <div class="absolute top-1/2 -translate-y-1/2 right-3 flex gap-1">
-                                <button onclick="window.editBooking(${b.id})" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:text-[#007AFF] hover:bg-blue-50 transition-colors">✏️</button>
-                                <button onclick="window.deleteBooking(${b.id})" class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-red-50 transition-colors">🗑️</button>
-                            </div>
-                        </div>`;
-                });
-
-                dayBlock += `</div></div>`;
-                htmlContent += dayBlock;
-            });
-
-            containers.forEach(c => { if(c) c.innerHTML = htmlContent; });
-        }
-
-        window.loadBookings = function() {
-            if (!isFirebaseReady || !auth || !auth.currentUser) {
-                const saved = localStorage.getItem('prStudioBookings');
-                if(saved) bookingData = JSON.parse(saved);
+                var availableWidth = container.clientWidth - paddingX; 
+                var targetWidth = 800; 
+                var scale = availableWidth / targetWidth;
+                if (scale > 1) scale = 1; 
+                if (scale <= 0) scale = 0.4;
+                
+                scaler.style.transform = 'scale(' + scale + ')';
+                wrapper.style.height = Math.round(1131 * scale) + "px"; 
+                wrapper.style.minHeight = "0px";
+                wrapper.style.overflow = "hidden";
             }
-            window.renderTimetable();
         }
+        window.addEventListener('resize', setScale);
 
-        // ==========================================
-        // 3. ระบบจดหมายข่าว (Newsletter Editor)
-        // ==========================================
-        window.changeFontSize = function(displayClass, inputId, delta) {
-            const input = document.getElementById(inputId);
-            let newVal = parseInt(input.value) + delta;
+        function changeFontSize(displayClass, inputId, delta) {
+            var input = document.getElementById(inputId);
+            var newVal = parseInt(input.value) + delta;
             if(newVal >= 10 && newVal <= 60) {
                 input.value = newVal;
-                document.querySelectorAll('.' + displayClass).forEach(el => el.style.fontSize = newVal + 'px');
+                document.querySelectorAll('.' + displayClass).forEach(function(el) {
+                    el.style.fontSize = newVal + 'px';
+                });
             }
-        };
+        }
 
-        window.updateAgencyTheme = function() {
-            const agency = document.getElementById('select-agency').value;
-            const logoElements = document.querySelectorAll('.agency-logo-img');
-            const nameMainElements = document.querySelectorAll('.agency-name-main');
-            const nameFooterElements = document.querySelectorAll('.agency-name-footer');
+        function updateAgencyTheme() {
+            var agency = document.getElementById('select-agency').value;
+            var logoElements = document.querySelectorAll('.agency-logo-img');
+            var nameMainElements = document.querySelectorAll('.agency-name-main');
+            var nameFooterElements = document.querySelectorAll('.agency-name-footer');
             
             if (agency === 'sh1') {
-                logoElements.forEach(el => el.src = './SH1.jpg'); 
-                nameMainElements.forEach(el => el.innerHTML = '<span class="text-[22px] font-bold whitespace-nowrap">โรงเรียนบ้านโนนอุดมนภดลอุปถัมภ์</span><span class="text-[14px] font-medium opacity-90 mt-0.5">องค์การบริหารส่วนตำบลโนนอุดม</span>');
-                nameFooterElements.forEach(el => el.innerHTML = 'โรงเรียนบ้านโนนอุดมนภดลอุปถัมภ์');
+                logoElements.forEach(function(el) { el.src = './SH1.jpg'; }); 
+                nameMainElements.forEach(function(el) { el.innerHTML = '<span class="text-[22px] font-bold whitespace-nowrap">โรงเรียนบ้านโนนอุดมนภดลอุปถัมภ์</span><span class="text-[14px] font-medium opacity-90 mt-0.5">องค์การบริหารส่วนตำบลโนนอุดม</span>'; });
+                nameFooterElements.forEach(function(el) { el.innerHTML = 'โรงเรียนบ้านโนนอุดมนภดลอุปถัมภ์'; });
             } else if (agency === 'sh2') {
-                logoElements.forEach(el => el.src = './SH2.jpg'); 
-                nameMainElements.forEach(el => el.innerHTML = '<span class="text-[24px] font-bold whitespace-nowrap">ศูนย์พัฒนาเด็กเล็กวัดบ้านโนนขาม</span><span class="text-[14px] font-medium opacity-90 mt-0.5">องค์การบริหารส่วนตำบลโนนอุดม</span>');
-                nameFooterElements.forEach(el => el.innerHTML = 'ศูนย์พัฒนาเด็กเล็กวัดบ้านโนนขาม');
+                logoElements.forEach(function(el) { el.src = './SH2.jpg'; }); 
+                nameMainElements.forEach(function(el) { el.innerHTML = '<span class="text-[24px] font-bold whitespace-nowrap">ศูนย์พัฒนาเด็กเล็กวัดบ้านโนนขาม</span><span class="text-[14px] font-medium opacity-90 mt-0.5">องค์การบริหารส่วนตำบลโนนอุดม</span>'; });
+                nameFooterElements.forEach(function(el) { el.innerHTML = 'ศูนย์พัฒนาเด็กเล็กวัดบ้านโนนขาม'; });
             } else if (agency === 'sh3') {
-                logoElements.forEach(el => el.src = './SH3.jpg'); 
-                nameMainElements.forEach(el => el.innerHTML = '<span class="text-[22px] font-bold whitespace-nowrap">ศูนย์พัฒนาเด็กเล็กชุมชนวัดสระบัว</span><span class="text-[14px] font-medium opacity-90 mt-0.5">องค์การบริหารส่วนตำบลโนนอุดม</span>');
-                nameFooterElements.forEach(el => el.innerHTML = 'ศูนย์พัฒนาเด็กเล็กชุมชนวัดสระบัว');
+                logoElements.forEach(function(el) { el.src = './SH3.jpg'; }); 
+                nameMainElements.forEach(function(el) { el.innerHTML = '<span class="text-[22px] font-bold whitespace-nowrap">ศูนย์พัฒนาเด็กเล็กชุมชนวัดสระบัว</span><span class="text-[14px] font-medium opacity-90 mt-0.5">องค์การบริหารส่วนตำบลโนนอุดม</span>'; });
+                nameFooterElements.forEach(function(el) { el.innerHTML = 'ศูนย์พัฒนาเด็กเล็กชุมชนวัดสระบัว'; });
             } else {
-                logoElements.forEach(el => el.src = './IMG_0350.png');
-                nameMainElements.forEach(el => el.innerHTML = '<span class="text-[26px] font-bold whitespace-nowrap">องค์การบริหารส่วนตำบลโนนอุดม</span>');
-                nameFooterElements.forEach(el => el.innerHTML = 'องค์การบริหารส่วนตำบลโนนอุดม');
+                logoElements.forEach(function(el) { el.src = './IMG_0350.png'; });
+                nameMainElements.forEach(function(el) { el.innerHTML = '<span class="text-[26px] font-bold whitespace-nowrap">องค์การบริหารส่วนตำบลโนนอุดม</span>'; });
+                nameFooterElements.forEach(function(el) { el.innerHTML = 'องค์การบริหารส่วนตำบลโนนอุดม'; });
             }
-        };
-
-        window.showHistoryModal = function() {
-            const modal = document.getElementById('history-modal');
-            const content = document.getElementById('history-modal-content');
-            modal.classList.remove('hidden');
-            setTimeout(() => { 
-                modal.classList.remove('opacity-0'); 
-                content.classList.remove('translate-y-full', 'scale-95'); 
-            }, 10);
-            
-            const container = document.getElementById('history-list-container');
-            container.innerHTML = '';
-            if(historyData.length === 0) {
-                container.innerHTML = '<p class="text-center text-gray-400 py-10 font-medium">ยังไม่มีประวัติการสร้างจดหมายข่าว</p>'; return;
-            }
-            historyData.forEach(h => {
-                const div = document.createElement('div');
-                div.className = "ios-card p-4 hover:border-[#007AFF] transition cursor-pointer flex flex-col gap-2 group";
-                div.onclick = () => {
-                    document.getElementById('select-agency').value = h.agency || 'obt';
-                    document.getElementById('input-topic').value = h.topic || '';
-                    document.getElementById('input-description').value = h.desc || '';
-                    document.getElementById('select-day').value = h.d || tDate.getDate();
-                    document.getElementById('select-month').value = h.m || thaiMonths[tDate.getMonth()];
-                    document.getElementById('select-year').value = h.y || (tDate.getFullYear()+543);
-                    
-                    window.updateAgencyTheme();
-                    document.getElementById('input-topic').dispatchEvent(new Event('input'));
-                    document.getElementById('input-description').dispatchEvent(new Event('input'));
-                    document.getElementById('select-day').dispatchEvent(new Event('change'));
-                    
-                    window.closeHistoryModal(); window.showToast("ดึงประวัติมาใช้เรียบร้อย!");
-                };
-                div.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <h4 class="font-bold text-gray-900 group-hover:text-[#007AFF] line-clamp-1">${h.topic || '(ไม่มีหัวข้อ)'}</h4>
-                        <span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-bold shrink-0 ml-2">${new Date(h.timestamp).toLocaleDateString('th-TH')}</span>
-                    </div>
-                    <p class="text-sm text-gray-500 font-medium line-clamp-2">${h.desc || '(ไม่มีคำบรรยาย)'}</p>
-                `;
-                container.appendChild(div);
-            });
         }
 
-        window.closeHistoryModal = function() {
-            const modal = document.getElementById('history-modal');
-            const content = document.getElementById('history-modal-content');
-            modal.classList.add('opacity-0'); 
-            if(window.innerWidth < 768) {
-                content.classList.add('translate-y-full');
-            } else {
-                content.classList.add('scale-95');
-            }
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        }
-
-        // ⭐️ ฟังก์ชันถ่ายรูป (สูตร Ghost Capture ด้วย html2canvas ที่เซฟผ่านฉลุยบนหน้าเว็บ)
-        window.exportNewsletter = async function() {
-            const btn = document.getElementById('btn-export');
+        async function exportNewsletter() {
+            var btn = document.getElementById('btn-export');
             btn.disabled = true; btn.classList.add('opacity-50'); 
             btn.innerHTML = 'กำลังประมวลผล...'; 
             
-            const activeTemp = document.getElementById('template-3'); 
+            var activeTemp = document.getElementById('template-3'); 
             
             try {
-                try { await document.fonts.ready; } catch(e) {}
+                if (document.fonts && document.fonts.ready) {
+                    try { await document.fonts.ready; } catch(e) {}
+                }
 
-                const canvas = await html2canvas(activeTemp, {
-                    scale: 2, // ความคมชัดกำลังดี ไม่ทำให้มือถือค้าง
+                var canvas = await html2canvas(activeTemp, {
+                    scale: 2,
                     useCORS: true, 
                     allowTaint: true,
                     backgroundColor: '#fdfaf6',
                     width: 800,
                     height: 1131,
                     onclone: function(clonedDoc) {
-                        // ปลดล็อก scale ในตัวโคลนหลังบ้าน หน้าเว็บจริงจะไม่กระตุกหรือซูมค้าง
-                        const clonedScaler = clonedDoc.getElementById('preview-scaler');
+                        var clonedScaler = clonedDoc.getElementById('preview-scaler');
                         if (clonedScaler) {
                             clonedScaler.style.transform = 'none';
                         }
                     }
                 });
                 
-                const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+                var dataUrl = canvas.toDataURL('image/jpeg', 0.95);
                 
-                let agencyPrefix = 'อบต_';
-                const agencyVal = document.getElementById('select-agency').value;
+                var agencyPrefix = 'อบต_';
+                var agencyVal = document.getElementById('select-agency').value;
                 if(agencyVal === 'sh1') agencyPrefix = 'รร_โนนอุดม_';
                 else if(agencyVal === 'sh2') agencyPrefix = 'ศพด_โนนขาม_';
                 else if(agencyVal === 'sh3') agencyPrefix = 'ศพด_สระบัว_';
                 
-                const topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
-                const fileName = `${agencyPrefix}${topic}.jpg`;
+                var topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
+                var fileName = agencyPrefix + topic + '.jpg';
 
-                // เซฟรูปภาพลงเครื่อง (หรือ Share Sheet บนมือถือ)
-                const isMobile = window.innerWidth <= 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+                var isMobile = window.innerWidth <= 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
                 
                 if (isMobile && navigator.canShare) {
                     try {
-                        const res = await fetch(dataUrl);
-                        const blob = await res.blob();
-                        const file = new File([blob], fileName, { type: 'image/jpeg' });
+                        var res = await fetch(dataUrl);
+                        var blob = await res.blob();
+                        var file = new File([blob], fileName, { type: 'image/jpeg' });
                         await navigator.share({
                             files: [file],
                             title: topic,
                             text: 'ภาพข่าวประชาสัมพันธ์'
                         });
-                        window.showToast("บันทึก/แชร์ สำเร็จ!");
+                        showToast("บันทึก/แชร์ สำเร็จ!");
                     } catch(e) {
-                        const link = document.createElement('a'); 
+                        var link = document.createElement('a'); 
                         link.download = fileName; link.href = dataUrl; link.click();
                     }
                 } else {
-                    const link = document.createElement('a'); 
+                    var link = document.createElement('a'); 
                     link.download = fileName; link.href = dataUrl; link.click();
-                    window.showToast("ดาวน์โหลดลงเครื่องสำเร็จ!");
+                    showToast("ดาวน์โหลดลงเครื่องสำเร็จ!");
                 }
 
-                // บันทึกประวัติ
-                const hId = Date.now();
-                const hData = {
+                var hId = Date.now();
+                var hData = {
                     id: hId, timestamp: hId,
                     agency: document.getElementById('select-agency').value,
                     topic: document.getElementById('input-topic').value,
@@ -923,152 +656,71 @@
                     y: document.getElementById('select-year').value
                 };
 
-                if (isFirebaseReady && auth && auth.currentUser) {
-                    await setDoc(doc(historyRef, hId.toString()), hData);
+                if (window.cloudDB.ready && window.cloudDB.saveHistory) {
+                    await window.cloudDB.saveHistory(hId.toString(), hData);
                 } else {
                     historyData.push(hData);
-                    historyData.sort((a, b) => b.timestamp - a.timestamp);
+                    historyData.sort(function(a, b) { return b.timestamp - a.timestamp; });
                     localStorage.setItem('prStudioHistory', JSON.stringify(historyData));
                 }
 
             } catch (error) { 
                 console.error("Export Error:", error);
-                window.showToast("เกิดข้อผิดพลาดในการสร้างรูปภาพ"); 
+                showToast("เกิดข้อผิดพลาดในการสร้างรูปภาพ"); 
             } finally {
                 btn.disabled = false; btn.classList.remove('opacity-50'); 
                 btn.innerHTML = 'บันทึกรูปภาพ';
             }
         }
 
-        // ==========================================
-        // 4. Firebase & Init
-        // ==========================================
-        let historyData = [];
-        let bookingData = [];
-        try { historyData = JSON.parse(localStorage.getItem('prStudioHistory')) || []; } catch(e) {}
-        try { bookingData = JSON.parse(localStorage.getItem('prStudioBookings')) || []; } catch(e) {}
-        let fpDate, fpStart, fpEnd;
-        let pendingBooking = null;
-
-        const gasWebhookUrl = "https://script.google.com/macros/s/AKfycbw6aXoB3SIKe9jrh-prj-2yM6-V8Endqr1gDRhYTHJTt_ibTk3YazC1N8Z83ZmKIZg7JQ/exec";
-        const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
-        const tDate = new Date();
-
-        const myFirebaseConfig = {
-          apiKey: "AIzaSyBysqombxqHciw4hWmUo5zSaOgAiguR8Ig",
-          authDomain: "pr-nonudom.firebaseapp.com",
-          projectId: "pr-nonudom",
-          storageBucket: "pr-nonudom.firebasestorage.app",
-          messagingSenderId: "143493136278",
-          appId: "1:143493136278:web:b003ee0a235aa12f6ca7b7"
-        };
-
-        let isFirebaseReady = false;
-        let db, auth, bookingRef, historyRef;
-
-        const updateCloudStatus = (text, isError = false) => {
-            const dashStatus = document.getElementById('dash-cloud-status');
-            if(!dashStatus) return;
-            if (isError) {
-                dashStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> ${text}`;
-                dashStatus.className = "text-[11px] font-bold px-2.5 py-1 rounded-full bg-red-100 text-red-700 flex items-center gap-1.5";
-            } else {
-                dashStatus.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> ${text}`;
-                dashStatus.className = "text-[11px] font-bold px-2.5 py-1 rounded-full bg-green-100 text-green-700 flex items-center gap-1.5";
-            }
-        }
-
-        try {
-            const app = initializeApp(myFirebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
+        function showHistoryModal() {
+            var modal = document.getElementById('history-modal');
+            var content = document.getElementById('history-modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(function() { 
+                modal.classList.remove('opacity-0'); 
+                content.classList.remove('translate-y-full', 'scale-95'); 
+            }, 10);
             
-            bookingRef = collection(db, 'pr_bookings');
-            historyRef = collection(db, 'pr_history');
-            isFirebaseReady = true;
-
-            const initAuth = async () => {
-                try { await signInAnonymously(auth); } 
-                catch (err) { updateCloudStatus("ออฟไลน์ ⚠️", true); window.loadBookings(); }
-            };
-            initAuth();
-
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    updateCloudStatus("ซิงค์ออนไลน์");
-                    onSnapshot(bookingRef, (snapshot) => {
-                        bookingData = [];
-                        snapshot.forEach((doc) => bookingData.push(doc.data()));
-                        window.renderTimetable(); 
-                    });
-                    onSnapshot(historyRef, (snapshot) => {
-                        historyData = [];
-                        snapshot.forEach((doc) => historyData.push(doc.data()));
-                        historyData.sort((a, b) => b.timestamp - a.timestamp);
-                    });
-                } else {
-                    window.loadBookings();
-                }
+            var container = document.getElementById('history-list-container');
+            container.innerHTML = '';
+            if(historyData.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-400 py-10 font-medium">ยังไม่มีประวัติการสร้างจดหมายข่าว</p>'; return;
+            }
+            historyData.forEach(function(h) {
+                var div = document.createElement('div');
+                div.className = "ios-card p-4 hover:border-[#007AFF] transition cursor-pointer flex flex-col gap-2 group";
+                div.onclick = function() {
+                    document.getElementById('select-agency').value = h.agency || 'obt';
+                    document.getElementById('input-topic').value = h.topic || '';
+                    document.getElementById('input-description').value = h.desc || '';
+                    document.getElementById('select-day').value = h.d || tDate.getDate();
+                    document.getElementById('select-month').value = h.m || thaiMonths[tDate.getMonth()];
+                    document.getElementById('select-year').value = h.y || (tDate.getFullYear()+543);
+                    
+                    updateAgencyTheme();
+                    document.getElementById('input-topic').dispatchEvent(new Event('input'));
+                    document.getElementById('input-description').dispatchEvent(new Event('input'));
+                    document.getElementById('select-day').dispatchEvent(new Event('change'));
+                    
+                    closeHistoryModal(); showToast("ดึงประวัติมาใช้เรียบร้อย!");
+                };
+                div.innerHTML = '<div class="flex justify-between items-start"><h4 class="font-bold text-gray-900 group-hover:text-[#007AFF] line-clamp-1">' + (h.topic || '(ไม่มีหัวข้อ)') + '</h4><span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-bold shrink-0 ml-2">' + new Date(h.timestamp).toLocaleDateString('th-TH') + '</span></div><p class="text-sm text-gray-500 font-medium line-clamp-2">' + (h.desc || '(ไม่มีคำบรรยาย)') + '</p>';
+                container.appendChild(div);
             });
-        } catch(e) {
-            updateCloudStatus("ออฟไลน์ ⚠️", true);
-            window.loadBookings();
         }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            const selDay = document.getElementById('select-day'), selMonth = document.getElementById('select-month'), selYear = document.getElementById('select-year');
-            for (let i = 1; i <= 31; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = i; if (i === tDate.getDate()) opt.selected = true; selDay.appendChild(opt); }
-            selMonth.value = thaiMonths[tDate.getMonth()];
-            for (let i = tDate.getFullYear() + 543 - 5; i <= tDate.getFullYear() + 543 + 5; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = i; if (i === tDate.getFullYear() + 543) opt.selected = true; selYear.appendChild(opt); }
-            
-            const updateNewsDate = () => { 
-                let dayName = "";
-                try {
-                const dayIndex = new Date(selYear.value - 543, thaiMonths.indexOf(selMonth.value), selDay.value).getDay();
-                const days = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"];
-                dayName = "วัน" + days[dayIndex] + "ที่ ";
-                } catch(e) {}
-                document.querySelectorAll('.sync-date').forEach(el => el.textContent = `${dayName}${selDay.value} ${selMonth.value}${selYear.value}`);
-            };
-            selDay.addEventListener('change', updateNewsDate); selMonth.addEventListener('change', updateNewsDate); selYear.addEventListener('change', updateNewsDate);
-            updateNewsDate();
 
-            const syncNewsData = (inputId, displayClass, defaultText) => {
-                document.getElementById(inputId).addEventListener('input', (e) => {
-                    const text = e.target.value || defaultText;
-                    document.querySelectorAll('.' + displayClass).forEach(el => el.textContent = text);
-                });
-            };
-            syncNewsData('input-topic', 'sync-topic', 'หัวเรื่องกิจกรรม');
-            syncNewsData('input-description', 'sync-description', 'คำบรรยายกิจกรรมรายละเอียดต่างๆ');
-
-            let uploadHtml = '';
-            for (let i = 0; i < 6; i++) {
-                uploadHtml += `
-                    <div class="relative group">
-                        <input type="file" accept="image/*" class="hidden" id="upload-img-${i}"/>
-                        <label for="upload-img-${i}" id="label-img-${i}" class="flex flex-col items-center justify-center w-full h-16 bg-[#F2F2F7] border border-dashed border-gray-300 rounded-[12px] cursor-pointer hover:bg-gray-200 transition-colors overflow-hidden relative">
-                            <div id="icon-img-${i}" class="flex flex-col items-center justify-center pointer-events-none"><span class="text-[11px] font-bold text-gray-500">+ รูปที่ ${i+1}</span></div>
-                            <img id="thumb-img-${i}" class="hidden w-full h-full object-cover absolute top-0 left-0"/>
-                        </label>
-                    </div>`;
+        function closeHistoryModal() {
+            var modal = document.getElementById('history-modal');
+            var content = document.getElementById('history-modal-content');
+            modal.classList.add('opacity-0'); 
+            if(window.innerWidth < 768) {
+                content.classList.add('translate-y-full');
+            } else {
+                content.classList.add('scale-95');
             }
-            document.getElementById('upload-buttons-container').innerHTML = uploadHtml;
-            
-            const handleImageUpload = (idStr, targetClassPrefix) => {
-                document.getElementById(`upload-${idStr}`).addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            const base64Url = event.target.result;
-                            
-                            document.getElementById(`icon-${idStr}`).classList.add('hidden');
-                            document.getElementById(`thumb-${idStr}`).src = base64Url; 
-                            document.getElementById(`thumb-${idStr}`).classList.remove('hidden');
-                            
-                            const labelEl = document.getElementById(`label-${idStr}`);
-                            labelEl.style.borderStyle = 'solid';
-                            labelEl.style.borderColor = '#e5e5ea';
-                            
-                            document.querySelectorAll(`.show-${targetClassPrefix}`).forEach(el => { el.style.backgroundImage = `url
+            setTimeout(function() { modal.classList.add('hidden'); }, 300);
+        }
+
+        // ระบบตารางจองรถ
+        function cancelEdit
