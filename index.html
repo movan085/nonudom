@@ -15,18 +15,19 @@
     <!-- CSS/JS ไลบรารี -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- ใช้ html2canvas (โหมด Ghost Capture ไม่ทำให้หน้าเว็บค้าง) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <!-- Flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/airbnb.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/th.js"></script>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        /* iOS / One UI Style (Clean, Flat, Fast, Low-RAM) */
+        /* iOS / One UI Style (Clean, Flat, Fast, กินแรมน้อย) */
         body { 
             font-family: 'Kanit', sans-serif; 
             background-color: #F2F2F7; 
@@ -91,8 +92,8 @@
         .shape-t3-lightpurple { background-color: #a8a0c2; }
         .img-placeholder { width: 100%; height: 100%; background-color: #e5e5ea; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
-        #template-3 { width: 800px !important; height: 1131px !important; min-width: 800px !important; min-height: 1131px !important; max-width: 800px !important; max-height: 1131px !important; box-sizing: border-box; }
-        #preview-wrapper { width: 100%; display: flex; justify-content: center; transform-origin: top center; overflow: hidden; }
+        #template-3 { width: 800px !important; height: 1131px !important; min-width: 800px !important; min-height: 1131px !important; max-width: 800px !important; max-height: 1131px !important; box-sizing: border-box !important; }
+        #preview-wrapper { width: 100%; display: flex; justify-content: center; overflow: hidden; }
         #preview-scaler { transform-origin: top center; }
         
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -253,7 +254,7 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" id="vb-notify-line" checked class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#34C759]"></div>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#34C759]"></div>
                         </label>
                     </div>
 
@@ -362,15 +363,15 @@
             </div>
 
             <!-- แผงขวา (พรีวิว) -->
-            <div class="w-full xl:w-8/12 flex items-start justify-center bg-gray-200/50 p-4 md:p-8 rounded-[24px] overflow-hidden relative z-10">
+            <div class="w-full xl:w-8/12 flex items-start justify-center bg-gray-200/50 p-4 md:p-8 rounded-[24px] overflow-hidden relative z-10 h-fit">
                 <div id="preview-wrapper">
                     <div id="preview-scaler">
                         
-                        <!-- เทมเพลตจดหมายข่าว (ขนาดคงที่ 800x1131 px) -->
+                        <!-- เทมเพลตจดหมายข่าว (ขนาดคงที่ 800x1131 px) ปรับระยะกันสระตกขอบให้แล้ว -->
                         <div id="template-3" class="bg-[#fdfaf6] relative shadow-xl shrink-0 overflow-hidden flex flex-col">
                             
                             <!-- โลโก้ มุมขวาบนสุด -->
-                            <div class="absolute top-4 right-4 z-30 w-[100px] h-[100px] bg-white rounded-full p-1.5 shadow-md">
+                            <div class="absolute top-5 right-5 z-30 w-[100px] h-[100px] bg-white rounded-full p-1.5 shadow-md">
                                 <img src="./IMG_0350.png" class="agency-logo-img w-full h-full rounded-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/200x200/0071BA/FFF?text=Logo'"/>
                             </div>
 
@@ -382,20 +383,20 @@
                                 <div class="show-gallery-cover hidden w-full h-full bg-cover bg-center bg-no-repeat absolute top-0 left-0"></div>
                             </div>
 
-                            <!-- หัวแถบจดหมายข่าว -->
-                            <div style="position: absolute; top: 190px; left: 0; width: 100%; z-index: 10;">
-                                <div class="shape-t3-lightpurple text-[#4b3e70] font-bold text-[56px] px-10 pt-2 pb-1 shadow-sm w-fit pr-16 leading-none tracking-tight" style="border-radius: 0 40px 0 0;">
+                            <!-- แถบจดหมายข่าว (ปรับ padding และความสูงรับสระบนสำหรับ html2canvas) -->
+                            <div style="position: absolute; top: 175px; left: 0; width: 100%; z-index: 10;">
+                                <div class="shape-t3-lightpurple text-[#4b3e70] font-bold text-[52px] px-10 shadow-sm w-fit pr-16 tracking-tight flex items-center" style="border-radius: 0 40px 0 0; height: 80px; padding-bottom: 12px;">
                                     จดหมายข่าว
                                 </div>
                             </div>
                             
                             <!-- แถบประชาสัมพันธ์ & ชื่อหน่วยงาน -->
-                            <div style="position: absolute; top: 255px; left: 0; width: 100%; z-index: 10; display: flex; align-items: flex-end;">
-                                <div class="bg-white text-[#8e85b0] font-bold text-[40px] px-10 pt-2 pb-1 shadow-sm rounded-tr-xl flex-shrink-0" style="min-width: 350px;">
+                            <div style="position: absolute; top: 255px; left: 0; width: 100%; z-index: 10; display: flex; align-items: stretch; height: 75px;">
+                                <div class="bg-white text-[#8e85b0] font-bold text-[38px] px-10 shadow-sm rounded-tr-xl flex-shrink-0 flex items-center" style="min-width: 350px; padding-bottom: 8px;">
                                     ประชาสัมพันธ์
                                 </div>
                                 
-                                <div class="shape-t3-purple text-white px-8 py-3 flex-1 flex flex-col items-end justify-center rounded-bl-3xl shadow-sm relative" style="margin-left: -30px; clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%); padding-left: 60px; min-height: 75px;">
+                                <div class="shape-t3-purple text-white px-8 flex-1 flex flex-col items-end justify-center rounded-bl-3xl shadow-sm relative" style="margin-left: -30px; clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%); padding-left: 60px; padding-bottom: 6px;">
                                     <div class="agency-name-main text-right leading-tight flex flex-col items-end w-full max-w-[400px]">
                                         <span class="text-[26px] font-bold whitespace-nowrap">องค์การบริหารส่วนตำบลโนนอุดม</span>
                                     </div>
@@ -403,13 +404,13 @@
                             </div>
 
                             <!-- เนื้อหาและแกลเลอรี -->
-                            <div class="w-full flex-1 flex flex-col px-10 relative z-0" style="padding-top: 130px; padding-bottom: 100px;">
-                                <div class="flex justify-between items-start gap-4 mb-8">
-                                    <div class="border-b-[4px] border-[#6a5996] pb-2 pt-2 whitespace-nowrap shrink-0">
+                            <div class="w-full flex-1 flex flex-col px-10 relative z-0" style="padding-top: 135px; padding-bottom: 110px;">
+                                <div class="flex justify-between items-start gap-4 mb-7">
+                                    <div class="border-b-[4px] border-[#6a5996] pb-3 pt-2 whitespace-nowrap shrink-0">
                                         <span class="sync-date text-[#1f2937] font-bold text-[22px]">วันศุกร์ที่ 7 สิงหาคม 2569</span>
                                     </div>
-                                    <div class="shape-t3-lightpurple flex-1 py-4 px-8 shadow-sm flex items-center justify-center min-h-[85px] rounded-br-3xl rounded-tl-3xl">
-                                        <h3 class="sync-topic whitespace-pre-wrap text-[20px] font-bold text-white text-center leading-snug break-words">หัวเรื่องกิจกรรมการประชุมสภาฯ</h3>
+                                    <div class="shape-t3-lightpurple flex-1 py-4 px-8 shadow-sm flex items-center justify-center min-h-[85px] rounded-br-3xl rounded-tl-3xl" style="padding-bottom: 20px;">
+                                        <h3 class="sync-topic whitespace-pre-wrap text-[20px] font-bold text-white text-center leading-relaxed break-words">หัวเรื่องกิจกรรมการประชุมสภาฯ</h3>
                                     </div>
                                 </div>
 
@@ -427,14 +428,14 @@
                                 </div>
                             </div>
 
-                            <!-- Footer เบอร์โทร -->
-                            <div class="absolute bottom-5 left-10 right-10 h-[60px] shape-t3-purple rounded-full px-10 flex items-center justify-center gap-8 z-10 shadow-sm text-white">
+                            <!-- Footer เบอร์โทร (ขยับขึ้นและจัดกึ่งกลางไม่ให้ตกขอบ) -->
+                            <div class="absolute left-10 right-10 h-[60px] shape-t3-purple rounded-full px-10 flex items-center justify-center gap-8 z-10 shadow-sm text-white" style="bottom: 35px; padding-bottom: 8px;">
                                 <div class="flex items-center gap-2 shrink-0">
                                     <span class="text-[18px] font-bold">📞 โทร.044-077070</span>
                                 </div>
-                                <div class="w-1.5 h-1.5 bg-[#d8b4e2] rounded-full shrink-0"></div>
-                                <div class="flex items-center justify-center w-full truncate pt-1">
-                                    <span class="agency-name-footer text-[18px] font-bold truncate pb-0.5">องค์การบริหารส่วนตำบลโนนอุดม</span>
+                                <div class="w-1.5 h-1.5 bg-[#d8b4e2] rounded-full shrink-0 mt-1"></div>
+                                <div class="flex items-center justify-center w-full truncate">
+                                    <span class="agency-name-footer text-[18px] font-bold truncate">องค์การบริหารส่วนตำบลโนนอุดม</span>
                                 </div>
                             </div>
                         </div>
@@ -444,7 +445,7 @@
             </div>
         </div>
 
-        <!-- MODAL: ประวัติย้อนหลัง -->
+        <!-- MODAL: ประวัติจดหมายข่าว -->
         <div id="history-modal" class="hidden fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300">
             <div class="bg-white w-full max-w-xl rounded-t-[32px] md:rounded-[32px] max-h-[85vh] flex flex-col overflow-hidden transform translate-y-full md:translate-y-0 md:scale-95 transition-transform duration-300 shadow-2xl" id="history-modal-content">
                 <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mt-4 mb-2 md:hidden"></div>
@@ -457,7 +458,6 @@
         </div>
     </div>
 
-    <!-- SCRIPT LOGIC (Cloudflare Worker Integration) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -585,8 +585,8 @@
             document.getElementById('confirm-detail-dest').innerText = "📍 " + pendingBooking.dest;
             
             const d = new Date(pendingBooking.date);
-            const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
-            document.getElementById('confirm-detail-datetime').innerText = `${thaiDate} (เวลา ${pendingBooking.start} - ${pendingBooking.end} น.)`;
+            const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]}${d.getFullYear() + 543}`;
+            document.getElementById('confirm-detail-datetime').innerText = `${thaiDate} (เวลา ${pendingBooking.start} -${pendingBooking.end} น.)`;
             
             const notifyEl = document.getElementById('confirm-detail-notify');
             if (pendingBooking.notify) {
@@ -650,7 +650,7 @@
 
             if (pendingBooking.notify) {
                 const d = new Date(newBooking.date);
-                const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
+                const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]}${d.getFullYear() + 543}`;
                 const prefix = isEditing ? "🚙 [แก้ไข] อัปเดตคิวจองรถ!\n" : "🚙 บันทึกคิวจองรถใหม่!\n";
                 const lineMessage = `\n${prefix}━━━━━━━━━━━━\n🚘 รถ: ${newBooking.car}\n👤 ผู้ใช้: ${newBooking.name}\n📍 ภารกิจ: ${newBooking.dest}\n📅 วันที่: ${thaiDate}\n⏰ เวลา: ${newBooking.start} น. - ${newBooking.end} น.`;
 
@@ -709,7 +709,7 @@
 
             sortedDates.forEach(dateStr => {
                 const d = new Date(dateStr);
-                const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
+                const thaiDate = `${d.getDate()} ${thaiMonths[d.getMonth()]}${d.getFullYear() + 543}`;
                 
                 let dayBlock = `<div class="mb-6">
                     <div class="text-[#007AFF] font-bold text-sm mb-3 pl-1">📅 ${thaiDate}</div>
@@ -727,7 +727,7 @@
                         <div class="ios-card p-4 relative group hover:border-[#007AFF] transition-colors">
                             <div class="flex flex-col md:flex-row gap-3 md:items-center">
                                 <div class="font-bold text-lg text-gray-900 w-32 shrink-0">
-                                    ${b.start} - ${b.end}
+                                    ${b.start} -${b.end}
                                 </div>
                                 <div class="flex-1 pr-14">
                                     <div class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold mb-1.5 ${carBadge}">${b.car}</div>
@@ -757,7 +757,7 @@
         }
 
         // ==========================================
-        // 3. ระบบจดหมายข่าว (Cloudflare Worker Integration)
+        // 3. ระบบจดหมายข่าว (Newsletter Editor)
         // ==========================================
         window.changeFontSize = function(displayClass, inputId, delta) {
             const input = document.getElementById(inputId);
@@ -848,59 +848,34 @@
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
-        // ⭐️ ส่งไปเรนเดอร์ภาพผ่าน Cloudflare Worker (Browser Run)
+        // ⭐️ ฟังก์ชันถ่ายรูป (สูตร Ghost Capture ด้วย html2canvas ที่เซฟผ่านฉลุยบนหน้าเว็บ)
         window.exportNewsletter = async function() {
             const btn = document.getElementById('btn-export');
-            btn.disabled = true; 
-            btn.classList.add('opacity-50'); 
-            btn.innerHTML = 'กำลังประมวลผลบนคลาวด์...'; 
+            btn.disabled = true; btn.classList.add('opacity-50'); 
+            btn.innerHTML = 'กำลังประมวลผล...'; 
             
             const activeTemp = document.getElementById('template-3'); 
-
-            // โครงสร้าง HTML ที่จะส่งไปให้ Cloudflare วาดภาพ
-            const renderHtml = `
-            <!DOCTYPE html>
-            <html lang="th">
-            <head>
-                <meta charset="UTF-8">
-                <script src="https://cdn.tailwindcss.com"><\/script>
-                <link rel="preconnect" href="https://fonts.googleapis.com">
-                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-                <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-                <style>
-                    body { 
-                        margin: 0; 
-                        padding: 0; 
-                        background-color: #fdfaf6; 
-                        font-family: 'Kanit', sans-serif; 
-                        -webkit-font-smoothing: antialiased;
-                    }
-                    .shape-t3-purple { background-color: #6a5996; }
-                    .shape-t3-lightpurple { background-color: #a8a0c2; }
-                    .img-placeholder { width: 100%; height: 100%; background-color: #e5e5ea; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-                    #template-3 { width: 800px !important; height: 1131px !important; min-width: 800px !important; min-height: 1131px !important; max-width: 800px !important; max-height: 1131px !important; box-sizing: border-box; }
-                </style>
-            </head>
-            <body>
-                ${activeTemp.outerHTML}
-            </body>
-            </html>
-            `;
-
+            
             try {
-                // ยิงคำขอไปที่ Worker ของคุณ
-                const response = await fetch('https://pr-nonudom-render.rawinan9.workers.dev', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ html: renderHtml })
+                try { await document.fonts.ready; } catch(e) {}
+
+                const canvas = await html2canvas(activeTemp, {
+                    scale: 2, // ความคมชัดกำลังดี ไม่ทำให้มือถือค้าง
+                    useCORS: true, 
+                    allowTaint: true,
+                    backgroundColor: '#fdfaf6',
+                    width: 800,
+                    height: 1131,
+                    onclone: function(clonedDoc) {
+                        // ปลดล็อก scale ในตัวโคลนหลังบ้าน หน้าเว็บจริงจะไม่กระตุกหรือซูมค้าง
+                        const clonedScaler = clonedDoc.getElementById('preview-scaler');
+                        if (clonedScaler) {
+                            clonedScaler.style.transform = 'none';
+                        }
+                    }
                 });
-
-                if (!response.ok) {
-                    const errText = await response.text();
-                    throw new Error(errText || 'เซิร์ฟเวอร์เรนเดอร์ไม่สำเร็จ');
-                }
-
-                const blob = await response.blob();
+                
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
                 
                 let agencyPrefix = 'อบต_';
                 const agencyVal = document.getElementById('select-agency').value;
@@ -911,10 +886,13 @@
                 const topic = document.getElementById('input-topic').value || 'จดหมายข่าว';
                 const fileName = `${agencyPrefix}${topic}.jpg`;
 
+                // เซฟรูปภาพลงเครื่อง (หรือ Share Sheet บนมือถือ)
                 const isMobile = window.innerWidth <= 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
                 
                 if (isMobile && navigator.canShare) {
                     try {
+                        const res = await fetch(dataUrl);
+                        const blob = await res.blob();
                         const file = new File([blob], fileName, { type: 'image/jpeg' });
                         await navigator.share({
                             files: [file],
@@ -924,22 +902,15 @@
                         window.showToast("บันทึก/แชร์ สำเร็จ!");
                     } catch(e) {
                         const link = document.createElement('a'); 
-                        link.download = fileName; 
-                        link.href = URL.createObjectURL(blob); 
-                        link.click();
-                        setTimeout(() => URL.revokeObjectURL(link.href), 100);
-                        window.showToast("ดาวน์โหลดลงเครื่องสำเร็จ!");
+                        link.download = fileName; link.href = dataUrl; link.click();
                     }
                 } else {
                     const link = document.createElement('a'); 
-                    link.download = fileName; 
-                    link.href = URL.createObjectURL(blob); 
-                    link.click();
-                    setTimeout(() => URL.revokeObjectURL(link.href), 100);
+                    link.download = fileName; link.href = dataUrl; link.click();
                     window.showToast("ดาวน์โหลดลงเครื่องสำเร็จ!");
                 }
 
-                // บันทึกประวัติลง Firebase / LocalStorage
+                // บันทึกประวัติ
                 const hId = Date.now();
                 const hData = {
                     id: hId, timestamp: hId,
@@ -962,10 +933,9 @@
 
             } catch (error) { 
                 console.error("Export Error:", error);
-                window.showToast("เกิดข้อผิดพลาดในการสร้างรูปภาพจากคลาวด์"); 
+                window.showToast("เกิดข้อผิดพลาดในการสร้างรูปภาพ"); 
             } finally {
-                btn.disabled = false; 
-                btn.classList.remove('opacity-50'); 
+                btn.disabled = false; btn.classList.remove('opacity-50'); 
                 btn.innerHTML = 'บันทึกรูปภาพ';
             }
         }
@@ -1058,7 +1028,7 @@
                 const days = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"];
                 dayName = "วัน" + days[dayIndex] + "ที่ ";
                 } catch(e) {}
-                document.querySelectorAll('.sync-date').forEach(el => el.textContent = `${dayName}${selDay.value} ${selMonth.value} ${selYear.value}`);
+                document.querySelectorAll('.sync-date').forEach(el => el.textContent = `${dayName}${selDay.value} ${selMonth.value}${selYear.value}`);
             };
             selDay.addEventListener('change', updateNewsDate); selMonth.addEventListener('change', updateNewsDate); selYear.addEventListener('change', updateNewsDate);
             updateNewsDate();
@@ -1101,44 +1071,4 @@
                             labelEl.style.borderStyle = 'solid';
                             labelEl.style.borderColor = '#e5e5ea';
                             
-                            document.querySelectorAll(`.show-${targetClassPrefix}`).forEach(el => { el.style.backgroundImage = `url('${base64Url}')`; el.classList.remove('hidden'); });
-                            document.querySelectorAll(`.ph-${targetClassPrefix}`).forEach(el => el.classList.add('hidden'));
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            };
-
-            for (let i = 0; i < 6; i++) handleImageUpload(`img-${i}`, `gallery-${i}`);
-            handleImageUpload('img-cover', 'gallery-cover');
-
-            fpDate = flatpickr("#vb-date", { locale: "th", altInput: true, altFormat: "d/m/Y", dateFormat: "Y-m-d", defaultDate: "today" });
-            fpStart = flatpickr("#vb-start", { enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true, defaultDate: "08:30" });
-            fpEnd = flatpickr("#vb-end", { enableTime: true, noCalendar: true, dateFormat: "H:i", time_24hr: true, defaultDate: "12:00" });
-        });
-
-        function setScale() {
-            const wrapper = document.getElementById('preview-wrapper');
-            const scaler = document.getElementById('preview-scaler');
-            const newsletterView = document.getElementById('view-newsletter');
-            
-            if(wrapper && scaler && !newsletterView.classList.contains('hidden')) {
-                const container = wrapper.parentElement;
-                const style = window.getComputedStyle(container);
-                const paddingX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
-                
-                const availableWidth = container.clientWidth - paddingX; 
-                const targetWidth = 800; 
-                let scale = availableWidth / targetWidth;
-                if (scale > 1) scale = 1; 
-                
-                scaler.style.transform = `scale(${scale})`;
-                wrapper.style.height = (1131 * scale) + "px"; 
-            }
-        }
-        window.addEventListener('resize', setScale);
-
-        window.switchView('view-dashboard');
-    </script>
-</body>
-</html>
+                            document.querySelectorAll(`.show-${targetClassPrefix}`).forEach(el => { el.style.backgroundImage = `url
